@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#000000">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>BootLeaf</title>
+    <title>WabashCo MapExtractor</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -25,17 +25,7 @@
     <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicon-152.png">
     <link rel="icon" sizes="196x196" href="assets/img/favicon-196.png">
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
-	<script>
-$(document).ready(function(){
-    $("button").click(function(){
-        $.getJSON("demo_ajax_json.js", function(result){
-            $.each(result, function(i, field){
-                $("div").append(field + " ");
-            });
-        });
-    });
-});
-</script>
+
   </head>
 
   <body>
@@ -52,18 +42,6 @@ $(document).ready(function(){
         <div class="navbar-collapse collapse">
           <form class="navbar-form navbar-right" role="search">
             <div class="form-group has-feedback">
-	<div id="w">
-		<h1>Simple Github API Webapp</h1>
-			<p>Enter a single Github username below and click the button to display profile info via JSON.</p>
-			<!-->#ghusername is the input field to hold the username and #ghsubmitbtn is the element we use for triggering the API call.<!-->
-				<input type="text" name="ghusername" id="ghusername" placeholder="Geo">
-					<a href="#" id="ghsubmitbtn">Pull User Data</a>
-    
-		<div id="ghapidata" class="clearfix"></div>
-	</div>
-	<button>Get JSON data</button>
-
-<div></div>
                 <input id="searchbox" type="text" placeholder="Search" class="form-control">
                 <span id="searchicon" class="fa fa-search form-control-feedback"></span>
             </div>
