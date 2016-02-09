@@ -80,7 +80,18 @@ $(function () {
 
       <div class="starter-template">
         <h1>Campaign Planner</h1>
-        <p class="lead">Use this tool to quickly plan routes and extract business listings data.<br> <!-- <a href="/data/data1/" <button type="button" class="btn btn-default">Download Data</button></a> --></p>
+        <p class="lead">Use this tool to quickly plan routes and extract business listings data.<br> 
+        <!-- <a href="/data/data1/" <button type="button" class="btn btn-default">Download Data</button></a> --> 
+        <input id="clickMe" type="button" value="clickme" onclick="
+            for (var i = 0; i < markers.length; i++){
+            
+            var lon = markers[i]['latitude'];
+            var lat = markers[i]['longitude'];
+            var popupText = markers[i]['name'];
+            
+            var markerLocation = new L.LatLng(lon,lat);
+            var marker = new L.Marker(markerLocation).bindPopup(popupText).addTo(feature_group);
+            }" /></p>
       </div>
     <div class="container">
     <a href="#demo" class="btn btn-info" data-toggle="collapse">Search Parameters</a>
@@ -166,7 +177,7 @@ $(function () {
            data-id-field="id"
            data-page-list="[10, 25, 50, 100, ALL]"
            <!--data-url= "data"-->
-           >
+           
         <thead>
         <tr>
             
@@ -186,7 +197,7 @@ $(function () {
     
 
 <!-- /.container -->
-<!-- <script src="data/exp_clevlandfact1.js"></script> -->
+
 <script type="text/javascript">
     var data = {{ data|tojson|safe}};
 </script>
@@ -210,13 +221,14 @@ $(function () {
             });	
             basemap_0.addTo(map);	
             var layerOrder=new Array();
-            function pop_clevlandfact1(feature, layer) {					
-                var popupContent = '<table><tr><th scope="row">address</th><td>' + Autolinker.link(String(feature.properties['address'])) + '</td></tr><tr><th scope="row">category_ids__001</th><td>' + Autolinker.link(String(feature.properties['category_ids__001'])) + '</td></tr><tr><th scope="row">category_ids__002</th><td>' + Autolinker.link(String(feature.properties['category_ids__002'])) + '</td></tr><tr><th scope="row">category_ids__003</th><td>' + Autolinker.link(String(feature.properties['category_ids__003'])) + '</td></tr><tr><th scope="row">category_ids__</th><td>' + Autolinker.link(String(feature.properties['category_ids__'])) + '</td></tr><tr><th scope="row">category_labels__001</th><td>' + Autolinker.link(String(feature.properties['category_labels__001'])) + '</td></tr><tr><th scope="row">category_labels__002</th><td>' + Autolinker.link(String(feature.properties['category_labels__002'])) + '</td></tr><tr><th scope="row">category_labels__003</th><td>' + Autolinker.link(String(feature.properties['category_labels__003'])) + '</td></tr><tr><th scope="row">email</th><td>' + Autolinker.link(String(feature.properties['email'])) + '</td></tr><tr><th scope="row">locality</th><td>' + Autolinker.link(String(feature.properties['locality'])) + '</td></tr><tr><th scope="row">neighborhood__001</th><td>' + Autolinker.link(String(feature.properties['neighborhood__001'])) + '</td></tr><tr><th scope="row">name</th><td>' + Autolinker.link(String(feature.properties['name'])) + '</td></tr><tr><th scope="row">neighborhood__</th><td>' + Autolinker.link(String(feature.properties['neighborhood__'])) + '</td></tr><tr><th scope="row">postcode</th><td>' + Autolinker.link(String(feature.properties['postcode'])) + '</td></tr><tr><th scope="row">region</th><td>' + Autolinker.link(String(feature.properties['region'])) + '</td></tr><tr><th scope="row">tel</th><td>' + Autolinker.link(String(feature.properties['tel'])) + '</td></tr><tr><th scope="row">website</th><td>' + Autolinker.link(String(feature.properties['website'])) + '</td></tr><tr><th scope="row">distance</th><td>' + Autolinker.link(String(feature.properties['distance'])) + '</td></tr></table>';
-                layer.bindPopup(popupContent);
-            }
+            //function pop_data(feature, layer) {					
+            //    var popupContent = '<table><tr><th scope="row">address</th><td>' + Autolinker.link(String(feature.properties['address'])) + '</td></tr><tr><th scope="row">category_ids__001</th><td>' + Autolinker.link(String(feature.properties['category_ids__001'])) + '</td></tr><tr><th scope="row">category_ids__002</th><td>' + Autolinker.link(String(feature.properties['category_ids__002'])) + '</td></tr><tr><th scope="row">category_ids__003</th><td>' + Autolinker.link(String(feature.properties['category_ids__003'])) + '</td></tr><tr><th scope="row">category_ids__</th><td>' + Autolinker.link(String(feature.properties['category_ids__'])) + '</td></tr><tr><th scope="row">category_labels__001</th><td>' + Autolinker.link(String(feature.properties['category_labels__001'])) + '</td></tr><tr><th scope="row">category_labels__002</th><td>' + Autolinker.link(String(feature.properties['category_labels__002'])) + '</td></tr><tr><th scope="row">category_labels__003</th><td>' + Autolinker.link(String(feature.properties['category_labels__003'])) + '</td></tr><tr><th scope="row">email</th><td>' + Autolinker.link(String(feature.properties['email'])) + '</td></tr><tr><th scope="row">locality</th><td>' + Autolinker.link(String(feature.properties['locality'])) + '</td></tr><tr><th scope="row">neighborhood__001</th><td>' + Autolinker.link(String(feature.properties['neighborhood__001'])) + '</td></tr><tr><th scope="row">name</th><td>' + Autolinker.link(String(feature.properties['name'])) + '</td></tr><tr><th scope="row">neighborhood__</th><td>' + Autolinker.link(String(feature.properties['neighborhood__'])) + '</td></tr><tr><th scope="row">postcode</th><td>' + Autolinker.link(String(feature.properties['postcode'])) + '</td></tr><tr><th scope="row">region</th><td>' + Autolinker.link(String(feature.properties['region'])) + '</td></tr><tr><th scope="row">tel</th><td>' + Autolinker.link(String(feature.properties['tel'])) + '</td></tr><tr><th scope="row">website</th><td>' + Autolinker.link(String(feature.properties['website'])) + '</td></tr><tr><th scope="row">distance</th><td>' + Autolinker.link(String(feature.properties['distance'])) + '</td></tr></table>';
+            //    layer.bindPopup(popupContent);
+            //}
             
+            /* old js, use if you parse to geojson 
             var result = new L.geoJson(data,{
-                //onEachFeature: pop_clevlandfact1,
+                //onEachFeature: pop_data,
                 pointToLayer: function (feature, latlng) {  
                     return L.circleMarker(latlng, {
                         radius: 4.0,
@@ -227,9 +239,18 @@ $(function () {
                         fillOpacity: 1.0
                     })
                 }
-            });
+            });*/
             //add comment sign to hide this layer on the map in the initial view.
-            feature_group.addLayer(result);
+            var markers = data;
+            
+            
+
+
+            //var marker = L.marker([data[i].latitude, data[i].longitude]);
+            //marker.bindPopup([data[i].name);
+            
+            
+            //feature_group.addLayer(marker);
 
             feature_group.addTo(map);
             var title = new L.Control();
@@ -243,11 +264,10 @@ $(function () {
             };
             title.addTo(map);
 
-
          L.Routing.control({
           waypoints: [
-            L.latLng(41.881832, -87.623177),
-            L.latLng(41.505493, -81.681290)
+            L.latLng(),
+            L.latLng()
           ],
           geocoder: L.Control.Geocoder.nominatim()
         }).addTo(map);
@@ -265,9 +285,11 @@ $(function () {
         var baseMaps = {
             'OSM Standard': basemap_0
         };
-            L.control.layers(baseMaps,{"result": result},{collapsed:false}).addTo(map);
+            L.control.layers(baseMaps,{"result": feature_group},{collapsed:false}).addTo(map);
             L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);
-            var circle = L.circleMarker([41.505493, -81.681290], {radius: 75}).addTo(map);
+            // dumb circle var circle = L.circleMarker([41.505493, -81.681290], {radius: 75}).addTo(map);
+
+        
         </script>
         
 
