@@ -2,7 +2,9 @@
 <input name="points">
 <input type="submit" value="Echo">
 </form>-->
-
+    <div name="points">
+	{{ points|tojson}}
+	</div>
     <div name="results">
 	{{ results|tojson}}
 	</div>

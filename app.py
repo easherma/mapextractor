@@ -20,58 +20,60 @@ app.config.from_object(__name__)
 
 @app.route("/results", methods=['GET','POST'])
 def results():
-	factual = Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow')
-	places = factual.table('places')
-	from factual.utils import circle
-	out = []  
-	for i in range(1):       
-		data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
-		out.extend(data)
-	return json.dumps(out)
-	
+    return render_template('echo.html', results=results, points=request.get_json())
+    
 
 @app.route("/result", methods=['GET','POST'])
 def result():
-	call()
-	factual = Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow')
-	places = factual.table('places')
-	from factual.utils import circle
-	out = []  
-	for i in range(1):       
-		data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
-		out.extend(data)
-	results = json.dumps(out)
-	
-	return render_template('echo.html', results=results)
+    call()
+    factual = Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow')
+    places = factual.table('places')
+    from factual.utils import circle
+    out = []  
+    for i in range(1):       
+        data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
+        out.extend(data)
+    results = json.dumps(out)
+    
+    return render_template('echo.html', results=results)
 
 @app.route('/call', methods=['GET','POST'])
 def call():
-	global cat
-	cat = 2
+    factual = Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow')
+    
+    cat = 2
+    print request.data
+    print request.json
+    print request.get_json()
+    
+    points = request.get_json()
+    results = []
+    try:
+        for idx, val in enumerate(points):
+            if val is not None:
+                places = factual.table('places')
+                from factual.utils import circle 
+                out = [] 
+                print idx
+                lat = points[idx]['lat']
+                lng = points[idx]['lng']
+                print lat, lng
+                for i in range(2):       
+                    data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
+                    out.extend(data)
 
+         
+        
+        results = json.dumps(out)
+    except TypeError:
+        pass
+    #with open("/data/data.json","wb") as fo:
+    #    fo.write(results)
 
+            #call_api(lat, lng, 2)
 
-	results = []
-	print request.data
-	print request.json
-	print request.get_json()
-	
-	points = request.get_json()
-	for idx, val in enumerate(points):
-		if val is not None:
-			print idx
-			global lat
-			lat = points[idx]['lat']
-			global lng
-			lng = points[idx]['lng']
-			print lat, lng
-
-
-
-			#call_api(lat, lng, 2)
-
-	return render_template('index.html', results=results)
-	
+    return json.dumps(results)
+    
 @app.route('/')
 def index():
     #data = ''
@@ -89,8 +91,8 @@ def index():
 #        all_data.append(df)
         #time.sleep(.1)
 #time.sleep(.1)
-	results = []
-	#run()
+    results = []
+    #run()
 
 
     # Concat dataframe.
@@ -107,7 +109,7 @@ def index():
     #test = geojson.utils.generate_random("Point")
     #with open('data/exp_clevlandfact1.json', 'r') as f:
     #    data = f.read()
-	return render_template('index.html', results=results)
+    return render_template('index.html', results=results)
 
 if __name__ == '__main__':
     app.run()
