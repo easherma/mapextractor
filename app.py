@@ -1,9 +1,5 @@
 #imports
-import pandas as pd
-import os
-import csv
 import json
-import geojson
 from factual import Factual
 from flask import Flask, request, redirect, url_for, jsonify, render_template, send_from_directory
 #import time
@@ -11,41 +7,39 @@ import requests
 
 #config
 
-DEBUG = True
+DEBUG = False
 
 #main
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-@app.route("/results", methods=['GET','POST'])
-def results():
-    return render_template('echo.html', results=results, points=request.get_json())
+# @app.route("/results", methods=['GET','POST'])
+# def results():
+    # return render_template('echo.html', results=results, points=request.get_json())
     
 
-@app.route("/result", methods=['GET','POST'])
-def result():
-    call()
-    factual = Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow')
-    places = factual.table('places')
-    from factual.utils import circle
-    out = []  
-    for i in range(1):       
-        data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
-        out.extend(data)
-    results = json.dumps(out)
+# @app.route("/result", methods=['GET','POST'])
+# def result():
+    # call()
     
-    return render_template('echo.html', results=results)
+    # places = factual.table('places')
+    # from factual.utils import circle
+    # out = []  
+    # for i in range(1):       
+        # data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
+        # out.extend(data)
+    # results = json.dumps(out)
+    
+    # return render_template('echo.html', results=results)
 
 @app.route('/call', methods=['GET','POST'])
 def call():
-    factual = Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow')
-    
+    with open("keys.json") as jsonfile:
+        keys = json.loads(jsonfile.read())
+    factual = Factual(keys["OAuth Key"], keys["OAuth Secret"])
+    #catagory filter
     cat = 2
-    print request.data
-    print request.json
-    print request.get_json()
-    
     points = request.get_json()
     results = []
     try:
@@ -61,9 +55,7 @@ def call():
                 for i in range(2):       
                     data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
                     out.extend(data)
-
-         
-        
+      
         results = json.dumps(out)
     except TypeError:
         pass
@@ -112,5 +104,5 @@ def index():
     return render_template('index.html', results=results)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
     
