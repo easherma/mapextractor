@@ -72,18 +72,17 @@ $(function () {
     });
   });
 });
+
 //]]> 
 
 </script>
-
-    <div class="container">
-
-      <div class="starter-template">
-        <h1>Campaign Planner</h1>
-        <p class="lead">Use this tool to quickly plan routes and extract business listings data.<br> 
-        <!-- <a href="/data/data1/" <button type="button" class="btn btn-default">Download Data</button></a> --> 
-        <input id="clickMe" type="button" value="clickme" onclick="
-            for (var i = 0; i < markers.length; i++){
+<script type=text/javascript>
+  //$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  routepoints = [{"lat":41.8755546,"lng":-87.6244211},null] //populatd for testing
+</script>
+<script>    
+			function drawResults(){
+			for (var i = 0; i < markers.length; i++){
             
             var lon = markers[i]['latitude'];
             var lat = markers[i]['longitude'];
@@ -91,7 +90,62 @@ $(function () {
             
             var markerLocation = new L.LatLng(lon,lat);
             var marker = new L.Marker(markerLocation).bindPopup(popupText).addTo(feature_group);
-            }" /></p>
+			}}
+</script>
+<div id="results"></div>
+<script>
+			function routePoints() {
+			
+			
+			for (var i = 0; i < routeControl.getWaypoints().length; i++){
+			points = routeControl.getWaypoints();
+			routepoints.push(points[i]['latLng']);
+			}
+			};
+			//client to flask
+			
+			/*$.get(
+				url="/results/",
+				data= routepoints, 
+				//flask to jquery, may not need
+				success=function(data) {
+				parsed_data = JSON.parse(data)
+				alert('page content: ' + parsed_data);
+				}
+			); }	
+			
+			/*
+			$.getJSON('/results-json/', function(results)){
+			console.log(results)
+			$('#results').html(results); 
+    });*/
+</script>
+<script>
+  //$.getJSON('/results', function(test){console.log(test)});
+  //$.getJSON('/results', function(data){console.log(data)});
+</script>
+<script>
+    function post() { 
+	$.ajax({
+    type: 'POST',
+    url: '/results',
+    data: JSON.stringify(routepoints),
+    success: function(data) { console.log('data: ' + data); },
+    contentType: 'application/json',
+    dataType: 'json'
+}); }
+</script>
+
+			
+			
+</script>
+		<div class="container">
+
+      <div class="starter-template">
+        <h1>Campaign Planner</h1>
+        <p class="lead">Use this tool to quickly plan routes and extract business listings data.<br> 
+        <!-- <a href="/data/data1/" <button type="button" class="btn btn-default">Download Data</button></a> --> 
+        <input id="clickMe" type="button" value="clickme" onclick="drawResults();" /></p>
       </div>
     <div class="container">
     <a href="#demo" class="btn btn-info" data-toggle="collapse">Search Parameters</a>
@@ -199,7 +253,7 @@ $(function () {
 <!-- /.container -->
 
 <script type="text/javascript">
-    var data = {{ data|tojson|safe}};
+ //var data = {{ data|tojson|safe}};
 </script>
 <script>
 $(function () {
@@ -264,14 +318,12 @@ $(function () {
             };
             title.addTo(map);
 
-         L.Routing.control({
+         routeControl = L.Routing.control({
           waypoints: [
-            L.latLng(),
-            L.latLng()
           ],
           geocoder: L.Control.Geocoder.nominatim()
         }).addTo(map);
-
+		
         //L.Routing.Formatter(units: 'imperial');
 
         function createButton(label, container) {
@@ -291,7 +343,9 @@ $(function () {
 
         
         </script>
-        
+        <script>
+
+		</script>
 
 
 
