@@ -82,16 +82,7 @@ $(function () {
         <h1>Campaign Planner</h1>
         <p class="lead">Use this tool to quickly plan routes and extract business listings data.<br> 
         <!-- <a href="/data/data1/" <button type="button" class="btn btn-default">Download Data</button></a> --> 
-        <input id="clickMe" type="button" value="clickme" onclick="
-            for (var i = 0; i < markers.length; i++){
-            
-            var lon = markers[i]['latitude'];
-            var lat = markers[i]['longitude'];
-            var popupText = markers[i]['name'];
-            
-            var markerLocation = new L.LatLng(lon,lat);
-            var marker = new L.Marker(markerLocation).bindPopup(popupText).addTo(feature_group);
-            }" /></p>
+        </p>
       </div>
     <div class="container">
     <a href="#demo" class="btn btn-info" data-toggle="collapse">Search Parameters</a>
@@ -199,7 +190,7 @@ $(function () {
 <!-- /.container -->
 
 <script type="text/javascript">
-    var data = {{ data|tojson|safe}};
+    var data = [{{ results|tojson|safe}}];
 </script>
 <script>
 $(function () {
@@ -207,6 +198,32 @@ $(function () {
         data: data
     });
 });
+</script>
+    <div name="results">
+	{{ results|tojson}}
+	</div>
+<script>    
+			function drawResults(){
+			for (var i = 0; i < markers.length; i++){
+            
+            var lon = markers[i]['latitude'];
+            var lat = markers[i]['longitude'];
+            var popupText = markers[i]['name'];
+            
+            var markerLocation = new L.LatLng(lon,lat);
+            var marker = new L.Marker(markerLocation).bindPopup(popupText).addTo(feature_group);
+			}}
+</script>
+<script>
+			function routePoints() {
+			
+			
+			for (var i = 0; i < routeControl.getWaypoints().length; i++){
+			points = routeControl.getWaypoints();
+			routepoints.push(points[i]['latLng']);
+			}
+			};
+
 </script>
 <script>
             var map = L.map('map', {
@@ -244,7 +261,7 @@ $(function () {
             var markers = data;
             
             
-
+			
 
             //var marker = L.marker([data[i].latitude, data[i].longitude]);
             //marker.bindPopup([data[i].name);
@@ -264,7 +281,7 @@ $(function () {
             };
             title.addTo(map);
 
-         L.Routing.control({
+         routeControl = L.Routing.control({
           waypoints: [
             L.latLng(),
             L.latLng()
@@ -288,10 +305,22 @@ $(function () {
             L.control.layers(baseMaps,{"result": feature_group},{collapsed:false}).addTo(map);
             L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);
             // dumb circle var circle = L.circleMarker([41.505493, -81.681290], {radius: 75}).addTo(map);
-
+		
+		routepoints = []
+		$( ".leaflet-routing-geocoders" ).append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"drawResults();routePoints();post();\" />"); 
         
         </script>
-        
+<script>
+    function post() { 
+ 	$.ajax({
+     type: 'POST',
+     url: '/result',
+     data: JSON.stringify(routepoints),
+     success: function(data) { console.log('data: ' + data); },
+     contentType: 'application/json',
+     dataType: 'json'
+ }); } 
+ </script>
 
 
 
