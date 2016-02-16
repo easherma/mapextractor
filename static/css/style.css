@@ -3,8 +3,8 @@ body {
 	padding: 0;
 	margin: 0;
 }
-html, body, #map {
-	height: 650px;
+html, body {
+	height: 100%;
 	width: 100%;
 	padding: 0;
 	margin: 0;
@@ -27,6 +27,11 @@ th {
 }
 .leaflet-container {
 	background: #fff;
+    width: 105%;
+    height: 650px;
+	padding: ;
+	margin: 0;
+
 
 body {
   padding-top: 50px;

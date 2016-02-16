@@ -4,10 +4,11 @@ from factual import Factual
 from flask import Flask, request, redirect, url_for, jsonify, render_template, send_from_directory
 #import time
 import requests
+import pandas as pd
 
 #config
 
-DEBUG = False
+DEBUG = True
 
 #main
 
@@ -41,26 +42,38 @@ def call():
     #catagory filter
     cat = 2
     points = request.get_json()
+    print "length of points"
+    print len(points)
     results = []
+    out = [] 
     try:
         for idx, val in enumerate(points):
             if val is not None:
                 places = factual.table('places')
                 from factual.utils import circle 
-                out = [] 
-                print idx
+                
                 lat = points[idx]['lat']
                 lng = points[idx]['lng']
-                print lat, lng
-                for i in range(2):       
+                print "index, lat, lng"
+                print idx,lat, lng
+                print "results so far:"
+                print len(out)
+                for i in range(10):       
                     data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
+                    print "length of data"
+                    print len(data)
                     out.extend(data)
+                    print "length of out"
+                    print len(out)
+        
       
         results = json.dumps(out)
+        df = pd.DataFrame(out)
+        df.to_csv("data.csv",  mode='a')
+
     except TypeError:
         pass
-    #with open("/data/data.json","wb") as fo:
-    #    fo.write(results)
+
 
             #call_api(lat, lng, 2)
 
