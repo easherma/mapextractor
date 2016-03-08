@@ -5,7 +5,7 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
-Vagrant.configure(2) do |config|
+Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
@@ -22,8 +22,9 @@ Vagrant.configure(2) do |config|
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
-  config.vm.provision :shell, path: "bootstrap.sh"
-   config.vm.network "forwarded_port", guest: 5000, host: 5000
+  #config.vm.provision :shell, path: "bootstrap.sh"
+  config.vm.network :"forwarded_port", guest: 5000, host: 5000, auto_correct: true
+
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
