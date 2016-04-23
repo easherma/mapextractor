@@ -2,197 +2,181 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!DOCTYPE html>
+<html>
+    </head>
+    <body>
+        <div class="container">
+            <div class="title">
+                <h1>
+                    Campaign Planner
+                </h1>
 
+                <p class="lead">
+                    Use this tool to quickly plan routes and extract business
+                    listings data.<br>
+                </p>
+            </div>
 
+            <div class="container">
+                <a class="btn btn-info" data-toggle="collapse" href=
+                "#demo">Search Parameters</a>
+                <div class="collapse" id="demo">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-6 col-xs-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading clearfix">
+                                    <i class="icon-calendar"></i>
+                                    <h3 class="panel-title">
+                                        Inputs
+                                    </h3>
+                                </div>
 
-    <!-- <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
+                                <div class="panel-body">
+                                    <label class=
+                                    "col-md-2 control-label">Radius</label>
+                                    <label class="radio-inline"><input checked
+                                    id="optionsRadios1" name="optionsRadios"
+                                    type="radio" value="option1"> 10
+                                    miles</label> <label class=
+                                    "radio-inline"><input id="optionsRadios2"
+                                    name="optionsRadios" type="radio" value=
+                                    "option2">20 miles</label> <label class=
+                                    "radio-inline"><input disabled id=
+                                    "optionsRadios3" name="optionsRadios" type=
+                                    "radio" value="option2">50 miles</label>
+                                </div>
+
+                                <div class="panel-body">
+                                    <form action="#" class=
+                                    "form-horizontal row-border">
+                                        <div class="form-group">
+                                            <label class=
+                                            "col-md-2 control-label">Business
+                                            Category</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control"
+                                                name="placeholder" placeholder=
+                                                "Auto Repair" type="text">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class=
+                                            "col-md-2 control-label">Read only
+                                            field</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control"
+                                                name="readonly" readonly type=
+                                                "text" value=
+                                                "info may go here">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class=
+                                            "col-md-2 control-label">Help
+                                            text</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control"
+                                                name="regular" type="text">
+                                                <span class="help-block">See
+                                                Factual API documentation for
+                                                further category ID
+                                                info.</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class=
+                                            "col-md-2 control-label">Endpoint</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control"
+                                                name="regular" type="text"
+                                                value=
+                                                "http://api.v3.factual.com/t/places">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-    <!--  </div>
-    </nav> -->
-<script type="text/javascript">//<![CDATA[
 
-
-//]]>
-
-</script>
-<script>
-  var results = {{ results|tojson|safe}};
-</script>
-<div name="results">
-{{ results|tojson}}
-</div>
-
-    <div class="container">
-
-      <div class="starter-template">
-        <h1>Campaign Planner</h1>
-        <p class="lead">Use this tool to quickly plan routes and extract business listings data.<br>
-        </p>
-      </div>
-    <div class="container">
-    <a href="#demo" class="btn btn-info" data-toggle="collapse">Search Parameters</a>
-    <div id="demo" class="collapse">
-        <div class="row">
-    <div class="col-md-12 col-sm-6 col-xs-12">
-      <div class="panel panel-default">
-        <div class="panel-heading clearfix">
-          <i class="icon-calendar"></i>
-          <h3 class="panel-title">Inputs</h3>
-        </div>
-        <div class="panel-body">
-           <label class="col-md-2 control-label">Radius</label>
-          <label class="radio-inline">
-            <input name="optionsRadios" id="optionsRadios1" type="radio" checked="" value="option1"> 10 miles
-          </label>
-          <label class="radio-inline">
-            <input name="optionsRadios" id="optionsRadios2" type="radio" value="option2">20 miles
-          </label>
-          <label class="radio-inline">
-            <input name="optionsRadios" disabled="" id="optionsRadios3" type="radio" value="option2">50 miles
-          </label>
-        </div>
-        <div class="panel-body">
-          <form class="form-horizontal row-border" action="#">
-            <div class="form-group">
-              <label class="col-md-2 control-label">Business Category</label>
-              <div class="col-md-10">
-                <input name="placeholder" class="form-control" type="text" placeholder="Auto Repair">
-              </div>
+        <div class="container">
+            <div class="container" id="map">
+                <div id="map">
+                </div>
             </div>
 
-            <div class="form-group">
-              <label class="col-md-2 control-label">Read only field</label>
-              <div class="col-md-10">
-                <input name="readonly" class="form-control" type="text" readonly="" value="info may go here">
-              </div>
+            <table data-id-field="id" data-page-list="[10, 25, 50, 100, ALL]"
+            data-pagination="true" data-show-columns="true" data-show-export=
+            "true" data-show-pagination-switch="true" data-show-toggle="true"
+            data-toolbar="#toolbar" id="table">
+                <thead>
+                    <tr>
+                        <th data-field="name">
+                            Name
+                        </th>
+                        <th data-field="name">
+                            Name
+                        </th>
+                        <th data-field="address">
+                            Address
+                        </th>
+                        <th data-field="email">
+                            Email
+                        </th>
+                        <th data-field="tel">
+                            Phone
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+
+            <div id="toolbar">
+                <select class="form-control">
+                    <option value="">
+                        Export Basic
+                    </option>
+                    <option value="all">
+                        Export All
+                    </option>
+                    <option value="selected">
+                        Export Selected
+                    </option>
+                </select>
             </div>
-            <div class="form-group">
-              <label class="col-md-2 control-label">Help text</label>
-              <div class="col-md-10">
-                <input name="regular" class="form-control" type="text">
-                <span class="help-block">See Factual API documentation for further category ID info.</span>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-2 control-label">Endpoint</label>
-              <div class="col-md-10">
-                <input name="regular" class="form-control" type="text" value="http://api.v3.factual.com/t/places">
-              </div>
-            </div>
 
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-      </div>
-    </div>
+        <script src="static/js/app.js">
+        </script>
 
-    <div class="container">
-
-
-    <div class="container">
-    <div id="map"></div>
-    </div>
-<table id="table"
-
-           data-toolbar="#toolbar"
-           data-show-export="true"
-           data-show-toggle="true"
-           data-show-columns="true"
-           data-show-pagination-switch="true"
-           data-pagination="true"
-           data-id-field="id"
-           data-page-list="[10, 25, 50, 100, ALL]"
->
-    <thead>
-    <tr>
-        <th data-field="name">Name</th>
-        <th data-field="name">Name</th>
-        <th data-field="address">Address</th>
-        <th data-field="email">Email</th>
-        <th data-field="tel">Phone</th>
-    </tr>
-    </thead>
-</table>
-    <div id="toolbar">
-      <select class="form-control">
-        <option value="">Export Basic</option>
-        <option value="all">Export All</option>
-        <option value="selected">Export Selected</option>
-      </select>
-    </div>
-    <!--
-    <table id="table"
-           data-toggle="table"
-           data-toolbar="#toolbar"
-           data-show-export="true"
-           data-show-toggle="true"
-           data-show-columns="true"
-           data-show-pagination-switch="true"
-           data-pagination="true"
-           data-id-field="id"
-           data-page-list="[10, 25, 50, 100, ALL]"
-
-
-        <thead>
-        <tr>
-
-            <th data-field="state" data-checkbox="true"></th>
-            <th data-field="name">Name</th>
-            <th data-field="address">Address</th>
-            <th data-field="email">Email</th>
-            <th data-field="tel">Phone</th>
-
-        </tr>
-        </thead>
-    </table> -->
-    </div>
-
-
-
-<!-- /.container -->
-
-<script src="static/js/app.js"></script>
-
-
-
-
-    <!-- Bootstrap core JavaScript
+        <!-- Bootstrap core JavaScript
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="static/js/bootstrap.min.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="static/dist/bootstrap-table.min.js"></script>
+         <!-- Placed at the end of the document so the pages load faster -->
 
-    <!-- Latest compiled and minified Locales -->
-    <script src="static/dist/locale/bootstrap-table-en-US.min.js"></script>
+        <script src=
+        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+        </script>
+        <script>
+        window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
+        </script>
+        <script src="static/js/bootstrap.min.js">
+        </script> <!-- Latest compiled and minified JavaScript -->
 
-    <script src="static/js/tableExport.js"></script>
-    <script src="static/js/tableExport.min.js"></script>
-    <script type="text/javascript" src="static/js/bootstrap-table-export.js"></script> 
+        <script src="static/dist/bootstrap-table.min.js">
+        </script> <!-- Latest compiled and minified Locales -->
 
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-
-
+        <script src="static/dist/locale/bootstrap-table-en-US.min.js">
+        </script>
+        <script src="static/js/tableExport.js">
+        </script>
+        <script src="static/js/tableExport.min.js">
+        </script>
+        <script src="static/js/bootstrap-table-export.js" type="text/javascript"></script>
+    </body>
+</html>
 {% endblock %}
