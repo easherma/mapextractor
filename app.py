@@ -26,10 +26,13 @@ def call():
         with open("keys.json") as jsonfile:
             keys = json.loads(jsonfile.read())
         factual = Factual(keys["OAuth Key"], keys["OAuth Secret"])
-    #category filter
+    #params constructor
     var params = {cat, radius, chains}
     cat = 2
-    waypoints = request.get_json() #waypoints sent from ajax/frontend
+    #waypoints sent from ajax/frontend
+    waypoints = request.get_json()
+    #use waypoints to parse into api calls, store results
+    #TODO: append input data
     results = []
     out = []
     try:
@@ -52,6 +55,7 @@ def call():
                     print len(out)
         results = json.dumps(out)
 
+        #write to file
         def ResultsToFile(arg):
             df = pd.DataFrame(out)
             df.to_csv("data.csv",  mode='a')
