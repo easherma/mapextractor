@@ -15,19 +15,39 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+
+
+class authAPIs(object):
+    def __init__(self, keys, api):
+        with open(keys) as jsonfile:
+            keys = json.loads(jsonfile.read())
+        self.keys = keys
+        self.api = api
+    def auth(self):
+            if self.api == Factual:
+                 factual = Factual(keys["Factual"]["OAuth Key"], keys["Factual"]["OAuth Secret"])
+            else:
+                 pass
+            return
+
+biz = authAPIs("keys.json", "Factual")
+
+
 @app.route('/')
 def index():
     results = []
     return render_template('index.html', results=results)
 
+
+
 @app.route('/call', methods=['GET','POST'])
 def call():
-    def auth():
-        with open("keys.json") as jsonfile:
-            keys = json.loads(jsonfile.read())
-        factual = Factual(keys["OAuth Key"], keys["OAuth Secret"])
+    print biz.api
+    print biz.keys["Factual"]["OAuth Key"]
+    #biz.auth()
+    factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
     #params constructor
-    var params = {cat, radius, chains}
+    #var params = {cat, radius, chains}
     cat = 2
     #waypoints sent from ajax/frontend
     waypoints = request.get_json()
