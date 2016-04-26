@@ -57,7 +57,7 @@ routeControl = L.Routing.control({
     ],
     router: L.Routing.mapzen('valhalla-v9fMrPq', 'auto'),
     formatter: new L.Routing.Mapzen.Formatter({units: 'imperial'}),
-    geocoder: L.Control.Geocoder.nominatim(),
+    geocoder: L.Control.Geocoder.mapzen("search-iv_vGuI", "autocomplete")
 
 }).addTo(map);
 
