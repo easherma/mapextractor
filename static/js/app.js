@@ -1,5 +1,4 @@
-/* var data = [{"website":"http://www.fletcherjonesvolkswagen.com","category_labels":[["Automotive","Car Dealers and Leasing"]],"fax":"(312) 944-8431","neighborhood":["Gold Coast","Near North Side","Gold Cost"],"name":"Fletcher Jones Volkswagen","hours_display":"Mon-Thu 9:00 AM-8:00 PM; Fri-Sat 9:00 AM-6:00 PM","locality":"Chicago","country":"us","region":"IL","address":"1111 N Clark St","chain_id":"cbd69f0e-1352-498d-9911-ce3359556cbc","longitude":-87.63117,"category_ids":[4],"hours":{"monday":[["9:00","20:00"]],"tuesday":[["9:00","20:00"]],"friday":[["9:00","18:00"]],"wednesday":[["9:00","20:00"]],"thursday":[["9:00","20:00"]],"saturday":[["9:00","18:00"]]},"$distance":3023.1333,"postcode":"60610","factual_id":"dfd8a0fd-acdd-4fda-b8fa-19349700bd2a","chain_name":"Volkswagen Dealer","latitude":41.902274,"tel":"(312) 628-4800","email":"chicagohondafj@workgroup.chat.dealer.com"}]; */
-
+//methods
 
 function drawResults() {
     var markers = results;
@@ -12,23 +11,22 @@ function drawResults() {
         var marker = new L.Marker(markerLocation).bindPopup(popupText).addTo(feature_group);
     }
 }
-
-
-function routePoints() {
+//get route waypoints and push them. this gets posted
+function getWaypoints() {
 
     for (var i = 0; i < routeControl.getWaypoints().length; i++) {
         points = routeControl.getWaypoints();
-        routepoints.push(points[i]['latLng']);
+        routepoints.push(points[i]['latLng']); //where is points?
     }
 };
 
 
-
+//create the map and router
 var map = L.map('map', {
     zoomControl: true,
     maxZoom: 19
 }).fitBounds([
-    [41.082208455, -82.1033158688],
+    [41.082208455, -82.1033158688], //us bounds
     [41.7934502486, -81.0530349416]
 ]);
 var hash = new L.Hash(map);
@@ -63,12 +61,6 @@ routeControl = L.Routing.control({
 
 }).addTo(map);
 
-function createButton(label, container) {
-    var btn = L.DomUtil.create('button', '', container);
-    btn.setAttribute('type', 'button');
-    btn.innerHTML = label;
-    return btn;
-}
 
 var baseMaps = {
     'OSM Standard': basemap_0
@@ -88,26 +80,19 @@ L.control.scale({
     }
 }).addTo(map);
 
-
+//add buttons for routing and drawing results
 routepoints = []
-$(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"routePoints();post();\" />");
+$(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"getWaypoints();post();\" />");
 $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\" onclick=\"drawResults();\" />");
 
-
-function bulkDownload() {
-    var output = results
-    var resultsdata = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(output));
-    $('<a href="#bdownload:' + resultsdata + '" download="data.json">download JSON</a>').appendTo('#bdownload');
-}
-
-
+//results, output
 function post() {
     $.ajax({
         type: 'POST',
         url: '/call',
         data: JSON.stringify(routepoints),
         success: function(data) {
-            results = JSON.parse(data);
+            results = JSON.parse(data); //results from API call
         },
         complete: function(data) {
             loadTable();
@@ -116,7 +101,7 @@ function post() {
         dataType: 'json'
     });
 }
-
+//load results from query
 function loadTable() {
     $(function() {
         $('#table').bootstrapTable({
