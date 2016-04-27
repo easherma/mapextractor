@@ -5,6 +5,7 @@ from flask import Flask, request, redirect, url_for, jsonify, render_template, s
 #import time
 import requests
 import pandas as pd
+from factual.utils import circle
 
 #config
 
@@ -18,22 +19,24 @@ app.config.from_object(__name__)
 
 
 class authAPIs(object):
-    def __init__(self, keys, api):
-        with open(keys) as jsonfile:
-            keys = json.loads(jsonfile.read())
-        self.keys = keys
+    def __init__(self, keys_dir, api):
+        self.keys_dir = keys_dir
+        self.keys = self.getKeys()
         self.api = api
+    def getKeys(self):
+        with open(self.keys_dir) as jsonfile:
+            return json.loads(jsonfile.read())
     def auth(self):
             if self.api == Factual:
                  factual = Factual(keys["Factual"]["OAuth Key"], keys["Factual"]["OAuth Secret"])
-                 self.category_ids
-                 self.chain
+                 #self.category_ids
+                 #self.chain
             else:
                  pass
             return
 
 class searchParams(object):
-    def __init__(self, api, category, radius, limit):
+    def __init__(self):
         self.api = "Factual"
         self.category = 2
         self.radius = 25000
@@ -50,12 +53,64 @@ class searchParams(object):
         pass
 
 class getRoute(object):
-    """docstring for """
+    """get the entire route submitted by user. clear after query is run? """
     def __init__(self, waypoints):
-        waypoints = request.get_json()
+        pass
 
 
+class API_output(object):
+    def __init__(self):
+        self.results = []
+        self.out = []
+    def send_to_table(self):
+        pass
+    def ResultsToFile(self):
+        df = pd.DataFrame(out)
+        df.to_csv("data.csv",  mode='a')
+    def write_db(self):
+        pass
 
+    def loop_waypoints(apiout):
+        out = []
+        results = []
+        for idx, val in enumerate(route):
+        #if val is not None:
+            #lat = route.waypoints[idx]['lat']
+            #lng = route.waypoints[idx]['lng']
+            print "index, lat, lng"
+            print idx,lat,lng
+            print "results so far:"
+            print len(out)
+            loc = route.waypoints[idx]
+            places = factual.table('places')
+            looper().get_data()
+            class looper():
+                def __init__(self, loc, search):
+                    self.loc = loc
+                    self.search = search
+                    self.data = self.get_data()
+
+                def get_data(self):
+                    for i in range(10):
+                        data = (
+                        places.geo(circle(loc['lat'], loc['lng'], search.radius))
+                        .filters(
+                            {"$and":[{"category_ids":
+                            {"$includes": search.category}}]}
+                            #chain_ids
+                        )
+                        .offset(50*(i))
+                        .limit(50)
+                        .data()
+                        )
+                #q = data.get_url())
+                print q
+                print "Call successful! Records returned:"
+                print len(data)
+                out.extend(data)
+                print "Total records"
+                print len(out)
+    results = json.dumps(out)
 
 biz = authAPIs("keys.json", "Factual")
 
@@ -73,44 +128,21 @@ def call():
     #biz.auth()
     #initialize factual api
     factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
-    #params constructor
-    #var params = {cat, radius, chains}
-    cat = 2
-    #waypoints sent from ajax/frontend
-    #use waypoints to parse into api calls, store results
+
+    search = searchParams()
+    apiout = API_output()
     #TODO: append input data
-    results = []
-    out = []
+    # old waypoints = request.get_json()
+    route = request.get_json()
     try:
-        for idx, val in enumerate(waypoints):
-            if val is not None:
-                places = factual.table('places')
-                from factual.utils import circle
-                route = getRoute()
-                lat = route.waypoints[idx]['lat']
-                lng = route.waypoints[idx]['lng']
-                print "index, lat, lng"
-                print idx,lat,lng
-                print "results so far:"
-                print len(out)
-                for i in range(10):
-                    data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
-                    print "Call successful! Records returned:"
-                    print len(data)
-                    out.extend(data)
-                    print "Total records"
-                    print len(out)
-        results = json.dumps(out)
+        loop_waypoints(apiout)
+
+
         #TODO add error handiling and/or reporting factual.api.APIException
         #write to file
-        def ResultsToFile(arg):
-            df = pd.DataFrame(out)
-            df.to_csv("data.csv",  mode='a')
-
     except TypeError:
         pass
-
-    return json.dumps(results)
+    return json.dumps(apiout.results)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
