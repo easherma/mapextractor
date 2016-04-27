@@ -26,6 +26,7 @@ class authAPIs(object):
     def auth(self):
             if self.api == Factual:
                  factual = Factual(keys["Factual"]["OAuth Key"], keys["Factual"]["OAuth Secret"])
+                 self.category_ids = https://api.factual.com/categories?options={"lang":"en","format":"index"}
             else:
                  pass
             return
@@ -38,6 +39,7 @@ def index():
     results = []
     return render_template('index.html', results=results)
 
+def
 
 
 @app.route('/call', methods=['GET','POST'])
