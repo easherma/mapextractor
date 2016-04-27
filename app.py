@@ -26,15 +26,35 @@ class authAPIs(object):
     def auth(self):
             if self.api == Factual:
                  factual = Factual(keys["Factual"]["OAuth Key"], keys["Factual"]["OAuth Secret"])
-                 self.category_ids =
+                 self.category_ids
+                 self.chain
             else:
                  pass
             return
 
 class searchParams(object):
     def __init__(self, api, category, radius, limit):
+        self.api = "Factual"
+        self.category = 2
+        self.radius = 25000
+        self.limit = 10
 
-class
+    def getCategories(self, api):
+        r = requests.get(catapiURL)
+        categorys = r.json
+        #pass categories back to front for search
+    def passParams(self, arg):
+        self.category_ids
+        self.chain_ids
+        #match params from input
+        pass
+
+class getRoute(object):
+    """docstring for """
+    def __init__(self, waypoints):
+        waypoints = request.get_json()
+
+
 
 
 biz = authAPIs("keys.json", "Factual")
@@ -50,14 +70,13 @@ def index():
 @app.route('/call', methods=['GET','POST'])
 def call():
     print biz.api
-    print biz.keys["Factual"]["OAuth Key"]
     #biz.auth()
+    #initialize factual api
     factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
     #params constructor
     #var params = {cat, radius, chains}
     cat = 2
     #waypoints sent from ajax/frontend
-    waypoints = request.get_json()
     #use waypoints to parse into api calls, store results
     #TODO: append input data
     results = []
@@ -67,8 +86,9 @@ def call():
             if val is not None:
                 places = factual.table('places')
                 from factual.utils import circle
-                lat = waypoints[idx]['lat']
-                lng = waypoints[idx]['lng']
+                route = getRoute()
+                lat = route.waypoints[idx]['lat']
+                lng = route.waypoints[idx]['lng']
                 print "index, lat, lng"
                 print idx,lat,lng
                 print "results so far:"
@@ -81,7 +101,7 @@ def call():
                     print "Total records"
                     print len(out)
         results = json.dumps(out)
-
+        #TODO add error handiling and/or reporting factual.api.APIException
         #write to file
         def ResultsToFile(arg):
             df = pd.DataFrame(out)
