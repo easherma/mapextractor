@@ -26,9 +26,16 @@ class authAPIs(object):
     def auth(self):
             if self.api == Factual:
                  factual = Factual(keys["Factual"]["OAuth Key"], keys["Factual"]["OAuth Secret"])
+                 self.category_ids =
             else:
                  pass
             return
+
+class searchParams(object):
+    def __init__(self, api, category, radius, limit):
+
+class
+
 
 biz = authAPIs("keys.json", "Factual")
 
