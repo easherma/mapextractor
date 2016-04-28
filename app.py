@@ -43,6 +43,7 @@ def index():
 @app.route('/call', methods=['GET','POST'])
 def call():
     # OAuth Factual
+    #print biz.keys
     factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
     print(request.values)
 
@@ -76,7 +77,7 @@ def call():
 
         #loop.get_data()
 
-            for i in range(10):
+            for i in range(2):
                 data = (
                 places.geo(circle(loc['lat'], loc['lng'], search.radius))
                 .filters(
@@ -95,15 +96,15 @@ def call():
                 apiout.out.extend(data)
                 print "Total records"
                 print len(apiout.out)
-
-        results = json.dumps(apiout.out)
+    results = json.dumps(apiout.out)
+    #return results
     print("YOYO MA")
+    print results
 
 
     #TODO add error handiling and/or reporting factual.api.APIException
     #write to file
 
-    return json.dumps(apiout.results)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

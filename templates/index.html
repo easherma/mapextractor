@@ -5,12 +5,15 @@
 <!DOCTYPE html>
 <html>
     </head>
+  </script>
     <body>
-      -</script>
+      <script>
+        var results = {{ results|tojson|safe}};
+      </script>
 
- -<div name="results">
+ <div name="results">
  {{ results|tojson}}
- -</div>
+ </div>
         <div class="container">
             <div class="title">
                 <h1>
