@@ -50,33 +50,35 @@ def call():
     print("YO")
     print apiout.route
     for idx, val in enumerate(apiout.route):
-        print "index, lat, lng"
-        print idx, apiout.route[idx]['lat']
-        print "results so far:"
-        print len(apiout.out)
-        loc = apiout.route[idx]
-        places = factual.table('places')
+        if val is not None:
+            loc = apiout.route[idx]
+            places = factual.table('places')
+            print "index, lat, lng"
+            print idx, loc
+            print "results so far:"
+            print len(apiout.out)
+
         #loop.get_data()
 
-        for i in range(10):
-            data = (
-            places.geo(circle(loc['lat'], loc['lng'], search.radius))
-            .filters(
-                {"$and":[{"category_ids":
-                {"$includes": search.category}}]}
-                #chain_ids
-            )
-            .offset(50*(i))
-            .limit(50)
-            .data()
-            )
-    #q = data.get_url())
+            for i in range(10):
+                data = (
+                places.geo(circle(loc['lat'], loc['lng'], search.radius))
+                .filters(
+                    {"$and":[{"category_ids":
+                    {"$includes": search.category}}]}
+                    #chain_ids
+                )
+                .offset(50*(i))
+                .limit(50)
+                .data()
+                )
+        #q = data.get_url())
 
-        print "Call successful! Records returned:"
-        print len(data)
-        apiout.out.extend(data)
-        print "Total records"
-        print len(apiout.out)
+                print "Call successful! Records returned:"
+                print len(data)
+                apiout.out.extend(data)
+                print "Total records"
+                print len(apiout.out)
 
         results = json.dumps(apiout.out)
     print("YOYO MA")
