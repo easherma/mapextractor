@@ -1,10 +1,11 @@
 import json
 import requests
+from factual import Factual
 import pandas as pd
 
 
 class authAPIs(object):
-    """ Authenticates the API?"""
+    """ Authenticates the API"""
 
     def __init__(self, keys_dir, api):
         self.keys_dir = keys_dir
@@ -16,8 +17,9 @@ class authAPIs(object):
             return json.loads(jsonfile.read())
 
     def auth(self):
-            if self.api == Factual:
-                 factual = Factual(keys["Factual"]["OAuth Key"], keys["Factual"]["OAuth Secret"])
+            if self.api == "Factual":
+                 factual = Factual(self.keys["Factual"]["OAuth Key"], self.keys["Factual"]["OAuth Secret"])
+                 return factual
                  #self.category_ids
                  #self.chain
 
@@ -28,6 +30,7 @@ class searchParams(object):
         self.category = 2
         self.radius = 25000
         self.limit = 10
+        self.chain_id = True
 
     def getCategories(self, api):
         r = requests.get(catapiURL)

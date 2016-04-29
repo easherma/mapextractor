@@ -17,93 +17,85 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 
-
-class authAPIs(object):
-    def __init__(self, keys, api):
-        with open(keys) as jsonfile:
-            keys = json.loads(jsonfile.read())
-        self.keys = keys
-        self.api = api
-    def auth(self):
-            if self.api == Factual:
-                 factual = Factual(keys["Factual"]["OAuth Key"], keys["Factual"]["OAuth Secret"])
-                 self.category_ids = https://api.factual.com/categories?options={"lang":"en","format":"index"}
-            else:
-                 pass
-            return
-
 biz = authAPIs("keys.json", "Factual")
 
 @app.route('/')
 def index():
     results = []
-    print vars(biz)
+    #print vars(biz)
     return render_template('index.html', results=results)
 
 @app.route('/call', methods=['GET','POST'])
 def call():
     # OAuth Factual
-    factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
-    print(request.values)
-
+    factual = biz.auth()
+    #factual = biz.factual
+    print "Using: " + biz.api
+    #factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
+    #print(request.values)
     # POST first.
-
     # Get Results variable.
 
-    print biz.api
     #biz.auth()
     #initialize factual api
-
     search = searchParams()
     #TODO: append input data
     # old waypoints = request.get_json()
     route = request.get_json()
     print (route)
     apiout = API_output(route)
+    #loop = looper() hoping to clean this up
+    print("BEGIN")
     print apiout.route
-    print type(apiout.out)
-    #loop = looper()
-    print("YO")
-    print apiout.route
+    #loop thru points, send each point as a call to api
     for idx, val in enumerate(apiout.route):
         if val is not None:
             loc = apiout.route[idx]
             places = factual.table('places')
-            print "index, lat, lng"
+            print "index, route_point"
             print idx, loc
             print "results so far:"
             print len(apiout.out)
+            print "sending call"
 
-        #loop.get_data()
-
-            for i in range(10):
-                data = (
-                places.geo(circle(loc['lat'], loc['lng'], search.radius))
+    #loop.get_data()
+    #messy loop to offset/combine seperate calls together (due to api rate limits)
+            for i in range(10): #range cannot go higher than 10 (offset max is 500) couple ways to address this...filter by factual id, etc.
+                print "range: "
+                print i
+                q = (places.geo(circle(loc['lat'], loc['lng'], search.radius))
                 .filters(
                     {"$and":[{"category_ids":
-                    {"$includes": search.category}}]}
+                    {"$includes": search.category}},
+                    {"chain_id":{"$blank":search.chain_id}}]}
                     #chain_ids
                 )
                 .offset(50*(i))
-                .limit(50)
-                .data()
-                )
-        #q = data.get_url())
-
+                .limit(50))
+                data = q.data()
+                print q.params #append to output somehow
+                #print vars(q)
+                #print factual.get_response()
                 print "Call successful! Records returned:"
                 print len(data)
                 apiout.out.extend(data)
                 print "Total records"
                 print len(apiout.out)
-
-        results = json.dumps(apiout.out)
-    print("YOYO MA")
+    df = pd.DataFrame(apiout.out)
+    df.to_csv("data.csv",  mode='a')
+    results = json.dumps(apiout.out)
+    return results
+    print("END")
+    def ResultsToFile():
+        df = pd.DataFrame(apiout.out)
+        df.to_csv("data.csv",  mode='a')
+    ResultsToFile()
 
 
     #TODO add error handiling and/or reporting factual.api.APIException
     #write to file
 
-    return json.dumps(apiout.results)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

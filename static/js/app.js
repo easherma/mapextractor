@@ -92,7 +92,7 @@ function post() {
         url: '/call',
         data: JSON.stringify(routepoints),
         success: function(data) {
-            results = JSON.parse(data); //results from API call
+            results = data; //results from API call
         },
         complete: function(data) {
             loadTable();
