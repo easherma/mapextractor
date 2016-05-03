@@ -28,11 +28,17 @@ def index():
 @app.route('/call', methods=['GET','POST'])
 def call():
     # OAuth Factual
+
     factual = biz.auth()
     #factual = biz.factual
     print "Using: " + biz.api
     #factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
     #print(request.values)
+    #print biz.keys
+    #factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
+    #print(request.values)
+
+
     # POST first.
     # Get Results variable.
 
@@ -60,7 +66,9 @@ def call():
 
     #loop.get_data()
     #messy loop to offset/combine seperate calls together (due to api rate limits)
-            for i in range(10): #range cannot go higher than 10 (offset max is 500) couple ways to address this...filter by factual id, etc.
+    '''range cannot go higher than 10 (offset max is 500) 
+    couple ways to address this...filter by factual id, etc.'''
+            for i in range(2): 
                 print "range: "
                 print i
                 q = (places.geo(circle(loc['lat'], loc['lng'], search.radius))
@@ -92,9 +100,9 @@ def call():
     ResultsToFile()
 
 
+
     #TODO add error handiling and/or reporting factual.api.APIException
     #write to file
-
 
 
 if __name__ == '__main__':
