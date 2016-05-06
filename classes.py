@@ -31,10 +31,11 @@ class searchParams(object):
         self.radius = 25000
         self.limit = 10
         self.chain_id = True
+        self.categories = self.getCategories()
 
-    def getCategories(self, api):
-        r = requests.get(catapiURL)
-        categorys = r.json
+    def getCategories(self):
+        return requests.get('https://api.factual.com/categories?options={"lang":"en","format":"tree"}&KEY=SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu')
+
         #pass categories back to front for search
 
     def passParams(self, arg):

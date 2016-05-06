@@ -9,7 +9,36 @@
 
 <script>
 var results = {{results|tojson|safe}};
+var parsed_categories = {{parsed_categories|tojson|safe}};
+var bigcats= parsed_categories.response.data;
+var cats = parsed_categories;
 </script>
+
+<div id = test>
+</div>
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Categories
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    <li><a href="#id">id</a></li>
+    <li><a href="#">CSS</a></li>
+    <li><a href="#">JavaScript</a></li>
+  </ul>
+</div>
+
+<div class="form-group">
+  <label for="sel1">Select list:</label>
+  <select class="form-control" id="sel1">
+  </select>
+
+  <label for="sel2">Select list:</label>
+  <select class="form-control" id="sel2">
+  </select>
+</div>
+
+
+
+
 
         <div class="container">
             <div class="title">
@@ -126,9 +155,6 @@ var results = {{results|tojson|safe}};
                         <th data-field="name">
                             Name
                         </th>
-                        <th data-field="name">
-                            Name
-                        </th>
                         <th data-field="address">
                             Address
                         </th>
@@ -155,9 +181,64 @@ var results = {{results|tojson|safe}};
                     </option>
                 </select>
             </div>
+            <script type="text/javascript">
 
-        <script src="static/js/app.js">
-        </script>
+              //$.each(bigcats, function(key, value){
+              //  $("#sel1").append("<option>" + bigcats[key].label + "</option>")
+              //})
+/*
+              var map = $.each(bigcats[0].children, function (i, obj) {
+                obj.text = obj.text || obj.label;
+                return JSON.stringify(obj);
+              });
+
+
+
+
+            </script>
+            <script>
+
+
+            var big_cats = '';
+            function bigCats(){
+
+              for (i =0; i < bigcats[0].children.length; i++){
+                //big_cats += '<select class="form-control" id ="'+ bigcats[0].children[i].id +'"'+ '>';
+
+                big_cats += '<option value = '+bigcats[0].children[i].id +'>'+ bigcats[0].children[i].text + '</option>';
+                //big_cats += '</select>'
+              }
+              document.getElementById('sel1').innerHTML = big_cats;
+            return big_cats;
+            }
+            bigCats()
+
+            document.getElementById('sel1').oninput= function() {subCats()};
+
+
+              function subCats(id){
+                var sub_cats = '';
+                for (i =0; i < bigcats[0].children[0].children[id].length; i++){
+                  //sub_cats += '<select class="form-control" id ="sel2">';
+                  sub_cats += '<option>'+ bigcats[0].children[id].children[i].label + '</option><br>';
+                  //sub_cats += '</select>'
+                }
+                document.getElementById('sel2').innerHTML = sub_cats;
+              }
+
+          /*  var selecttwo = $('select2').select2()
+            .on("change", function() {
+              //subCats();
+              console.log("change")
+
+            });
+            //on("change", function (e) { log("change"); }); */
+
+
+
+
+            </script>*/
+
 
         <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -182,6 +263,8 @@ var results = {{results|tojson|safe}};
         <script src="static/js/tableExport.min.js">
         </script>
         <script src="static/js/bootstrap-table-export.js" type="text/javascript"></script>
+        <script src="static/js/app.js">
+        </script>
     </body>
 </html>
 {% endblock %}
