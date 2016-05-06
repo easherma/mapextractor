@@ -24,6 +24,7 @@ def index():
     results = []
     #print vars(biz)
     search = searchParams()
+    print vars(search)
     try:
         parsed_categories = search.categories.json()
     except:
@@ -38,6 +39,8 @@ def call():
     factual = biz.auth()
     #factual = biz.factual
     print "Using: " + biz.api
+    search = searchParams() #needs to be called in both routes..
+    #print vars(search)
     #factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
     #print(request.values)
     #print biz.keys
@@ -71,13 +74,14 @@ def call():
                 print len(apiout.out)
                 print "sending call"
 
-    #loop.get_data()
-    #messy loop to offset/combine seperate calls together (due to api rate limits)
-            #range cannot go higher than 10 (offset max is 500)
-            #couple ways to address this...filter by factual id, etc.'''
-                for i in range(10):
+        #loop.get_data()
+        #messy loop to offset/combine seperate calls together (due to api rate limits)
+                #range cannot go higher than 10 (offset max is 500)
+                #couple ways to address this...filter by factual id, etc.'''
+                for i in range(4):
                     print "range: "
                     print i
+
                     query = (places.geo(circle(loc['lat'], loc['lng'], search.radius))
                     .filters(
                         {"$and":[{"category_ids":
@@ -87,8 +91,9 @@ def call():
                     )
                     .offset(50*(i))
                     .limit(50))
+                    print query
                     data = query.data()
-                    print query.params #append to output somehow
+                    #print query.params #append to output somehow
                     #print vars(query)
                     #print factual.get_response()
                     print "Call successful! Records returned:"
@@ -99,14 +104,16 @@ def call():
         df = pd.DataFrame(apiout.out)
         df.to_csv("data.csv",  mode='a')
         results = json.dumps(apiout.out)
-        return results
+
         print("END")
         #def ResultsToFile():
         #    df = pd.DataFrame(apiout.out)
         #    df.to_csv("data.csv",  mode='a')
         #ResultsToFile()
-    except:
+    except TypeError:
         pass
+    return results
+
 
 
 
