@@ -212,27 +212,39 @@ var cats = parsed_categories;
               big_cats = $.parseHTML(big_cats);
             return big_cats;
             }
-            bigCats()
+            bigCats();
 
             //document.getElementById('sel1').oninput= function() {subCats()};
+            var id = parseInt($(sel1).val());
+            var filtered = [];
 
-
-              function subCats(id){
+              function subCats(){
                 var sub_cats = '';
-                for (i =0; i < bigcats[0].children[0].children[id].length; i++){
+                if (filtered.length != 0) {
+                  for (i =0; i < filtered[0].children.length; i++) {
                   //sub_cats += '<select class="form-control" id ="sel2">';
-                  sub_cats += '<option>'+ bigcats[0].children[id].children[i].label + '</option><br>';
+                  sub_cats += '<option value ='+ filtered[0].children[i].id + '>' + filtered[0]['children'][i].label + '</option><br>';
                   //sub_cats += '</select>'
                 }
                 document.getElementById('sel2').innerHTML = sub_cats;
               }
+            }
 
-            var selecttwo = $("sel1").select2({tags: true })
-            .on("change", function() {
-              //subCats();
-              console.log("change")
-
+            var selectone = $(sel1).select2().on("select2:select", function() {
+              id = parseInt($(sel1).val());
+              console.log('change');
+              filtered = jQuery.grep(bigcats[0].children, function( item, index ) {
+                return ( item.id == id  );
+              });
+              subCats();
             });
+
+            var selecttwo = $(sel2).select2({tags:true });
+
+            /*$(sel1).on("change", function() {
+              subCats();
+            });*/
+
 
 
 
