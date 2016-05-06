@@ -187,7 +187,7 @@ var cats = parsed_categories;
               //  $("#sel1").append("<option>" + bigcats[key].label + "</option>")
               //})
 
-              var map = $.each(bigcats[0].children, function (i, obj) {
+              var label_text = $.each(bigcats[0].children, function (i, obj) {
                 obj.text = obj.text || obj.label;
                 return JSON.stringify(obj);
               });
@@ -209,11 +209,12 @@ var cats = parsed_categories;
                 //big_cats += '</select>'
               }
               document.getElementById('sel1').innerHTML = big_cats;
+              big_cats = $.parseHTML(big_cats);
             return big_cats;
             }
             bigCats()
 
-            document.getElementById('sel1').oninput= function() {subCats()};
+            //document.getElementById('sel1').oninput= function() {subCats()};
 
 
               function subCats(id){
@@ -226,19 +227,18 @@ var cats = parsed_categories;
                 document.getElementById('sel2').innerHTML = sub_cats;
               }
 
-            var selecttwo = $('select2').select2()
+            var selecttwo = $("sel1").select2({tags: true })
             .on("change", function() {
               //subCats();
               console.log("change")
 
             });
-            //on("change", function (e) { log("change"); });
+
 
 
 
 
             </script>
-            <li><a href="#id">id</a></li>
 
 
         <!-- Bootstrap core JavaScript
