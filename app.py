@@ -23,9 +23,15 @@ biz = authAPIs("keys.json", "Factual")
 def index():
     results = []
     #print vars(biz)
-    return render_template('index.html', results=results)
+    search = searchParams()
+    try:
+        parsed_categories = search.categories.json()
+    except:
+        pass
+    print parsed_categories["response"].viewkeys()
+    return render_template('index.html', results=results, parsed_categories = parsed_categories)
 
-@app.route('/call', methods=['GET','POST'])
+@app.route('/call', methods=['GET', 'POST'])
 def call():
     # OAuth Factual
 
@@ -44,65 +50,68 @@ def call():
 
     #biz.auth()
     #initialize factual api
-    search = searchParams()
+
     #TODO: append input data
     # old waypoints = request.get_json()
     route = request.get_json()
-    print (route)
+    print route
     apiout = API_output(route)
     #loop = looper() hoping to clean this up
-    print("BEGIN")
+    print "BEGIN"
     print apiout.route
     #loop thru points, send each point as a call to api
-    for idx, val in enumerate(apiout.route):
-        if val is not None:
-            loc = apiout.route[idx]
-            places = factual.table('places')
-            print "index, route_point"
-            print idx, loc
-            print "results so far:"
-            print len(apiout.out)
-            print "sending call"
+    try:
+        for idx, val in enumerate(apiout.route):
+            if val is not None:
+                loc = apiout.route[idx]
+                places = factual.table('places')
+                print "index, route_point"
+                print idx, loc
+                print "results so far:"
+                print len(apiout.out)
+                print "sending call"
 
     #loop.get_data()
     #messy loop to offset/combine seperate calls together (due to api rate limits)
-    '''range cannot go higher than 10 (offset max is 500) 
-    couple ways to address this...filter by factual id, etc.'''
-            for i in range(2): 
-                print "range: "
-                print i
-                q = (places.geo(circle(loc['lat'], loc['lng'], search.radius))
-                .filters(
-                    {"$and":[{"category_ids":
-                    {"$includes": search.category}},
-                    {"chain_id":{"$blank":search.chain_id}}]}
-                    #chain_ids
-                )
-                .offset(50*(i))
-                .limit(50))
-                data = q.data()
-                print q.params #append to output somehow
-                #print vars(q)
-                #print factual.get_response()
-                print "Call successful! Records returned:"
-                print len(data)
-                apiout.out.extend(data)
-                print "Total records"
-                print len(apiout.out)
-    df = pd.DataFrame(apiout.out)
-    df.to_csv("data.csv",  mode='a')
-    results = json.dumps(apiout.out)
-    return results
-    print("END")
-    def ResultsToFile():
+            #range cannot go higher than 10 (offset max is 500)
+            #couple ways to address this...filter by factual id, etc.'''
+                for i in range(10):
+                    print "range: "
+                    print i
+                    query = (places.geo(circle(loc['lat'], loc['lng'], search.radius))
+                    .filters(
+                        {"$and":[{"category_ids":
+                        {"$includes": search.category}},
+                        {"chain_id":{"$blank":search.chain_id}}]}
+                        #chain_ids
+                    )
+                    .offset(50*(i))
+                    .limit(50))
+                    data = query.data()
+                    print query.params #append to output somehow
+                    #print vars(query)
+                    #print factual.get_response()
+                    print "Call successful! Records returned:"
+                    print len(data)
+                    apiout.out.extend(data)
+                    print "Total records"
+                    print len(apiout.out)
         df = pd.DataFrame(apiout.out)
         df.to_csv("data.csv",  mode='a')
-    ResultsToFile()
+        results = json.dumps(apiout.out)
+        return results
+        print("END")
+        #def ResultsToFile():
+        #    df = pd.DataFrame(apiout.out)
+        #    df.to_csv("data.csv",  mode='a')
+        #ResultsToFile()
+    except:
+        pass
 
 
 
-    #TODO add error handiling and/or reporting factual.api.APIException
-    #write to file
+#TODO add error handiling and/or reporting factual.api.APIException
+#write to file
 
 
 if __name__ == '__main__':
