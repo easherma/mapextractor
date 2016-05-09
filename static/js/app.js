@@ -109,3 +109,67 @@ function loadTable() {
         });
     });
 }
+
+//messy forms
+jsonObj = bigcats[0].children
+var bigarray = [];
+for(var i = 0, len = jsonObj .length; i < len; i++) {
+  bigarray.push( {"text": jsonObj[i].label, "id" : jsonObj[i].id});
+}
+
+var big_cats = '';
+
+function bigCats(){
+
+  //for (i = 0; i < bigcats[0].children.length; i++){
+    //big_cats += '<select class="form-control" id ="'+ bigcats[0].children[i].id +'"'+ '>';
+
+    //big_cats += '<option value = '+ bigcats[0].children[i].id +'>'+ bigcats[0].children[i].label + '</option>';
+
+    //console.log(bigcats[0].children[i])
+    //bigarray.push("{id"+ ":" + bigcats[0].children[i].id + ',' + "text:"+ bigcats[0].children[i].label +"}" );
+    //big_cats += '</select>'
+  //}
+  //document.getElementById('sel1').innerHTML = big_cats;
+  //big_cats = $.parseHTML(big_cats);
+//return big_cats;
+}
+//bigCats();
+
+//document.getElementById('sel1').oninput= function() {subCats()};
+var id = parseInt($(sel1).val());
+var filtered = [];
+var catray = [];
+  function subCats(){
+    var sub_cats = '';
+
+    if (filtered.length !== 0) {
+      for (i =0; i < filtered[0].children.length; i++) {
+      //sub_cats += '<select class="form-control" id ="sel2">';
+      sub_cats += '<option value ='+ filtered[0].children[i].id + '>' + filtered[0]['children'][i].label + '</option><br>';
+      //catray.push("{id:" + filtered[0].children[i].id + "},{text:"+ filtered[0]['children'][i].label +"}" );
+      //sub_cats += '</select>'
+    }
+    document.getElementById('sel2').innerHTML = sub_cats;
+  }
+}
+
+
+  var selectone = $(sel1).select2(
+    {data: bigarray, placeholder: "Select a Business Category"}
+  ).on("select2:select", function() {
+    id = parseInt($(sel1).val());
+    console.log('change');
+    filtered = jQuery.grep(bigcats[0].children, function( item, index ) {
+      return ( item.id == id  );
+    });
+    subCats();
+  });
+//});
+
+
+var selecttwo = $(sel2).select2();
+
+$(sel1).on("change", function() {
+  subCats();
+});
