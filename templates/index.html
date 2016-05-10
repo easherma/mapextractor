@@ -29,12 +29,25 @@ var cats = parsed_categories;
 <div class="form-group">
   <label for="sel1">Select list:</label>
   <select class="form-control" id="sel1" >
+    <option></option>
   </select>
 
   <label for="sel2">Select list:</label>
   <select class="form-control" id="sel2" multiple="multiple">
   </select>
 </div>
+
+<div class="container">
+
+         <form class="form-signin" action="/signUp" method="post" role="form">
+             <h2 class="form-signin-heading">Please Sign Up </h2>
+             <input type="email" name="username" class="form-control" placeholder="Email address" required autofocus>
+             <input type="password" name="password" class="form-control" placeholder="Password" required>
+
+             <button class="btn btn-lg btn-primary btn-block" type="button">Register </button>
+         </form>
+
+     </div>
 
 
 

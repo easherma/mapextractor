@@ -32,6 +32,12 @@ def index():
     print parsed_categories["response"].viewkeys()
     return render_template('index.html', results=results, parsed_categories = parsed_categories)
 
+@app.route('/signUpUser', methods=['POST'])
+def signUpUser():
+    user =  request.form['username'];
+    password = request.form['password'];
+    return json.dumps({'status':'OK','user':user,'pass':password});
+
 @app.route('/call', methods=['GET', 'POST'])
 def call():
     # OAuth Factual

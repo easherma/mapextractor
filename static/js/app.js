@@ -119,6 +119,24 @@ for(var i = 0, len = jsonObj .length; i < len; i++) {
 
 var big_cats = '';
 
+$(function() {
+    $('button').click(function() {
+        var user = $('#txtUsername').val();
+        var pass = $('#txtPassword').val();
+        $.ajax({
+            url: '/signUpUser',
+            data: $('form').serialize(),
+            type: 'POST',
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+
 function bigCats(){
 
   //for (i = 0; i < bigcats[0].children.length; i++){
