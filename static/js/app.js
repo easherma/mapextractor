@@ -96,12 +96,13 @@ function post() {
         data: JSON.stringify(routepoints),
         success: function(data) {
             results = data;//results from API call
-            routepoints.length = 0;
-            console.log("clear routepoints");
-            console.log(routepoints);
+
         },
         complete: function(data) {
             loadTable();
+            routepoints.length = 0;
+            console.log("clear routepoints");
+            console.log(routepoints);
 
         },
         contentType: 'application/json',
@@ -117,7 +118,7 @@ function loadTable() {
     });
 }
 $(function() {
-    $(searchButton).click(function() {
+    $('button').click(function() {
         var user = $('#txtUsername').val();
         var main = $(sel1);
         var sub = $(sel2).val();

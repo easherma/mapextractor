@@ -48,10 +48,10 @@ def call():
     #print params
     print search.params
     print userParams
-    if not (json.loads(userParams)['sub']):
-        print "using main"
-    else:
-        print "using subs"
+    #if not (json.loads(userParams)['sub']):
+    #    print "using main"
+    #else:
+    #    print "using subs"
     #if not json.loads(userParams)['sub']):
     #    print "Using subs!"
     #    print json.loads(userParams)['sub']
@@ -101,7 +101,7 @@ def call():
         #messy loop to offset/combine seperate calls together (due to api rate limits)
                 #range cannot go higher than 10 (offset max is 500)
                 #couple ways to address this...filter by factual id, etc.'''
-                for i in range(4):
+                for i in range(2):
                     print "range: "
                     print i
 
@@ -114,8 +114,10 @@ def call():
                     )
                     .offset(50*(i))
                     .limit(50))
-                    print vars(query)
+                    #print query.filters()
+                    #print query.params()
                     data = query.data()
+                    #print query.params.values()
                     #print query.params #append to output somehow
                     #print vars(query)
                     #print factual.get_response()
@@ -124,10 +126,14 @@ def call():
                     apiout.out.extend(data)
                     print "Total records"
                     print len(apiout.out)
+        p = query.params.values()
+        print p
+        #print query.params
+        #saved = query.params
         df = pd.DataFrame(apiout.out)
         df.to_csv("data.csv",  mode='a')
         results = json.dumps(apiout.out)
-
+        #print df
         print("END")
         #def ResultsToFile():
         #    df = pd.DataFrame(apiout.out)
