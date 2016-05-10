@@ -122,9 +122,10 @@ var big_cats = '';
 $(function() {
     $('button').click(function() {
         var user = $('#txtUsername').val();
-        var pass = $('#txtPassword').val();
+        var main = $(sel1);
+        var sub = $(sel2).val();
         $.ajax({
-            url: '/signUpUser',
+            url: '/searchParams',
             data: $('form').serialize(),
             type: 'POST',
             success: function(response) {
@@ -174,7 +175,7 @@ var catray = [];
 
 
   var selectone = $(sel1).select2(
-    {data: bigarray, placeholder: "Select a Business Category"}
+    {data: bigarray, placeholder: "Select a Business Category First", allowClear: true}
   ).on("select2:select", function() {
     id = parseInt($(sel1).val());
     console.log('change');
@@ -186,7 +187,7 @@ var catray = [];
 //});
 
 
-var selecttwo = $(sel2).select2();
+var selecttwo = $(sel2).select2({allowClear: true, placeholder: "Optional Sub-Categories"});
 
 $(sel1).on("change", function() {
   subCats();

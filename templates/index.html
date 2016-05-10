@@ -14,61 +14,29 @@ var bigcats= parsed_categories.response.data;
 var cats = parsed_categories;
 </script>
 
-<div id = test>
-</div>
-<div class="dropdown">
-  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Categories
-  <span class="caret"></span></button>
-  <ul class="dropdown-menu">
-    <li><a href="#id">id</a></li>
-    <li><a href="#">CSS</a></li>
-    <li><a href="#">JavaScript</a></li>
-  </ul>
-</div>
-
-<div class="form-group">
-  <label for="sel1">Select list:</label>
-  <select class="form-control" id="sel1" >
-    <option></option>
-  </select>
-
-  <label for="sel2">Select list:</label>
-  <select class="form-control" id="sel2" multiple="multiple">
-  </select>
-</div>
-
 <div class="container">
+    <div class="title">
+        <h1>
+            Campaign Planner
+        </h1>
 
-         <form class="form-signin" action="/signUp" method="post" role="form">
-             <h2 class="form-signin-heading">Please Sign Up </h2>
-             <input type="email" name="username" class="form-control" placeholder="Email address" required autofocus>
-             <input type="password" name="password" class="form-control" placeholder="Password" required>
-
-             <button class="btn btn-lg btn-primary btn-block" type="button">Register </button>
-         </form>
-
-     </div>
-
-
+        <p class="lead">
+            Use this tool to quickly plan routes and extract business
+            listings data.<br>
+        </p>
+    </div>
 
 
 
-        <div class="container">
-            <div class="title">
-                <h1>
-                    Campaign Planner
-                </h1>
 
-                <p class="lead">
-                    Use this tool to quickly plan routes and extract business
-                    listings data.<br>
-                </p>
-            </div>
+
+
+
+
+
 
             <div class="container">
-                <a class="btn btn-info" data-toggle="collapse" href=
-                "#demo">Search Parameters</a>
-                <div class="collapse" id="demo">
+                <div class="panel" id="demo">
                     <div class="row">
                         <div class="col-md-12 col-sm-6 col-xs-12">
                             <div class="panel panel-default">
@@ -77,6 +45,18 @@ var cats = parsed_categories;
                                     <h3 class="panel-title">
                                         Inputs
                                     </h3>
+                                </div>
+
+                                <div class="panel-body">
+                                  <form class="form-horizontal row-border" action="/" method="post" role="form" id="searchParams" style="width: 95%">
+                                  <h2 class="user-heading">Who Are You?</h2>
+                                  <input id="txtUsername" name="username" class="form-control" placeholder="User" required autofocus>
+
+
+
+
+
+
                                 </div>
 
                                 <div class="panel-body">
@@ -95,16 +75,18 @@ var cats = parsed_categories;
                                 </div>
 
                                 <div class="panel-body">
-                                    <form action="#" class=
-                                    "form-horizontal row-border">
                                         <div class="form-group">
                                             <label class=
-                                            "col-md-2 control-label">Business
-                                            Category</label>
+                                            "col-md-2 control-label" for= "sel1">Select:</label>
                                             <div class="col-md-10">
-                                                <input class="form-control"
-                                                name="placeholder" placeholder=
-                                                "Auto Repair" type="text">
+                                              <div class="form-group">
+                                              <select class="form-control" name = "main" id="sel1"  form="searchParams" style="width: 95%">
+                                              <option></option>
+                                              </select>
+                                            <select multiple class="form-control" name = "sub" id="sel2" form="searchParams" style="width: 95%" >
+                                            <option></option>
+                                            </select>
+                                            </div>
                                             </div>
                                         </div>
 
@@ -144,6 +126,7 @@ var cats = parsed_categories;
                                                 "http://api.v3.factual.com/t/places">
                                             </div>
                                         </div>
+                            <button class="btn btn-sm btn-primary btn-block" type="button" style ="width:45%;margin: auto;">Submit Search Parameters</button>
                                     </form>
                                 </div>
                             </div>

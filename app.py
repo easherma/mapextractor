@@ -32,11 +32,18 @@ def index():
     print parsed_categories["response"].viewkeys()
     return render_template('index.html', results=results, parsed_categories = parsed_categories)
 
-@app.route('/signUpUser', methods=['POST'])
-def signUpUser():
-    user =  request.form['username'];
-    password = request.form['password'];
-    return json.dumps({'status':'OK','user':user,'pass':password});
+@app.route('/searching', methods=['POST'])
+def searching():
+    main = request.form['main']
+    sub = request.form.getlist('sub')
+    user =  request.form['username']
+    search = searchParams()
+    search.category = []
+    search.category.extend(main)
+    search.category.extend(sub)
+    search.category = map(int, search.category)
+    params = json.dumps({'status':'OK','main':main, 'sub':sub, 'user':user })
+    return params, search.category
 
 @app.route('/call', methods=['GET', 'POST'])
 def call():
@@ -45,8 +52,9 @@ def call():
     factual = biz.auth()
     #factual = biz.factual
     print "Using: " + biz.api
-    search = searchParams() #needs to be called in both routes..
-    #print vars(search)
+    searching()
+    search = searchParams(True ) #needs to be called in both routes..
+    print search.category
     #factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
     #print(request.values)
     #print biz.keys
