@@ -125,7 +125,7 @@ $(function() {
         var main = $(sel1);
         var sub = $(sel2).val();
         $.ajax({
-            url: '/searchParams',
+            url: '/getParams',
             data: $('form').serialize(),
             type: 'POST',
             success: function(response) {

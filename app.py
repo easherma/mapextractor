@@ -1,12 +1,3 @@
-import json
-import requests
-import pandas as pd
-
-from factual import Factual
-from factual.utils import circle
-
-from flask import Flask, request, redirect, url_for, jsonify, render_template, send_from_directory
-
 from classes import *
 
 # CONFIG.
@@ -18,43 +9,57 @@ app.config.from_object(__name__)
 
 
 biz = authAPIs("keys.json", "Factual")
+search = searchParams()
+
 
 @app.route('/')
 def index():
     results = []
     #print vars(biz)
-    search = searchParams()
+    params = search.params
+    print type(params)
+    print search.params['main']
     print vars(search)
     try:
         parsed_categories = search.categories.json()
+
+        #category = search.category
     except:
         pass
     print parsed_categories["response"].viewkeys()
-    return render_template('index.html', results=results, parsed_categories = parsed_categories)
+    return render_template('index.html', results=results, parsed_categories = parsed_categories, params = params)
 
-@app.route('/searching', methods=['POST'])
-def searching():
+@app.route('/getParams', methods=['POST'])
+def getParams():
     main = request.form['main']
     sub = request.form.getlist('sub')
     user =  request.form['username']
-    search = searchParams()
+    #params = {'status':'OK','main':2, 'sub':'', 'user':'default' }
     search.category = []
     search.category.extend(main)
     search.category.extend(sub)
     search.category = map(int, search.category)
-    params = json.dumps({'status':'OK','main':main, 'sub':sub, 'user':user })
-    return params, search.category
+    category = json.dumps(search.category)
+    search.params = json.dumps({'status':'OK','main':main, 'sub':sub, 'user':user }, ensure_ascii=False)
+    search.category = json.dumps({'main':main, 'sub':sub})
+    #print type(category)
+    #print category
+    #print search.params
+    print search.params['main']
+    return search.params
 
 @app.route('/call', methods=['GET', 'POST'])
 def call():
     # OAuth Factual
-
+    #print params
+    print search.params['main']
+    #print cats
+    #print type(cats)
     factual = biz.auth()
     #factual = biz.factual
     print "Using: " + biz.api
-    searching()
-    search = searchParams(True ) #needs to be called in both routes..
-    print search.category
+
+    #needs to be called in both routes..
     #factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
     #print(request.values)
     #print biz.keys
@@ -99,7 +104,7 @@ def call():
                     query = (places.geo(circle(loc['lat'], loc['lng'], search.radius))
                     .filters(
                         {"$and":[{"category_ids":
-                        {"$includes": search.category}},
+                        {"$includes": 2}},
                         {"chain_id":{"$blank":search.chain_id}}]}
                         #chain_ids
                     )

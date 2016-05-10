@@ -1,7 +1,9 @@
 import json
 import requests
 from factual import Factual
+from factual.utils import circle
 import pandas as pd
+from flask import Flask, request, redirect, url_for, jsonify, render_template, send_from_directory
 
 
 class authAPIs(object):
@@ -27,7 +29,7 @@ class searchParams(object):
 
     def __init__(self):
         self.api = "Factual"
-        self.category = 2
+        self.params = self.getParams()
         self.radius = 25000
         self.limit = 10
         self.chain_id = True
@@ -38,10 +40,11 @@ class searchParams(object):
 
         #pass categories back to front for search
 
-    def passParams(self, arg):
-        self.category_ids
-        self.chain_ids
-        #match params from input
+    def getParams(self):
+        #passing
+        params = {'status':'OK','main':2, 'sub':'', 'user':'default' }
+
+        return params #match params from input
 
 
 class API_output(object):
