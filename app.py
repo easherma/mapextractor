@@ -9,55 +9,58 @@ app.config.from_object(__name__)
 
 
 biz = authAPIs("keys.json", "Factual")
+#global search variables
 search = searchParams()
-
+userParams = search.params
 
 @app.route('/')
 def index():
     results = []
     #print vars(biz)
-    params = search.params
-    print type(params)
-    print search.params['main']
+    print search.params
     print vars(search)
     try:
         parsed_categories = search.categories.json()
-
-        #category = search.category
     except:
         pass
     print parsed_categories["response"].viewkeys()
-    return render_template('index.html', results=results, parsed_categories = parsed_categories, params = params)
+    return render_template('index.html', results=results, parsed_categories = parsed_categories, params = search.params)
 
 @app.route('/getParams', methods=['POST'])
 def getParams():
-    main = request.form['main']
-    sub = request.form.getlist('sub')
-    user =  request.form['username']
-    #params = {'status':'OK','main':2, 'sub':'', 'user':'default' }
-    search.category = []
-    search.category.extend(main)
-    search.category.extend(sub)
-    search.category = map(int, search.category)
-    category = json.dumps(search.category)
-    search.params = json.dumps({'status':'OK','main':main, 'sub':sub, 'user':user }, ensure_ascii=False)
-    search.category = json.dumps({'main':main, 'sub':sub})
-    #print type(category)
-    #print category
-    #print search.params
-    print search.params['main']
-    return search.params
+    print search.params
+
+    main = request.form['main'] if (request.form['main']) else search.params['main']
+
+    sub = request.form.getlist('sub') if (request.form.getlist('sub')) else search.params['sub']
+
+    user =  request.form['username'] if (request.form['username']) else search.params['user']
+
+    global userParams
+    userParams = json.dumps({'status':'OK','main':int(main), 'sub':map(int, sub), 'user':user })
+    if user == 'default':
+        print "using defaults user"
+    return userParams
 
 @app.route('/call', methods=['GET', 'POST'])
 def call():
     # OAuth Factual
     #print params
-    print search.params['main']
+    print search.params
+    print userParams
+    if not (json.loads(userParams)['sub']):
+        print "using main"
+    else:
+        print "using subs"
+    #if not json.loads(userParams)['sub']):
+    #    print "Using subs!"
+    #    print json.loads(userParams)['sub']
+
     #print cats
     #print type(cats)
     factual = biz.auth()
     #factual = biz.factual
-    print "Using: " + biz.api
+    print "Using: %s" % biz.api
 
     #needs to be called in both routes..
     #factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
@@ -76,11 +79,12 @@ def call():
     #TODO: append input data
     # old waypoints = request.get_json()
     route = request.get_json()
-    print route
+    print "route %s" % route
     apiout = API_output(route)
     #loop = looper() hoping to clean this up
-    print "BEGIN"
-    print apiout.route
+    print "BEGIN:"
+    print "route %s" % apiout.route
+    print "apiout variables %s" % vars(apiout)
     #loop thru points, send each point as a call to api
     try:
         for idx, val in enumerate(apiout.route):
@@ -104,13 +108,13 @@ def call():
                     query = (places.geo(circle(loc['lat'], loc['lng'], search.radius))
                     .filters(
                         {"$and":[{"category_ids":
-                        {"$includes": 2}},
+                        {"$includes_any": [json.loads(userParams)['main']] if not (json.loads(userParams)['sub']) else json.loads(userParams)['sub'] }},
                         {"chain_id":{"$blank":search.chain_id}}]}
                         #chain_ids
                     )
                     .offset(50*(i))
                     .limit(50))
-                    print query
+                    print vars(query)
                     data = query.data()
                     #print query.params #append to output somehow
                     #print vars(query)
@@ -130,6 +134,7 @@ def call():
         #    df.to_csv("data.csv",  mode='a')
         #ResultsToFile()
     except TypeError:
+        #print response.url
         pass
     return results
 

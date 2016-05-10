@@ -42,7 +42,7 @@ class searchParams(object):
 
     def getParams(self):
         #passing
-        params = {'status':'OK','main':2, 'sub':'', 'user':'default' }
+        params = {'status':'OK','main':2, 'sub':[], 'user':'default' }
 
         return params #match params from input
 

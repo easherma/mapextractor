@@ -15,8 +15,11 @@ function drawResults() {
 function getWaypoints() {
 
     for (var i = 0; i < routeControl.getWaypoints().length; i++) {
+        console.log("getting waypoints")
+        console.log(routepoints);
         points = routeControl.getWaypoints();
         routepoints.push(points[i]['latLng']); //where is points?
+        console.log(routepoints);
     }
 };
 
@@ -92,10 +95,14 @@ function post() {
         url: '/call',
         data: JSON.stringify(routepoints),
         success: function(data) {
-            results = data; //results from API call
+            results = data;//results from API call
+            routepoints.length = 0;
+            console.log("clear routepoints");
+            console.log(routepoints);
         },
         complete: function(data) {
             loadTable();
+
         },
         contentType: 'application/json',
         dataType: 'json'
@@ -109,18 +116,8 @@ function loadTable() {
         });
     });
 }
-
-//messy forms
-jsonObj = bigcats[0].children
-var bigarray = [];
-for(var i = 0, len = jsonObj .length; i < len; i++) {
-  bigarray.push( {"text": jsonObj[i].label, "id" : jsonObj[i].id});
-}
-
-var big_cats = '';
-
 $(function() {
-    $('button').click(function() {
+    $(searchButton).click(function() {
         var user = $('#txtUsername').val();
         var main = $(sel1);
         var sub = $(sel2).val();
@@ -137,6 +134,18 @@ $(function() {
         });
     });
 });
+
+//messy forms..may not bee needed anymore?
+
+jsonObj = bigcats[0].children
+var bigarray = [];
+for(var i = 0, len = jsonObj .length; i < len; i++) {
+  bigarray.push( {"text": jsonObj[i].label, "id" : jsonObj[i].id});
+}
+
+var big_cats = '';
+
+
 
 function bigCats(){
 
