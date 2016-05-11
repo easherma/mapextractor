@@ -12,6 +12,7 @@ function drawResults() {
     }
 }
 //get route waypoints and push them. this gets posted
+routepoints = []
 function getWaypoints() {
 
     for (var i = 0; i < routeControl.getWaypoints().length; i++) {
@@ -84,11 +85,10 @@ L.control.scale({
 }).addTo(map);
 
 //add buttons for routing and drawing results
-routepoints = []
 $(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"getWaypoints();post();\" />");
 $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\" onclick=\"drawResults();\" />");
 
-//results, output
+//results, output, controller?
 function post() {
     $.ajax({
         type: 'POST',
@@ -137,68 +137,58 @@ $(function() {
 });
 
 //messy forms..may not bee needed anymore?
+//change label to text for Select2
+var main_categories = bigcats[0].children
+//function to split
 
-jsonObj = bigcats[0].children
-var bigarray = [];
-for(var i = 0, len = jsonObj .length; i < len; i++) {
-  bigarray.push( {"text": jsonObj[i].label, "id" : jsonObj[i].id});
+var parsed_main_array = [];
+for(var i = 0, len = main_categories .length; i < len; i++) {
+  parsed_main_array.push( {"text": main_categories[i].label, "id" : main_categories[i].id});
 }
-
-var big_cats = '';
-
-
-
-function bigCats(){
-
-  //for (i = 0; i < bigcats[0].children.length; i++){
-    //big_cats += '<select class="form-control" id ="'+ bigcats[0].children[i].id +'"'+ '>';
-
-    //big_cats += '<option value = '+ bigcats[0].children[i].id +'>'+ bigcats[0].children[i].label + '</option>';
-
-    //console.log(bigcats[0].children[i])
-    //bigarray.push("{id"+ ":" + bigcats[0].children[i].id + ',' + "text:"+ bigcats[0].children[i].label +"}" );
-    //big_cats += '</select>'
-  //}
-  //document.getElementById('sel1').innerHTML = big_cats;
-  //big_cats = $.parseHTML(big_cats);
-//return big_cats;
+function mapCategories(array) {
+  $.map(array,function(o){
+    o.text = o.text || o.label;
+    return o;
+  });
+  return array
 }
-//bigCats();
+var parsed_sub_array =[];
 
-//document.getElementById('sel1').oninput= function() {subCats()};
-var id = parseInt($(sel1).val());
-var filtered = [];
-var catray = [];
-  function subCats(){
-    var sub_cats = '';
+/*$.map(array, function(o){
+  o.text = o.text || o.label;
+  return o;
+});*/
+//filter sub categories based on main selection, i think we can change this to match the above process(map, then parse)
+//var id = parseInt($(sel1).val());
+var main_categories_selection = [];
+var main_id = main_categories[0].id;
 
-    if (filtered.length !== 0) {
-      for (i =0; i < filtered[0].children.length; i++) {
-      //sub_cats += '<select class="form-control" id ="sel2">';
-      sub_cats += '<option value ='+ filtered[0].children[i].id + '>' + filtered[0]['children'][i].label + '</option><br>';
-      //catray.push("{id:" + filtered[0].children[i].id + "},{text:"+ filtered[0]['children'][i].label +"}" );
-      //sub_cats += '</select>'
+//this creates the html for the sub selection
+function subCats(){
+    parsed_sub_array = [];
+    var main_id = main_categories[0].id;
+    for(var i = 0, len = main_categories.length; i < len; i++) {
+      var main_id = main_categories[i].id;
+      parsed_sub_array.push({"text": main_categories_selection[0].children[i].label, "id" : main_categories_selection[0].children[0].id});
     }
-    document.getElementById('sel2').innerHTML = sub_cats;
-  }
+
 }
 
-
+//main
   var selectone = $(sel1).select2(
-    {data: bigarray, placeholder: "Select a Business Category First", allowClear: true}
+    {data: parsed_main_array, placeholder: "Select a Business Category First", allowClear: true}
   ).on("select2:select", function() {
     id = parseInt($(sel1).val());
     console.log('change');
-    filtered = jQuery.grep(bigcats[0].children, function( item, index ) {
+    //get the selected category id
+    main_categories_selection = jQuery.grep(bigcats[0].children, function( item, index ) {
       return ( item.id == id  );
     });
-    subCats();
   });
 //});
 
-
-var selecttwo = $(sel2).select2({allowClear: true, placeholder: "Optional Sub-Categories"});
-
+//sub
+$(sel2).select2({data: mapCategories(main_categories_selection[0].children) , allowClear: true, placeholder: "Optional Sub-Categories"});
+//main_categories_selection[0].children
 $(sel1).on("change", function() {
-  subCats();
 });

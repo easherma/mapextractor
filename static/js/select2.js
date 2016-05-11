@@ -3148,7 +3148,7 @@ S2.define('select2/data/select',[
     var option;
 
     if (data.children) {
-      option = document.createElement('optgroup');
+      option = document.createElement('option');
       option.label = data.text;
     } else {
       option = document.createElement('option');

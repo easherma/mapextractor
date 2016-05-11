@@ -21,9 +21,10 @@ def index():
     print vars(search)
     try:
         parsed_categories = search.categories.json()
+        #parsed_categories['response']['data'][0]['children'] more specific
     except:
         pass
-    print parsed_categories["response"].viewkeys()
+    print parsed_categories['response']['data'][0]['children']
     return render_template('index.html', results=results, parsed_categories = parsed_categories, params = search.params)
 
 @app.route('/getParams', methods=['POST'])
