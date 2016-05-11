@@ -11,7 +11,7 @@ app.config.from_object(__name__)
 biz = authAPIs("keys.json", "Factual")
 #global search variables
 search = searchParams()
-userParams = search.params
+userParams = str(search.params)
 
 @app.route('/')
 def index():
@@ -47,7 +47,9 @@ def call():
     # OAuth Factual
     #print params
     print search.params
+    print type(search.params)
     print userParams
+    print type(userParams)
     #if not (json.loads(userParams)['sub']):
     #    print "using main"
     #else:
@@ -72,7 +74,6 @@ def call():
 
     # POST first.
     # Get Results variable.
-
     #biz.auth()
     #initialize factual api
 
@@ -140,7 +141,6 @@ def call():
         #    df.to_csv("data.csv",  mode='a')
         #ResultsToFile()
     except TypeError:
-        #print response.url
         pass
     return results
 
