@@ -127,11 +127,13 @@ def call():
                     apiout.out.extend(data)
                     print "Total records"
                     print len(apiout.out)
-        p = query.params.values()
-        print p
+        p = dir(query)
+        print str(query.get_url())
         #print query.params
         #saved = query.params
         df = pd.DataFrame(apiout.out)
+        df2 = pd.DataFrame(p)
+        df2.to_csv("p.csv",  mode='a')
         df.to_csv("data.csv",  mode='a')
         results = json.dumps(apiout.out)
         #print df
