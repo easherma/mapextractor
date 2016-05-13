@@ -102,7 +102,7 @@ def call():
         #messy loop to offset/combine seperate calls together (due to api rate limits)
                 #range cannot go higher than 10 (offset max is 500)
                 #couple ways to address this...filter by factual id, etc.'''
-                for i in range(2):
+                for i in range(10):
                     print "range: "
                     print i
 
