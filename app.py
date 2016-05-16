@@ -1,121 +1,162 @@
-#imports
-import json
-from factual import Factual
-from flask import Flask, request, redirect, url_for, jsonify, render_template, send_from_directory
-#import time
-import requests
-import pandas as pd
+from classes import *
 
-#config
-
+# CONFIG.
 DEBUG = True
 
-#main
-
+# MAIN.
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-# @app.route("/results", methods=['GET','POST'])
-# def results():
-    # return render_template('echo.html', results=results, points=request.get_json())
-    
 
-# @app.route("/result", methods=['GET','POST'])
-# def result():
-    # call()
-    
-    # places = factual.table('places')
-    # from factual.utils import circle
-    # out = []  
-    # for i in range(1):       
-        # data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
-        # out.extend(data)
-    # results = json.dumps(out)
-    
-    # return render_template('echo.html', results=results)
+biz = authAPIs("keys.json", "Factual")
+#global search variables
+search = searchParams()
+userParams = str(search.params)
 
-@app.route('/call', methods=['GET','POST'])
-def call():
-    with open("keys.json") as jsonfile:
-        keys = json.loads(jsonfile.read())
-    factual = Factual(keys["OAuth Key"], keys["OAuth Secret"])
-    #catagory filter
-    cat = 2
-    points = request.get_json()
-    print "length of points"
-    print len(points)
-    results = []
-    out = [] 
-    try:
-        for idx, val in enumerate(points):
-            if val is not None:
-                places = factual.table('places')
-                from factual.utils import circle 
-                
-                lat = points[idx]['lat']
-                lng = points[idx]['lng']
-                print "index, lat, lng"
-                print idx,lat, lng
-                print "results so far:"
-                print len(out)
-                for i in range(10):       
-                    data = places.geo(circle(lat, lng, 25000)).filters({"$and":[{"category_ids":{"$includes": cat}}]}).offset(50*(i)).limit(50).data()
-                    print "length of data"
-                    print len(data)
-                    out.extend(data)
-                    print "length of out"
-                    print len(out)
-        
-      
-        results = json.dumps(out)
-        df = pd.DataFrame(out)
-        df.to_csv("data.csv",  mode='a')
-
-    except TypeError:
-        pass
-
-
-            #call_api(lat, lng, 2)
-
-    return json.dumps(results)
-    
 @app.route('/')
 def index():
-    #data = ''
-
-    #all_data = []
-    #out = places.search('auto repair').geo(circle(41.910753, -87.697108, 1000)).data()
-    #out = places.search('').geo(circle(41.910753, -87.697108, 1000)).filters({"$and":[
-    #                        {"category_ids":{"$includes":2}}]}).data()
-#    for i in range(10):     # iter over pages.
-        
-        # Filters here.
-#        data = places.search('').geo(circle(41.910753, -87.697108, 1000)).filters({"$and":[
-#                                {"category_ids":{"$includes":2}}]}).offset(50*(i)).limit(50).data()
-#        df = pd.DataFrame(data)
-#        all_data.append(df)
-        #time.sleep(.1)
-#time.sleep(.1)
     results = []
-    #run()
+    #print vars(biz)
+    print search.params
+    print vars(search)
+    try:
+        parsed_categories = search.categories.json()
+    except:
+        pass
+    print parsed_categories["response"].viewkeys()
+    return render_template('index.html', results=results, parsed_categories = parsed_categories, params = search.params)
+
+@app.route('/getParams', methods=['POST'])
+def getParams():
+    print search.params
+
+    main = request.form['main'] if (request.form['main']) else search.params['main']
+
+    sub = request.form.getlist('sub') if (request.form.getlist('sub')) else search.params['sub']
+
+    user =  request.form['username'] if (request.form['username']) else search.params['user']
+
+    global userParams
+    userParams = json.dumps({'status':'OK','main':int(main), 'sub':map(int, sub), 'user':user })
+    if user == 'default':
+        print "using defaults user"
+    return userParams
+
+@app.route('/call', methods=['GET', 'POST'])
+def call():
+    # OAuth Factual
+    #print params
+    print search.params
+    print type(search.params)
+    print userParams
+    print type(userParams)
+    #if not (json.loads(userParams)['sub']):
+    #    print "using main"
+    #else:
+    #    print "using subs"
+    #if not json.loads(userParams)['sub']):
+    #    print "Using subs!"
+    #    print json.loads(userParams)['sub']
+
+    #print cats
+    #print type(cats)
+    factual = biz.auth()
+    #factual = biz.factual
+    print "Using: %s" % biz.api
+
+    #needs to be called in both routes..
+    #factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
+    #print(request.values)
+    #print biz.keys
+    #factual = Factual(biz.keys["Factual"]["OAuth Key"], biz.keys["Factual"]["OAuth Secret"])
+    #print(request.values)
 
 
-    # Concat dataframe.
-    #df_full = pd.concat(all_data, ignore_index=True)
-    #df = pd.DataFrame(out)
-    #data = df_full.to_json(orient='index')
-    #results = []
-    #for i in range(1):
+    # POST first.
+    # Get Results variable.
+    #biz.auth()
+    #initialize factual api
 
-        # data = places.search('').geo(circle(41.910753, -87.697108, 25000)).filters({"$and":[
-                            # {"category_ids":{"$includes":2}}]}).offset(50*(i)).limit(50).data()
-        # results.extend(data)    
-    # data = json.dumps(results)
-    #test = geojson.utils.generate_random("Point")
-    #with open('data/exp_clevlandfact1.json', 'r') as f:
-    #    data = f.read()
-    return render_template('index.html', results=results)
+    #TODO: append input data
+    # old waypoints = request.get_json()
+    route = request.get_json()
+    print "route %s" % route
+    apiout = API_output(route)
+    #loop = looper() hoping to clean this up
+    print "BEGIN:"
+    print "route %s" % apiout.route
+    print "apiout variables %s" % vars(apiout)
+    #loop thru points, send each point as a call to api
+    try:
+        for idx, val in enumerate(apiout.route):
+            if val is not None:
+                loc = apiout.route[idx]
+                places = factual.table('places')
+                print "index, route_point"
+                print idx, loc
+                print "results so far:"
+                print len(apiout.out)
+                print "sending call"
+
+        #loop.get_data()
+        #messy loop to offset/combine seperate calls together (due to api rate limits)
+                #range cannot go higher than 10 (offset max is 500)
+                #couple ways to address this...filter by factual id, etc.'''
+                for i in range(10):
+                    print "range: "
+                    print i
+
+                    query = (places.geo(circle(loc['lat'], loc['lng'], search.radius))
+                    .filters(
+                        {"$and":[{"category_ids":
+                        {"$includes_any": [json.loads(userParams)['main']] if not (json.loads(userParams)['sub']) else json.loads(userParams)['sub'] }},
+                        {"chain_id":{"$blank":search.chain_id}}]}
+                        #chain_ids
+                    )
+                    .offset(50*(i))
+                    .limit(50))
+                    #print query.filters()
+                    #print query.params()
+                    data = query.data()
+                    #print query.params.values()
+                    #print query.params #append to output somehow
+                    #print vars(query)
+                    #print factual.get_response()
+                    print "Call successful! Records returned:"
+                    print len(data)
+                    apiout.out.extend(data)
+                    print "Total records"
+                    print len(apiout.out)
+        p = dir(query)
+        print str(query.get_url())
+        #print query.params
+        #saved = query.params
+        df = pd.DataFrame(apiout.out)
+        df2 = pd.DataFrame(p)
+        df2.to_csv("p.csv",  mode='a')
+        df.to_csv("data.csv",  mode='a')
+        results = json.dumps(apiout.out)
+        #print df
+        print("END")
+        #def ResultsToFile():
+        #    df = pd.DataFrame(apiout.out)
+        #    df.to_csv("data.csv",  mode='a')
+        #ResultsToFile()
+    except TypeError:
+        pass
+    return results
+
+
+
+
+#TODO add error handiling and/or reporting factual.api.APIException
+#write to file
+
 
 if __name__ == '__main__':
+<<<<<<< HEAD
+    app.run(host='0.0.0.0')
+=======
     app.run()
     
+>>>>>>> master
