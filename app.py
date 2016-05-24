@@ -128,7 +128,10 @@ def call():
                     print "Total records"
                     print len(apiout.out)
         p = dir(query)
-        print str(query.get_url())
+        q_values = vars(query)
+        ##print vars(query.user)
+        print query.params
+        print userParams
         #print query.params
         #saved = query.params
         df = pd.DataFrame(apiout.out)
@@ -155,4 +158,3 @@ def call():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
-
