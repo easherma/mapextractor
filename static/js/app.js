@@ -9,6 +9,7 @@ function drawResults() {
         var popupText = markers[i]['name'];
         var markerLocation = new L.LatLng(lon, lat);
         var marker = new L.Marker(markerLocation).bindPopup(popupText).addTo(feature_group);
+
     }
 }
 //get route waypoints and push them. this gets posted
@@ -53,17 +54,62 @@ title.update = function() {
 };
 title.addTo(map);
 
+var circles = new L.LayerGroup();
+circles.addTo(map);
 routeControl = L.Routing.control({
-    waypoints: [
+
+      waypoints: [
         L.latLng(),
         L.latLng()
     ],
     router: L.Routing.mapzen('valhalla-v9fMrPq', 'auto'),
     formatter: new L.Routing.Mapzen.Formatter({units: 'imperial'}),
-    geocoder: L.Control.Geocoder.mapzen("search-iv_vGuI", "autocomplete")
+    geocoder: L.Control.Geocoder.mapzen("search-iv_vGuI", "autocomplete"),
+    createMarker: function(i, wp) {
+      var options = {
+          draggable: this.draggableWaypoints
+        },
+          marker = L.marker(wp.latLng, options);
+          //L.circle(routeControl.getWaypoints()[i].latLng, 25000).addTo(circles);
+          /*for (var i = 0; i < routeControl.getWaypoints().length; i++) {
+            L.circle(routeControl.getWaypoints()[i].latLng, 25000).addTo(circles);
+          }*/
+
+      return marker;
+    }
+
 
 }).addTo(map);
 
+routeControl.on('waypointschanged', function(wp) {
+  markers = routeControl.getWaypoints();
+  circles.clearLayers();
+  circleSet = [];
+  for (var i = 0; i < wp.waypoints.length; i++) {
+    circleSet.push(wp.waypoints[i].latLng);
+  };
+  $(circleSet).each(function(i){
+    if (circleSet[i]  !== undefined){
+      L.circle(circleSet[i], 25000).addTo(circles);
+    }
+  });
+})
+
+
+
+//declare makrers
+/*
+//add to layer, layergroup? not sure what the diff is
+for (var i = 0; i < routeControl.getWaypoints().length; i++) {
+  markers[i] = L.layerGroup().addLayer(L.circle(routeControl.getWaypoints()[i].latLng, 25000))
+}
+
+//loop and addLayer
+for (var i = 0; i < markers.length; i++) {
+  markers[i].addTo(map);
+}*/
+
+//L.circle(map._layers[65].getLatLng(), 25000).addTo(map).redraw();
 
 var baseMaps = {
     'OSM Standard': basemap_0
