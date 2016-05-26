@@ -50,6 +50,7 @@ def call():
     print type(search.params)
     print userParams
     print type(userParams)
+    results = []
     #if not (json.loads(userParams)['sub']):
     #    print "using main"
     #else:
@@ -135,9 +136,14 @@ def call():
         #print query.params
         #saved = query.params
         df = pd.DataFrame(apiout.out)
+
         df2 = pd.DataFrame(p)
-        df2.to_csv("p.csv",  mode='a')
-        df.to_csv("data.csv",  mode='a')
+        df2.to_csv("p.csv",  mode='w+')
+        df.to_csv("data.csv",  mode='w+')
+        dfd = pd.read_csv('data.csv')
+        print dfd.duplicated('factual_id')
+        dfd = dfd.drop_duplicates('factual_id')
+        dfd.to_csv("de_duped_data.csv",  mode='w+')
         results = json.dumps(apiout.out)
         #print df
         print("END")
