@@ -159,7 +159,7 @@ def call():
 
 
 #TODO add error handiling and/or reporting factual.api.APIException
-#write to file
+
 
 
 if __name__ == '__main__':

@@ -1,86 +1,55 @@
-//methods
-
-function drawResults() {
-    var markers = results;
-    for (var i = 0; i < markers.length; i++) {
-
-        var lon = markers[i]['latitude'];
-        var lat = markers[i]['longitude'];
-        var popupText = markers[i]['name'];
-        var markerLocation = new L.LatLng(lon, lat);
-        var marker = new L.Marker(markerLocation).bindPopup(popupText).addTo(feature_group);
-
-    }
-}
-//get route waypoints and push them. this gets posted
-function getWaypoints() {
-
-    for (var i = 0; i < routeControl.getWaypoints().length; i++) {
-        console.log("getting waypoints")
-        console.log(routepoints);
-        points = routeControl.getWaypoints();
-        routepoints.push(points[i]['latLng']); //where is points?
-        console.log(routepoints);
-    }
-};
-
-
+routepoints = [];
 //create the map and router
-var map = L.map('map', {
+var map =
+L.map('map', {
     zoomControl: true,
     maxZoom: 19
 }).fitBounds([
     [41.082208455, -82.1033158688], //us bounds
     [41.7934502486, -81.0530349416]
 ]);
-var hash = new L.Hash(map);
+
+
 var additional_attrib = 'app created by Eric Sherman';
-var feature_group = new L.featureGroup([]);
+//add basemap to map
 var basemap_0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: additional_attrib + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
 });
 basemap_0.addTo(map);
 var layerOrder = new Array();
 
+//init feature groups
+var feature_group = new L.featureGroup([]);
 feature_group.addTo(map);
-var title = new L.Control();
-title.onAdd = function(map) {
-    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-    this.update();
-    return this._div;
-};
-title.update = function() {
-    this._div.innerHTML = '<h2>Factual API Data Extract</h2>'
-};
-title.addTo(map);
+
 
 var circles = new L.LayerGroup();
 circles.addTo(map);
-routeControl = L.Routing.control({
 
+//init leaflet routing machine with custom marker behavior
+routeControl = L.Routing.control({
       waypoints: [
         L.latLng(),
         L.latLng()
     ],
-    router: L.Routing.mapzen('valhalla-v9fMrPq', 'auto'),
+    router: L.Routing.mapzen('valhalla-v9fMrPq', 'auto'), //routing-api, hard-coded atm
     formatter: new L.Routing.Mapzen.Formatter({units: 'imperial'}),
-    geocoder: L.Control.Geocoder.mapzen("search-iv_vGuI", "autocomplete"),
+    geocoder: L.Control.Geocoder.mapzen("search-iv_vGuI", "autocomplete"), //routing-api, hard-coded atm
     createMarker: function(i, wp) {
       var options = {
           draggable: this.draggableWaypoints
         },
           marker = L.marker(wp.latLng, options);
+          map.setView(wp.latLng);
           //L.circle(routeControl.getWaypoints()[i].latLng, 25000).addTo(circles);
           /*for (var i = 0; i < routeControl.getWaypoints().length; i++) {
             L.circle(routeControl.getWaypoints()[i].latLng, 25000).addTo(circles);
           }*/
-
       return marker;
     }
-
-
 }).addTo(map);
 
+//create circels based on waypoints
 routeControl.on('waypointschanged', function(wp) {
   markers = routeControl.getWaypoints();
   circles.clearLayers();
@@ -95,27 +64,34 @@ routeControl.on('waypointschanged', function(wp) {
   });
 })
 
+//methods
 
+function drawResults() {
+    var markers = results;
+    for (var i = 0; i < markers.length; i++) {
+        var lon = markers[i]['latitude'];
+        var lat = markers[i]['longitude'];
+        var popupText = markers[i]['name'];
+        var markerLocation = new L.LatLng(lon, lat);
+        var marker = new L.Marker(markerLocation).bindPopup(popupText).addTo(feature_group);
 
-//declare makrers
-/*
-//add to layer, layergroup? not sure what the diff is
-for (var i = 0; i < routeControl.getWaypoints().length; i++) {
-  markers[i] = L.layerGroup().addLayer(L.circle(routeControl.getWaypoints()[i].latLng, 25000))
+    }
 }
+//get route waypoints and push them. this gets posted
+function getRoutepoints() {
 
-//loop and addLayer
-for (var i = 0; i < markers.length; i++) {
-  markers[i].addTo(map);
-}*/
-
-//L.circle(map._layers[65].getLatLng(), 25000).addTo(map).redraw();
-
-var baseMaps = {
-    'OSM Standard': basemap_0
+    for (var i = 0; i < routeControl.getWaypoints().length; i++) {
+        console.log("getting routepoints")
+        console.log(getRoutepoints);
+        points = routeControl.getWaypoints();
+        routepoints.push(points[i]['latLng']); //where is points?
+        console.log(routepoints);
+    }
 };
-L.control.layers(baseMaps, {
-    "result": feature_group
+
+L.control.layers({
+    "result": feature_group,
+    "radii": circles
 }, {
     collapsed: false
 }).addTo(map);
@@ -130,8 +106,8 @@ L.control.scale({
 }).addTo(map);
 
 //add buttons for routing and drawing results
-routepoints = []
-$(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"getWaypoints();post();\" />");
+//submit parmeters, get routepoints, send points, draw resuls
+$(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"getRoutepoints();post();\" />");
 $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\" onclick=\"drawResults();\" />");
 
 //results, output
@@ -160,9 +136,12 @@ function loadTable() {
     $(function() {
         $('#table').bootstrapTable({
             data: results
+
         });
     });
 }
+
+//submit search params
 $(function() {
     $('button').click(function() {
         var user = $('#txtUsername').val();
@@ -182,7 +161,7 @@ $(function() {
     });
 });
 
-//messy forms..may not bee needed anymore?
+//messy forms..kinda specific to the factual structure?  not sure how hard to plug in other APIS, like OSM
 
 jsonObj = bigcats[0].children
 var bigarray = [];
@@ -191,33 +170,11 @@ for(var i = 0, len = jsonObj .length; i < len; i++) {
 }
 
 var big_cats = '';
-
-
-
-function bigCats(){
-
-  //for (i = 0; i < bigcats[0].children.length; i++){
-    //big_cats += '<select class="form-control" id ="'+ bigcats[0].children[i].id +'"'+ '>';
-
-    //big_cats += '<option value = '+ bigcats[0].children[i].id +'>'+ bigcats[0].children[i].label + '</option>';
-
-    //console.log(bigcats[0].children[i])
-    //bigarray.push("{id"+ ":" + bigcats[0].children[i].id + ',' + "text:"+ bigcats[0].children[i].label +"}" );
-    //big_cats += '</select>'
-  //}
-  //document.getElementById('sel1').innerHTML = big_cats;
-  //big_cats = $.parseHTML(big_cats);
-//return big_cats;
-}
-//bigCats();
-
-//document.getElementById('sel1').oninput= function() {subCats()};
 var id = parseInt($(sel1).val());
 var filtered = [];
 var catray = [];
-  function subCats(){
+function subCats(){
     var sub_cats = '';
-
     if (filtered.length !== 0) {
       for (i =0; i < filtered[0].children.length; i++) {
       //sub_cats += '<select class="form-control" id ="sel2">';
@@ -230,21 +187,18 @@ var catray = [];
 }
 
 
-  var selectone = $(sel1).select2(
-    {data: bigarray, placeholder: "Select a Business Category First", allowClear: true}
-  ).on("select2:select", function() {
-    id = parseInt($(sel1).val());
-    console.log('change');
-    filtered = jQuery.grep(bigcats[0].children, function( item, index ) {
-      return ( item.id == id  );
-    });
-    subCats();
+var selectone = $(sel1).select2(
+  {data: bigarray, placeholder: "Select a Business Category First", allowClear: true}
+).on("select2:select", function() {
+  id = parseInt($(sel1).val());
+  console.log('change');
+  filtered = jQuery.grep(bigcats[0].children, function( item, index ) {
+    return ( item.id == id  );
   });
-//});
-
+  subCats();
+});
 
 var selecttwo = $(sel2).select2({allowClear: true, placeholder: "Optional Sub-Categories"});
-
 $(sel1).on("change", function() {
   subCats();
 });
