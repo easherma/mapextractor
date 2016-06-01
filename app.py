@@ -138,12 +138,12 @@ def call():
         df = pd.DataFrame(apiout.out)
 
         df2 = pd.DataFrame(p)
-        df2.to_csv("p.csv",  mode='w+')
-        df.to_csv("data.csv",  mode='w+')
+        df2.to_csv("p.csv",  mode='w+', encoding='utf-8')
+        df.to_csv("data.csv",  mode='w+', encoding='utf-8')
         dfd = pd.read_csv('data.csv')
         print dfd.duplicated('factual_id')
         dfd = dfd.drop_duplicates('factual_id')
-        dfd.to_csv("de_duped_data.csv",  mode='w+')
+        dfd.to_csv("de_duped_data.csv",  mode='w+', encoding='utf-8')
         results = json.dumps(apiout.out)
         #print df
         print("END")

@@ -90,7 +90,7 @@ routeControl.on('waypointschanged', function(wp) {
   };
   $(circleSet).each(function(i){
     if (circleSet[i]  !== undefined){
-      L.circle(circleSet[i], 25000).addTo(circles);
+      L.circle(circleSet[i], 12000).addTo(circles);
     }
   });
 })
