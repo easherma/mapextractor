@@ -2,3 +2,6 @@
 tableExport.jquery.plugin.iml
 keys.json
 data.csv
+temp.csv
+last_de_deuped_data.csv
+master_de_duped_data.csv

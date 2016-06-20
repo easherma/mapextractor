@@ -46,7 +46,6 @@ def getParams():
 def call():
     # OAuth Factual
     #print params
-    print search.params
     print type(search.params)
     print userParams
     print type(userParams)
@@ -103,7 +102,7 @@ def call():
         #messy loop to offset/combine seperate calls together (due to api rate limits)
                 #range cannot go higher than 10 (offset max is 500)
                 #couple ways to address this...filter by factual id, etc.'''
-                for i in range(10):
+                for i in range(2):
                     print "range: "
                     print i
 
@@ -128,22 +127,41 @@ def call():
                     apiout.out.extend(data)
                     print "Total records"
                     print len(apiout.out)
-        p = dir(query)
+        p = query.params
+        print "PARAMS"
+        print query.params
+        print "PATH"
+        print query.path
+        print "RESPONSE"
+        print query.response
         q_values = vars(query)
         ##print vars(query.user)
-        print query.params
+        print "USER"
         print userParams
+        print type(p)
+        print str(datetime.now())
+        p['date'] = str(datetime.now())
+        p['userParams'] = str(search.params)
+        print p
+        #params_date = p.append(datetime.now())
+        #print params
         #print query.params
         #saved = query.params
         df = pd.DataFrame(apiout.out)
 
         df2 = pd.DataFrame(p)
-        df2.to_csv("p.csv",  mode='w+', encoding='utf-8')
-        df.to_csv("data.csv",  mode='w+', encoding='utf-8')
-        dfd = pd.read_csv('data.csv')
+        #df2.to_csv("p.csv",  mode='w+', encoding='utf-8')
+        latest_df = datetime.now().strftime("%m-%d-%Y-%H:%M")
+        print latest_df
+        df.to_csv("temp.csv",  mode='w+', encoding='utf-8')
+        dfd = pd.read_csv("temp.csv")
         print dfd.duplicated('factual_id')
         dfd = dfd.drop_duplicates('factual_id')
-        dfd.to_csv("de_duped_data.csv",  mode='w+', encoding='utf-8')
+        dfd['date'] = str(datetime.now())
+        dfd['userParams'] = userParams
+        dfd['searchparams'] = str(p)
+        dfd.to_csv("last_de_duped_data.csv",  mode='w+', encoding='utf-8')
+        dfd.to_csv("master_de_duped_data.csv",  mode='a+', encoding='utf-8')
         results = json.dumps(apiout.out)
         #print df
         print("END")
@@ -151,6 +169,10 @@ def call():
         #    df = pd.DataFrame(apiout.out)
         #    df.to_csv("data.csv",  mode='a')
         #ResultsToFile()
+        #with open('search_params.json', 'w') as paramsfile:
+        #    json.dump(p, paramsfile)
+        #with open('user_params.json', 'w') as paramsfile:
+        #    json.dump(userParams, paramsfile)
     except TypeError:
         pass
     return results

@@ -4,6 +4,7 @@ from factual import Factual
 from factual.utils import circle
 import pandas as pd
 from flask import Flask, request, redirect, url_for, jsonify, render_template, send_from_directory
+from datetime import datetime
 
 
 class authAPIs(object):
