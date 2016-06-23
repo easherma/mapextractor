@@ -1,0 +1,37 @@
+doctype html
+html
+  head
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+
+    meta(name='description', content='WBCO extract')
+    meta(name='author', content='Eric Sherman')
+    link(rel='icon', href='../../favicon.ico')
+
+    title WBCO prototype
+    link(rel='stylesheet', href='/css/style.css')
+    link(href='/css/bootstrap.min.css', rel='stylesheet')
+
+    link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.0/bootstrap-table.min.css')
+    link(rel='stylesheet', href='/libs/lrm-mapzen-0.1.2/leaflet.routing.mapzen.css')
+    link(rel='stylesheet', href='/css/Control.Geocoder.css')
+    link(href='/css/select2.min.css', rel='stylesheet')
+    link(rel='stylesheet', href='http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css')
+
+  body
+    block content
+
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js')
+    script(src='/libs/leaflet-routing-machine.js')
+    script(src='/libs/lrm-mapzen-0.1.2/lrm-mapzen.js')
+
+    script(src='/libs/Control.Geocoder.js')
+    script(src='/libs/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', integrity='sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS', crossorigin='anonymous')
+    script(src='/libs/select2.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js')
+
+    script(src='/libs/bootstrap-table-export.js')
+    script(src='/libs/tableExport.js')
+
+    script(src='/javascripts/mapextractor.js')

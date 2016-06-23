@@ -1,5 +1,0 @@
-factual-api==1.6.1
-Flask==0.10.1
-pandas==0.16.2
-requests==2.6.0
-datetime

@@ -1,0 +1,53 @@
+extends layout
+
+block content
+  script.
+    var results = {{results|tojson|safe}};
+    var parsed_categories = {{parsed_categories|tojson|safe}};
+    var bigcats= parsed_categories.response.data;
+    var cats = parsed_categories;
+    var params = {{params|tojson|safe}}
+
+  .container
+    .title
+      h1 Campaign Planner
+
+      p.lead Use this tool to quickly plan routes and extract business listings data.
+  .container
+    #demo.panel
+      .row
+        .col-md-12.col-sm-6.col-xs-12
+          .panel.panel-default
+            .panel-heading.clearfix
+              i.icon-calendar
+              h3.panel-title Inputs
+
+            .panel-body
+              form#searchParams.form-horizontal.row-border(action='/', method='post', role='form', style='width: 95%')
+                h2.user-heading Who Are You?
+                input#txtUsername.form-control(name='username', placeholder='User', required='', autofocus='')
+
+            .panel-body
+              .form-group
+                label.col-md-2.control-label(for='sel1') Select:
+                .col-md-10
+                  .form-group
+                    select#sel1.form-control(name='main', form='searchParams', style='width: 95%')
+                      option
+                    select#sel2.form-control(multiple='', name='sub', form='searchParams', style='width: 95%')
+                      option
+                button.btn.btn-sm.btn-primary.btn-block(type='button', style='width:45%;margin: auto;') Submit Search Parameters
+  .container
+    #map.container //loads the leaflet map
+    table#table(data-id-field='id', data-page-list='[10, 25, 50, 100, ALL]', data-pagination='true', data-show-columns='true', data-show-export='true', data-show-pagination-switch='true', data-show-toggle='true', data-toolbar='#toolbar')
+      thead
+          tr
+            th(data-field='name') Name
+            th(data-field='address') Address
+            th(data-field='email') Email
+            th(data-field='tel') Phone
+    #toolbar
+      select.form-control
+          option(value='') Export Basic
+          option(value='all') Export All
+          option(value='selected') Export Selected
