@@ -20,10 +20,7 @@ class authAPIs(object):
             return json.loads(jsonfile.read())
 
     def auth(self):
-            if self.api == "Factual":
-                 factual = Factual(self.keys["Factual"]["OAuth Key"], self.keys["Factual"]["OAuth Secret"])
-                 return factual
-                 #self.category_ids
+            if     #self.category_ids
                  #self.chain
 
 class searchParams(object):
