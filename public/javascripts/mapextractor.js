@@ -118,7 +118,6 @@ function post() {
         data: JSON.stringify(routepoints),
         success: function(data) {
             results = data;//results from API call
-
         },
         complete: function(data) {
             loadTable();
@@ -136,7 +135,6 @@ function loadTable() {
     $(function() {
         $('#table').bootstrapTable({
             data: results
-
         });
     });
 }
@@ -163,11 +161,11 @@ $(function() {
 
 //messy forms..kinda specific to the factual structure?  not sure how hard to plug in other APIS, like OSM
 
-jsonObj = bigcats[0].children
+// jsonObj = bigcats[0].children
 var bigarray = [];
-for(var i = 0, len = jsonObj .length; i < len; i++) {
-  bigarray.push( {"text": jsonObj[i].label, "id" : jsonObj[i].id});
-}
+// for(var i = 0, len = jsonObj .length; i < len; i++) {
+//   bigarray.push( {"text": jsonObj[i].label, "id" : jsonObj[i].id});
+// }
 
 var big_cats = '';
 var id = parseInt($(sel1).val());
@@ -192,9 +190,9 @@ var selectone = $(sel1).select2(
 ).on("select2:select", function() {
   id = parseInt($(sel1).val());
   console.log('change');
-  filtered = jQuery.grep(bigcats[0].children, function( item, index ) {
-    return ( item.id == id  );
-  });
+  // filtered = jQuery.grep(bigcats[0].children, function( item, index ) {
+  //   return ( item.id == id  );
+  // });
   subCats();
 });
 

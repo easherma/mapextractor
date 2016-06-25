@@ -1,13 +1,14 @@
 const Factual = require('factual-api'),
-      factual = new Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow');
+      auth = require('./auth.js')
+      factual = new Factual(auth.key, auth.secret);
 
 
 module.exports = {
-  authAPIs: function(object){
-    return (factual);
+  factual: function() {
+    return factual;
   },
   searchParams: function(object){
-    console.log(object);
+
   },
   API_output: function(object){},
   looper: function(object){}
