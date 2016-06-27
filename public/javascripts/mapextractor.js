@@ -161,10 +161,11 @@ $(function() {
 
 //messy forms..kinda specific to the factual structure?  not sure how hard to plug in other APIS, like OSM
 
-var bigarray = [];
-for(i in bigcats.children) {
-  let bigCategory = bigcats.children[i];
-  bigarray.push({'text': bigCategory.label, 'id': bigCategory.id});
+//load select2
+var mainArray = [];
+for(i in mainCategories.children) {
+  let main = mainCategories.children[i];
+  mainArray.push({'text': main.label, 'id': main.id});
 }
 
 var big_cats = '';
@@ -175,10 +176,7 @@ function subCats(){
     var sub_cats = '';
     if (filtered.length !== 0) {
       for (i =0; i < filtered[0].children.length; i++) {
-      //sub_cats += '<select class="form-control" id ="sel2">';
       sub_cats += '<option value ='+ filtered[0].children[i].id + '>' + filtered[0]['children'][i].label + '</option><br>';
-      //catray.push("{id:" + filtered[0].children[i].id + "},{text:"+ filtered[0]['children'][i].label +"}" );
-      //sub_cats += '</select>'
     }
     document.getElementById('sel2').innerHTML = sub_cats;
   }
@@ -186,17 +184,17 @@ function subCats(){
 
 
 var selectone = $(sel1).select2(
-  {data: bigarray, placeholder: "Select a Business Category First", allowClear: true}
+  {data: mainArray, placeholder: "Select a Business Category First", allowClear: true}
 ).on("select2:select", function() {
   id = parseInt($(sel1).val());
   console.log('change');
-  filtered = jQuery.grep(bigcats[0].children, function( item, index ) {
+  filtered = jQuery.grep(mainCategories.children, function( item, index ) {
     return ( item.id == id  );
   });
   subCats();
 });
 
 var selecttwo = $(sel2).select2({allowClear: true, placeholder: "Optional Sub-Categories"});
-$(sel1).on("change", function() {
-  subCats();
-});
+// $(sel1).on("change", function() {
+//   subCats();
+// });
