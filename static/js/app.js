@@ -52,13 +52,13 @@ routeControl = L.Routing.control({
 //create circels based on waypoints
 routeControl.on('waypointschanged', function(wp) {
   markers = routeControl.getWaypoints();
-  circles.clearLayers();
+  circles.clearLayers(); //leaflet function
   circleSet = [];
   for (var i = 0; i < wp.waypoints.length; i++) {
     circleSet.push(wp.waypoints[i].latLng);
   };
   $(circleSet).each(function(i){
-    if (circleSet[i]  !== undefined){
+    if (typeof circleSet[i] == undefined){
       L.circle(circleSet[i], 12000).addTo(circles);
     }
   });
