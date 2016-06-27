@@ -161,11 +161,10 @@ $(function() {
 
 //messy forms..kinda specific to the factual structure?  not sure how hard to plug in other APIS, like OSM
 
-console.log("bigcats"+bigcats[0]);
-jsonObj = bigcats[0].children
 var bigarray = [];
-for(var i = 0, len = jsonObj .length; i < len; i++) {
-  bigarray.push( {"text": jsonObj[i].label, "id" : jsonObj[i].id});
+for(i in bigcats.children) {
+  let bigCategory = bigcats.children[i];
+  bigarray.push({'text': bigCategory.label, 'id': bigCategory.id});
 }
 
 var big_cats = '';
