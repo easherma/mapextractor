@@ -16,9 +16,8 @@ router.get('/', (req, res, next) => {
 
   requestify.get('https://api.factual.com/categories?options={"lang":"en","format":"tree"}&KEY=SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu')
           .then((response) => {
-            res.render('index');
-            // console.log(response.body);
-            // res.render('index', {results: [], parsed_categories: response.body, params: params});
+            console.log(response.body);
+            res.render('index', {results: [], parsed_categories: response.body, params: params});
           })
 });
 

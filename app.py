@@ -16,7 +16,7 @@ userParams = str(search.params)
 @app.route('/')
 def index():
     results = []
-    #print vars(biz)
+    print vars(biz)
     print search.params
     print vars(search)
     try:

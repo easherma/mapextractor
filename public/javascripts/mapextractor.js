@@ -161,6 +161,7 @@ $(function() {
 
 //messy forms..kinda specific to the factual structure?  not sure how hard to plug in other APIS, like OSM
 
+console.log("bigcats"+bigcats[0]);
 jsonObj = bigcats[0].children
 var bigarray = [];
 for(var i = 0, len = jsonObj .length; i < len; i++) {

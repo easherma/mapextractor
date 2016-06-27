@@ -2,13 +2,6 @@ extends layout
 
 block content
 
-  //- script.
-    var results = {{results|tojson|safe}};
-    var parsed_categories = {{parsed_categories|tojson|safe}};
-    var bigcats= parsed_categories;
-    var cats = parsed_categories;
-    var params = {{params|tojson|safe}};
-
   .container
     .title
       h1 Campaign Planner
