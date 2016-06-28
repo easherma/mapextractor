@@ -17,20 +17,20 @@ block content
               h3.panel-title Inputs
 
             .panel-body
-              form#searchParams.form-horizontal.row-border(action='/', method='post', role='form', style='width: 95%')
+              form#searchParams.form-horizontal.row-border(action='/getParams', method='post', style='width: 95%')
                 h2.user-heading Who Are You?
                 input#txtUsername.form-control(name='username', placeholder='User', required='', autofocus='')
 
-            .panel-body
-              .form-group
-                label.col-md-2.control-label(for='sel1') Select:
-                .col-md-10
+                .panel-body
                   .form-group
-                    select#sel1.form-control(name='main', form='searchParams', style='width: 95%')
-                      option
-                    select#sel2.form-control(multiple='', name='sub', form='searchParams', style='width: 95%')
-                      option
-                button.btn.btn-sm.btn-primary.btn-block(type='button', style='width:45%;margin: auto;') Submit Search Parameters
+                    label.col-md-2.control-label(for='sel1') Select:
+                    .col-md-10
+                      .form-group
+                        select#sel1.form-control(name='main', style='width: 95%')
+                          option
+                        select#sel2.form-control(multiple='', name='sub', style='width: 95%')
+                          option
+                    button.btn.btn-sm.btn-primary.btn-block(type='submit', style='width:45%;margin: auto;') Submit Search Parameters
   .container
     #map.container //loads the leaflet map
     table#table(data-id-field='id', data-page-list='[10, 25, 50, 100, ALL]', data-pagination='true', data-show-columns='true', data-show-export='true', data-show-pagination-switch='true', data-show-toggle='true', data-toolbar='#toolbar')
