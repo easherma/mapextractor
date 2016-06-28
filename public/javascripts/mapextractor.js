@@ -173,12 +173,12 @@ var id = parseInt($(sel1).val());
 var filtered = [];
 var catray = [];
 function subCats(){
-    var sub_cats = '';
+    let sub_cats = '';
     if (filtered.length !== 0) {
       for (i =0; i < filtered[0].children.length; i++) {
       sub_cats += '<option value ='+ filtered[0].children[i].id + '>' + filtered[0]['children'][i].label + '</option><br>';
     }
-    document.getElementById('sel2').innerHTML = sub_cats;
+    $('#sel2').html(sub_cats);
   }
 }
 
@@ -186,10 +186,11 @@ function subCats(){
 var selectone = $(sel1).select2(
   {data: mainArray, placeholder: "Select a Business Category First", allowClear: true}
 ).on("select2:select", function() {
+  $('#sel2').select2('val', ''); //clear subcategory if main is changed
   id = parseInt($(sel1).val());
   console.log('change');
-  filtered = jQuery.grep(mainCategories.children, function( item, index ) {
-    return ( item.id == id  );
+  filtered = jQuery.grep(mainCategories.children,( item, index ) => {
+    return id == item.id;
   });
   subCats();
 });
