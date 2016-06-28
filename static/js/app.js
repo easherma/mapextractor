@@ -144,9 +144,6 @@ function loadTable() {
 //submit search params
 $(function() {
     $('button').click(function() {
-        var user = $('#txtUsername').val();
-        var main = $(sel1);
-        var sub = $(sel2).val();
         $.ajax({
             url: '/getParams',
             data: $('form').serialize(),
