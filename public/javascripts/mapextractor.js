@@ -1,4 +1,7 @@
 $(function() {
+
+// $(document).ready(function(){
+
   routepoints = [];
   //create the map and router
   var map =
@@ -11,7 +14,7 @@ $(function() {
   ]);
 
 
-  var additional_attrib = 'app created by Eric Sherman, node version by Jinno Redovan';
+  var additional_attrib = 'app created by Eric Sherman';
   //add basemap to map
   var basemap_0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: additional_attrib + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
@@ -108,8 +111,15 @@ $(function() {
 
   //add buttons for routing and drawing results
   //submit parmeters, get routepoints, send points, draw resuls
-  $(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"getRoutepoints();post();\" />");
-  $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\" onclick=\"drawResults();\" />");
+  // $(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"getRoutepoints();post();\" />");
+  // $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\" onclick=\"drawResults();\" />");
+  $(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\"/>");
+  $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\"/>");
+
+  $('#clickMe').on('click', function(){
+    getRoutepoints();
+    post();
+  });
 
   //results, output
   function post() {
