@@ -1,5 +1,5 @@
 $(function() {
-  outepoints = [];
+  routepoints = [];
   //create the map and router
   var map =
   L.map('map', {

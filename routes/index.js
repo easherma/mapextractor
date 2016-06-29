@@ -17,13 +17,10 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/getParams', (req, res, next) => {
-  console.log("yeeee");
-  console.log(req.body);
-  //res.render('index');
 });
 
 router.post('/call', (req, res, next) => {
-  //res.render('index');
+  console.log(req.body);
 });
 
 module.exports = router;
