@@ -20,14 +20,41 @@ router.post('/getParams', (req, res, next) => {
 });
 
 router.post('/call', (req, res, next) => {
+  var radius = 25000,
+      limit = 50,
+      offset = 10;
   var route = req.body;
-  if (route.length > 0) {
+
+  if (route.length > 0) { //check if empty
+
+    var array = [];
+
     for(x in route) {
       console.log(route[x]);
       var loc = route[x];
-      // var places = factual.table('places');
+      // Geo filter doc:
+
+      tasks = function tasks(callback) {
+        for (var i = 0; i < 2; i++) {
+          factual.get('/t/places-us', {
+            filters:{"$and":[{"country":{"$eq":"US"}},
+          {"category_ids":{"$includes":"2, 3"}}]},
+          geo:{"$circle":{"$center":[34.041195,-118.331518],"$meters":radius}}, offset:50*i, limit:limit},
+          (error, res) => {
+            if (!error){
+              return callback(res.data[i]);
+            }
+          });
+        }
+      }
+
+      tasks(function(resp){
+        array.push(resp);
+        console.log(array.length);
+      });
     }
   }
+
 });
 
 module.exports = router;
