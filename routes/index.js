@@ -6,6 +6,8 @@ const Factual = require('factual-api'),
       auth = require('../auth.js')
       factual = new Factual(auth.key, auth.secret);
 
+const async = require('async');
+
 /* GET home page. */
 router.get('/', (req, res, next) => {
 
@@ -23,38 +25,38 @@ router.post('/call', (req, res, next) => {
   var radius = 25000,
       limit = 50,
       offset = 10;
-  var route = req.body;
+  var routes = req.body.routepoints;
+  var userParams = req.body.userParams;
 
-  if (route.length > 0) { //check if empty
+  //TODO: try a Promise to handle the end of the tasks or
+  //TODO: test http://stackoverflow.com/questions/15170280/node-js-api-calls-in-an-async-loop
+  //making multiple api calls in async forEach
 
-    var array = [];
+  if (routes.length > 0) { //check if empty
 
-    for(x in route) {
-      console.log(route[x]);
-      var loc = route[x];
-      // Geo filter doc:
-
-      tasks = function tasks(callback) {
-        for (var i = 0; i < 2; i++) {
-          factual.get('/t/places-us', {
-            filters:{"$and":[{"country":{"$eq":"US"}},
-          {"category_ids":{"$includes":"2, 3"}}]},
-          geo:{"$circle":{"$center":[34.041195,-118.331518],"$meters":radius}}, offset:50*i, limit:limit},
-          (error, res) => {
-            if (!error){
-              return callback(res.data[i]);
-            }
-          });
+    var ran = 0;
+    var resArr = [];
+    console.log(routes);
+    routes.forEach((route, index, array) => {
+      console.log(route);
+      factual.get('/t/places-us', {"include_count":"true",
+        filters:{"$and":[{"country":{"$eq":"US"}},
+      {"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}}]},
+      geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":radius}}, limit:limit},
+      (error, response) => {
+        if (!error){
+          console.log(response.included_rows+" "+response.total_row_count);
+          ran++;
+          resArr.push(response.data);
+          if (ran === array.length) {
+            res.json(resArr);
+          }
+        } else {
+          console.log(error);
         }
-      }
-
-      tasks(function(resp){
-        array.push(resp);
-        console.log(array.length);
       });
-    }
+    });
   }
-
 });
 
 module.exports = router;

@@ -84,6 +84,9 @@ $(function() {
   //get route waypoints and push them. this gets posted
   function getRoutepoints() {
 
+    //clear array to avoid adding dupes
+    routepoints.splice(0,routepoints.length);
+
       for (var i = 0; i < routeControl.getWaypoints().length; i++) {
           console.log("getting routepoints")
           console.log(getRoutepoints);
@@ -121,13 +124,28 @@ $(function() {
     post();
   });
 
+  $('#draw').on('click', function(){
+    drawResults();
+  });
+
   //results, output
   function post() {
+
+      routeAndParams = {
+        routepoints: routepoints,
+        userParams: {
+          main: $('#sel1').val(),
+          sub: $('#sel2').val(),
+          user: $('#txtUsername').val()
+        }
+      };
+
       $.ajax({
           type: 'POST',
           url: '/call',
-          data: JSON.stringify(routepoints),
+          data: JSON.stringify(routeAndParams),
           success: function(data) {
+            console.log(data);
               results = data;//results from API call
           },
           complete: function(data) {
