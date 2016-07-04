@@ -145,6 +145,7 @@ $(function() {
           url: '/call',
           data: JSON.stringify(routeAndParams),
           success: function(data) {
+            console.log("DATAAA");
             console.log(data);
               results = data;//results from API call
           },

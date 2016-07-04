@@ -36,26 +36,30 @@ router.post('/call', (req, res, next) => {
 
     var ran = 0;
     var resArr = [];
-    console.log(routes);
+    
     routes.forEach((route, index, array) => {
-      console.log(route);
       factual.get('/t/places-us', {"include_count":"true",
         filters:{"$and":[{"country":{"$eq":"US"}},
       {"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}}]},
       geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":radius}}, limit:limit},
       (error, response) => {
         if (!error){
-          console.log(response.included_rows+" "+response.total_row_count);
           ran++;
           resArr.push(response.data);
           if (ran === array.length) {
-            res.json(resArr);
+            res.json(flattenArray(resArr));
           }
         } else {
           console.log(error);
         }
       });
     });
+
+    function flattenArray(arr) {
+      return arr.reduce((a, b) => {
+        return a.concat(b);
+      });
+    }
   }
 });
 
