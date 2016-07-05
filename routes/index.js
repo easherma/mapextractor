@@ -36,23 +36,25 @@ router.post('/call', (req, res, next) => {
 
     var ran = 0;
     var resArr = [];
-    
+
     routes.forEach((route, index, array) => {
-      factual.get('/t/places-us', {"include_count":"true",
-        filters:{"$and":[{"country":{"$eq":"US"}},
-      {"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}}]},
-      geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":radius}}, limit:limit},
-      (error, response) => {
-        if (!error){
-          ran++;
-          resArr.push(response.data);
-          if (ran === array.length) {
-            res.json(flattenArray(resArr));
+      for (var i=0; i < 2; i++) {
+        factual.get('/t/places-us', {"include_count":"true",
+          filters:{"$and":[{"country":{"$eq":"US"}},
+        {"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}}]},
+        geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":radius}}, offset: 50*i, limit:limit},
+        (error, response) => {
+          if (!error){
+            ran++;
+            resArr.push(response.data);
+            if (ran === array.length) {
+              res.json(flattenArray(resArr));
+            }
+          } else {
+            console.log(error);
           }
-        } else {
-          console.log(error);
-        }
-      });
+        });
+      }
     });
 
     function flattenArray(arr) {
