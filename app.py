@@ -133,7 +133,7 @@ def call():
         print "PATH"
         print query.path
         print "RESPONSE"
-        print query.response
+        #print query.response
         q_values = vars(query)
         ##print vars(query.user)
         print "USER"
@@ -151,16 +151,19 @@ def call():
 
         df2 = pd.DataFrame(p)
         #df2.to_csv("p.csv",  mode='w+', encoding='utf-8')
-        latest_df = datetime.now().strftime("%m-%d-%Y-%H:%M")
-        print latest_df
+        latest_df = datetime.now().strftime("%m-%d-%Y-%H.%M")
+        filename = "deduped" + str(latest_df) + ".csv"
+        print filename
         df.to_csv("temp.csv",  mode='w+', encoding='utf-8')
         dfd = pd.read_csv("temp.csv")
-        print dfd.duplicated('factual_id')
+        #print dfd.duplicated('factual_id')
         dfd = dfd.drop_duplicates('factual_id')
         dfd['date'] = str(datetime.now())
         dfd['userParams'] = userParams
         dfd['searchparams'] = str(p)
-        dfd.to_csv("last_de_duped_data.csv",  mode='w+', encoding='utf-8')
+        with open(filename, 'w+') as f:
+            dfd.to_csv(f,  mode='w+', encoding='utf-8')
+
         dfd.to_csv("master_de_duped_data.csv",  mode='a+', encoding='utf-8')
         results = json.dumps(apiout.out)
         #print df
