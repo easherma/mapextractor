@@ -151,7 +151,7 @@ def call():
 
         df2 = pd.DataFrame(p)
         #df2.to_csv("p.csv",  mode='w+', encoding='utf-8')
-        latest_df = datetime.now().strftime("%m-%d-%Y-%H.%M")
+        latest_df = datetime.now().strftime("%m-%d-%Y-%H.%M.%f")
         filename = "deduped" + str(latest_df) + ".csv"
         print filename
         df.to_csv("temp.csv",  mode='w+', encoding='utf-8')
