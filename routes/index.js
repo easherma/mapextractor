@@ -7,10 +7,10 @@ const Factual = require('factual-api'),
       factual = new Factual(auth.key, auth.secret);
 
 const async = require('async');
+const fs = require('file-system');
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
-
   requestify.get('https://api.factual.com/categories?options={"lang":"en","format":"tree"}&KEY=SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu')
           .then((response) => { //same as function(response) {}
             var resp = response.getBody();
@@ -18,9 +18,7 @@ router.get('/', (req, res, next) => {
           })
 });
 
-router.post('/getParams', (req, res, next) => {
-});
-
+//make factual api call
 router.post('/call', (req, res, next) => {
   var radius = 25000,
       limit = 50,
@@ -28,9 +26,7 @@ router.post('/call', (req, res, next) => {
   var routes = req.body.routepoints;
   var userParams = req.body.userParams;
 
-  //TODO: try a Promise to handle the end of the tasks or
-  //TODO: test http://stackoverflow.com/questions/15170280/node-js-api-calls-in-an-async-loop
-  //making multiple api calls in async forEach
+  var incr = 1;
 
   if (routes.length > 0) { //check if empty
 
@@ -48,7 +44,10 @@ router.post('/call', (req, res, next) => {
             ran++;
             resArr.push(response.data);
             if (ran === array.length) {
-              res.json(flattenArray(resArr));
+              let flatRes = flattenArray(resArr);
+              writeToFile('results', flatRes);
+              res.json(flatRes);
+
             }
           } else {
             console.log(error);
@@ -60,6 +59,19 @@ router.post('/call', (req, res, next) => {
     function flattenArray(arr) {
       return arr.reduce((a, b) => {
         return a.concat(b);
+      });
+    };
+
+    function writeToFile(fileName, arr) {
+      fs.stat((fileName+".csv"), (err, stat) => { //check if exists
+        if (err) { //if it doesn't, write to file
+          fs.writeFile((fileName+".csv"), JSON.stringify(arr, null, ""), (err) => {
+            if (err) { throw err;}
+            console.log("File written!");
+          });
+        } else { //if it does exists, write to next fileName
+          writeToFile(('results_'+incr++), arr);
+        }
       });
     }
   }

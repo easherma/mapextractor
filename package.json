@@ -16,6 +16,7 @@
     "serve-favicon": "~2.3.0",
     "factual-api": "*",
     "requestify": "*",
-    "async": "*"
+    "async": "*",
+    "file-system": "*"
   }
 }
