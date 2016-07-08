@@ -1,4 +1,7 @@
 $(function() {
+
+// $(document).ready(function(){
+
   routepoints = [];
   //create the map and router
   var map =
@@ -11,7 +14,7 @@ $(function() {
   ]);
 
 
-  var additional_attrib = 'app created by Eric Sherman, node version by Jinno Redovan';
+  var additional_attrib = 'app created by Eric Sherman';
   //add basemap to map
   var basemap_0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: additional_attrib + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
@@ -59,7 +62,7 @@ $(function() {
       circleSet.push(wp.waypoints[i].latLng);
     };
     $(circleSet).each(function(i){
-      if (circleSet[i]  !== undefined){
+      if (typeof circleSet[i] == undefined){
         L.circle(circleSet[i], 12000).addTo(circles);
       }
     });
@@ -80,6 +83,9 @@ $(function() {
   }
   //get route waypoints and push them. this gets posted
   function getRoutepoints() {
+
+    //clear array to avoid adding dupes
+    routepoints.splice(0,routepoints.length);
 
       for (var i = 0; i < routeControl.getWaypoints().length; i++) {
           console.log("getting routepoints")
@@ -108,15 +114,36 @@ $(function() {
 
   //add buttons for routing and drawing results
   //submit parmeters, get routepoints, send points, draw resuls
-  $(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"getRoutepoints();post();\" />");
-  $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\" onclick=\"drawResults();\" />");
+  // $(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"getRoutepoints();post();\" />");
+  // $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\" onclick=\"drawResults();\" />");
+  $(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Draw Results\"/>");
+  // $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\"/>");
+
+  $('#clickMe').on('click', function(){
+    getRoutepoints();
+    post();
+  });
+
+  // $('#draw').on('click', function(){
+  //   drawResults();
+  // });
 
   //results, output
   function post() {
+
+      routeAndParams = {
+        routepoints: routepoints,
+        userParams: {
+          main: $('#sel1').val(),
+          sub: $('#sel2').val(),
+          user: $('#txtUsername').val()
+        }
+      };
+
       $.ajax({
           type: 'POST',
           url: '/call',
-          data: JSON.stringify(routepoints),
+          data: JSON.stringify(routeAndParams),
           success: function(data) {
               results = data;//results from API call
           },
@@ -125,6 +152,7 @@ $(function() {
               routepoints.length = 0;
               console.log("clear routepoints");
               console.log(routepoints);
+              drawResults();drawResults();
 
           },
           contentType: 'application/json',
