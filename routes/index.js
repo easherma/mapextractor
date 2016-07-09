@@ -1,3 +1,5 @@
+// 'use strict';
+
 const express = require('express');
 const router = express.Router();
 
@@ -23,7 +25,7 @@ router.get('/', (req, res, next) => {
 
 //make factual api call
 router.post('/call', (req, res, next) => {
-  var radius = 25000,
+  const radius = 25000,
       limit = 50,
       offset = 10;
   var routes = req.body.routepoints;
@@ -33,8 +35,8 @@ router.post('/call', (req, res, next) => {
 
   if (routes.length > 0) { //check if empty
 
-    var ran = 0;
-    var resArr = [];
+    var ran = 0,
+        resArr = [];
 
     routes.forEach((route, index, array) => {
       for (var i=0; i < 2; i++) {
@@ -47,7 +49,7 @@ router.post('/call', (req, res, next) => {
             ran++;
             resArr.push(response.data);
             if (ran === array.length) {
-              let flatRes = flattenArray(resArr);
+              var flatRes = flattenArray(resArr);
               writeToFile('results', flatRes);
               res.json(flatRes);
 
@@ -66,13 +68,13 @@ router.post('/call', (req, res, next) => {
     };
 
     function writeToFile(fileName, arr) {
-      fs.stat((fileName+".csv"), (err, stat) => { //check if exists
-        if (err) { //if it doesn't, write to file
+      fs.stat((fileName+".csv"), (err, stat) => {
+        if (err) {
           fs.writeFile((fileName+".csv"), JSON.stringify(arr, null, ""), (err) => {
             if (err) { throw err;}
             console.log("File written!");
           });
-        } else { //if it does exists, write to next fileName
+        } else {
           writeToFile(('results_'+incr++), arr);
         }
       });
