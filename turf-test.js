@@ -42,13 +42,13 @@ var circle = turf.circle(center, 2000, steps, units);
   console.log(bbox);
 
   //get counts of
-  factual.get('/t/places/facets', {"include_count":"true",
-    filters:{"$and":[{"country":{"$eq":"US"}},
-  {"category_ids":{"$includes_any":[24,26,25,23,27]}}]},
-  geo:{"$circle":{"$center":[route.lat,route.lng],"$meters": 2000}}},
-  (error, response) => {
-    console.log(response);
-  });
+  // factual.get('/t/places/facets', {"include_count":"true",
+  //   filters:{"$and":[{"country":{"$eq":"US"}},
+  // {"category_ids":{"$includes_any":[24,26,25,23,27]}}]},
+  // geo:{"$circle":{"$center":[,],"$meters": 2000}}},
+  // (error, response) => {
+  //   console.log(response);
+  // });
 
   factual.get('/t/places-us', {"include_count":"true",
     filters:{"$and":[{"country":{"$eq":"US"}},
