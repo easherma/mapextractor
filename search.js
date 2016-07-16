@@ -12,41 +12,42 @@
   limit = 50,
   offset = 10;
 
-  var route = [{lat: 42.03831, lng: -88.290742},{lat: 41.81173, lng: -87.666227}];
+  // var route = [{lat:   , lng: },{lat: 41.812671180732124, lng: }];
+
+
 
   // Geo filter doc:
 
-  var callFactual = function callFactual(route, callback) {
+  var callFactual = function callFactual() {
     factual.get('/t/places-us', {"include_count": "true",
-      filters:{"$and":[{"country":{"$eq":"US"}},{"name":{"$nin":not}},
-    {"category_ids":{"$includes":"2, 3"}}]},
-    geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":radius}},limit: 50},
+      filters:{"$and":[{"country":{"$eq":"US"}},
+    {"category_ids":{"$includes_any":[24,26]}}]},
+    geo:{"$within":{"$rect":[[41.81981483749364 , -87.65537981264032],[41.803645162506356, -87.6770741873597]]}}, limit:20},
     (error, res) => {
       console.log(error);
       if (!error){
-        console.log(route);
         console.log(res.included_rows+" "+res.total_row_count);
         // for (i in res.data) {
           // console.log(res.data[i].name);
-          callback(res.data);
+          // callback(res.data);
         // }
       }
     });
   }
 
+  callFactual();
+
   var arr = [];
-  for (x in route) {
-    var loc = route[x];
-
-    callFactual(loc, function(res){
-      arr.push(res);
-      if (x === (route.length -1)) {
-        console.log(arr.length);
-      }
-    });
-  }
-
-  route.forEach
+  // for (x in route) {
+  //   var loc = route[x];
+  //
+  //   callFactual(loc, function(res){
+  //     arr.push(res);
+  //     if (x === (route.length -1)) {
+  //       console.log(arr.length);
+  //     }
+  //   });
+  // }
 
 // console.log(tasks.results());
 

@@ -17,6 +17,7 @@
     "factual-api": "*",
     "got": "*",
     "async": "*",
-    "file-system": "*"
+    "file-system": "*",
+    "turf": "*"
   }
 }

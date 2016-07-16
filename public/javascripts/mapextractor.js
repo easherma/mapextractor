@@ -13,7 +13,6 @@ $(function() {
       [41.7934502486, -81.0530349416]
   ]);
 
-
   var additional_attrib = 'app created by Eric Sherman';
   //add basemap to map
   var basemap_0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -53,20 +52,26 @@ $(function() {
       }
   }).addTo(map);
 
-  //create circels based on waypoints
+  var temp = [];
+
+  var circleSet = [];
+
   routeControl.on('waypointschanged', function(wp) {
     markers = routeControl.getWaypoints();
     circles.clearLayers();
-    circleSet = [];
+
+    circleSet.splice(0,circleSet.length);
+
     for (var i = 0; i < wp.waypoints.length; i++) {
       circleSet.push(wp.waypoints[i].latLng);
     };
+
     $(circleSet).each(function(i){
       if (typeof circleSet[i] == undefined){
-        L.circle(circleSet[i], 12000).addTo(circles);
+        L.circle(circleSet[i], 120000).addTo(circles);
       }
     });
-  })
+  });
 
   //methods
 
@@ -116,48 +121,53 @@ $(function() {
   //submit parmeters, get routepoints, send points, draw resuls
   // $(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Run Query\" onclick=\"getRoutepoints();post();\" />");
   // $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\" onclick=\"drawResults();\" />");
-  $(".leaflet-routing-geocoders").append("<input id=\"clickMe\" type=\"button\" value=\"Draw Results\"/>");
+  $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\"/>");
   // $(".leaflet-routing-geocoders").append("<input id=\"draw\" type=\"button\" value=\"Draw Results\"/>");
 
-  $('#clickMe').on('click', function(){
+  $('#draw').on('click', function(){
     getRoutepoints();
     post();
   });
 
-  // $('#draw').on('click', function(){
-  //   drawResults();
-  // });
-
   //results, output
   function post() {
 
-      routeAndParams = {
-        routepoints: routepoints,
-        userParams: {
-          main: $('#sel1').val(),
-          sub: $('#sel2').val(),
-          user: $('#txtUsername').val()
-        }
-      };
+    var boxPoints = [];
 
-      $.ajax({
-          type: 'POST',
-          url: '/call',
-          data: JSON.stringify(routeAndParams),
-          success: function(data) {
-              results = data;//results from API call
-          },
-          complete: function(data) {
-              loadTable();
-              routepoints.length = 0;
-              console.log("clear routepoints");
-              console.log(routepoints);
-              drawResults();drawResults();
+    for (i in circleSet) {
+      var circle = L.circle(circleSet[i], 2000).getBounds();
+      console.log(circle);
+      boxPoints.push(circle);
+    }
 
-          },
-          contentType: 'application/json',
-          dataType: 'json'
-      });
+    routeAndParams = {
+      routepoints: routepoints,
+      boxPoints: boxPoints,
+      userParams: {
+        main: $('#sel1').val(),
+        sub: $('#sel2').val(),
+        user: $('#txtUsername').val()
+      }
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/call',
+        data: JSON.stringify(routeAndParams),
+        success: function(data) {
+            results = data;//results from API call
+        },
+        complete: function(data) {
+            loadTable();
+            routepoints.length = 0; //I don't think this works
+            console.log("clear routepoints");
+            console.log(routepoints);
+            drawResults();
+
+        },
+        contentType: 'application/json',
+        dataType: 'json'
+    });
   }
   //load results from query
   function loadTable() {
@@ -167,25 +177,6 @@ $(function() {
           });
       });
   }
-
-  //submit search params
-  // $(function() {
-  //     $('button').click(() => { //same as function() {}
-  //         $.ajax({
-  //             url: '/getParams',
-  //             data: $('form').serialize(),
-  //             type: 'POST',
-  //             success: function(response) {
-  //                 console.log(response);
-  //             },
-  //             error: function(error) {
-  //                 console.log(error);
-  //             }
-  //         });
-  //     });
-  // });
-
-  //messy forms..kinda specific to the factual structure?  not sure how hard to plug in other APIS, like OSM
 
   //load select2
   var mainArray = [];
