@@ -49,11 +49,12 @@ var circle = turf.circle(center, 2000, steps, units);
   // (error, response) => {
   //   console.log(response);
   // });
-
+//turf returns bbox as (west, south, east, north)
+// from factual rect docs Find places within a rectangular bounding box (points are [top,left],[bottom,right]):
   factual.get('/t/places-us', {"include_count":"true",
     filters:{"$and":[{"country":{"$eq":"US"}},
   {"category_ids":{"$includes_any":[24,26,25,23,27]}}]},
-  geo:{"$within":{"$rect":[[bbox[2] , bbox[3]],[bbox[0], bbox[1]]]}}, limit:50},
+  geo:{"$within":{"$rect":[[bbox[3] , bbox[0]],[bbox[1], bbox[2]]]}}, limit:50},
   (error, response) => {
     console.log(response.total_row_count);
   });
