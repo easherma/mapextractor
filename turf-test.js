@@ -1,5 +1,4 @@
 const turf = require('turf');
-const turf-circle = require('turf-circle');
 
 var Factual = require('factual-api');
 var factual = new Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow');
@@ -18,7 +17,7 @@ routes.forEach((route, index, array) => {
     }
   };
 
-  var buffered = turf.buffer(pt, 500, 'meters');
+  var buffered = turf.buffer(pt, 5000, 'meters');
 
   var center = {
     "type": "Feature",
@@ -32,7 +31,7 @@ routes.forEach((route, index, array) => {
 var steps = 10;
 var units = 'kilometers';
 
-var circle = turf.circle(center, 2000, steps, units);
+// var circle = turf.circle(center, 2000, steps, units);
 
 // console.log(circle);
 
@@ -53,9 +52,10 @@ var circle = turf.circle(center, 2000, steps, units);
 // from factual rect docs Find places within a rectangular bounding box (points are [top,left],[bottom,right]):
   factual.get('/t/places-us', {"include_count":"true",
     filters:{"$and":[{"country":{"$eq":"US"}},
-  {"category_ids":{"$includes_any":[24,26,25,23,27]}}]},
-  geo:{"$within":{"$rect":[[bbox[3] , bbox[0]],[bbox[1], bbox[2]]]}}, limit:50},
+  {"category_ids":{"$includes_any":[2]}}]},
+  geo:{"$within":{"$rect":[[bbox[2] , bbox[3]],[bbox[0], bbox[1]]]}}, limit:50},
   (error, response) => {
     console.log(response.total_row_count);
+    console.log(response);
   });
 });
