@@ -1,3 +1,4 @@
+
 // 'use strict';
 
 const express = require('express');
@@ -10,6 +11,8 @@ const Factual = require('factual-api'),
 
 const async = require('async');
 const fs = require('file-system');
+
+const turf = require('turf');
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
@@ -40,44 +43,44 @@ router.get('/', (req, res, next) => {
 //
 //     routes.forEach((route, index, array) => {
 //       for (var i=0; i < 2; i++) {
-        // factual.get('/t/places-us', {"include_count":"true",
-        //   filters:{"$and":[{"country":{"$eq":"US"}},
-        // {"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}}]},
-        // geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":radius}}, offset: 50*i, limit:limit},
-        // (error, response) => {
-        //   if (!error){
-        //     ran++;
-        //     resArr.push(response.data);
-        //     if (ran === array.length) {
-        //       var flatRes = flattenArray(resArr);
-        //       writeToFile('results', flatRes);
-        //       res.json(flatRes);
-        //     }
-        //   } else {
-        //     console.log(error);
-        //   }
-        // });
+//         factual.get('/t/places-us', {"include_count":"true",
+//           filters:{"$and":[{"country":{"$eq":"US"}},
+//         {"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}}]},
+//         geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":radius}}, offset: 50*i, limit:limit},
+//         (error, response) => {
+//           if (!error){
+//             ran++;
+//             resArr.push(response.data);
+//             if (ran === array.length) {
+//               var flatRes = flattenArray(resArr);
+//               writeToFile('results', flatRes);
+//               res.json(flatRes);
+//             }
+//           } else {
+//             console.log(error);
+//           }
+//         });
 //       }
 //     });
 //
-    // function flattenArray(arr) {
-    //   return arr.reduce((a, b) => {
-    //     return a.concat(b);
-    //   });
-    // };
-    //
-    // function writeToFile(fileName, arr) {
-    //   fs.stat((fileName+".csv"), (err, stat) => {
-    //     if (err) {
-    //       fs.writeFile((fileName+".csv"), JSON.stringify(arr, null, ""), (err) => {
-    //         if (err) { throw err;}
-    //         console.log("File written!");
-    //       });
-    //     } else {
-    //       writeToFile(('results_'+incr++), arr);
-    //     }
-    //   });
-    // }
+//     function flattenArray(arr) {
+//       return arr.reduce((a, b) => {
+//         return a.concat(b);
+//       });
+//     };
+//
+//     function writeToFile(fileName, arr) {
+//       fs.stat((fileName+".csv"), (err, stat) => {
+//         if (err) {
+//           fs.writeFile((fileName+".csv"), JSON.stringify(arr, null, ""), (err) => {
+//             if (err) { throw err;}
+//             console.log("File written!");
+//           });
+//         } else {
+//           writeToFile(('results_'+incr++), arr);
+//         }
+//       });
+//     }
 //   }
 // });
 
@@ -94,20 +97,33 @@ router.post('/call', (req, res, next) => {
 
   var incr = 1;
 
-  if (routes.length > 0) { //check if empty
+  if (points.length > 0) { //check if empty
 
     var ran = 0,
         resArr = [];
+    console.log();
 
-    routes.forEach((route, index, array) => {
-      console.log(routes[i]._northEast.lat+" "+routes[i]._northEast.lng);
-      console.log(routes[i]._southWest.lat+" "+routes[i]._southWest.lng);
+    points.forEach((point, index, array) => {
+      var pt = {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+          "type": "Point",
+          "coordinates": [point.lng, point.lat]
+        }
+      };
+
+      var buffered = turf.buffer(pt, 25000, 'meters');
+      var bbox = turf.bbox(buffered);
+
       console.log(userParams.main+" "+userParams.sub);
+
       factual.get('/t/places-us', {"include_count":"true",
         filters:{"$and":[{"country":{"$eq":"US"}},
       {"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}}]},
-      geo:{"$within":{"$rect":[[route._northEast.lat , route._northEast.lng],[route._southWest.lat, route._southWest.lng]]}}, limit:50},
+      geo:{"$within":{"$rect":[[bbox[3] , bbox[0]],[bbox[1], bbox[2]]]}}, limit:50},
       (error, response) => {
+        console.log(response.total_row_count);
         if (!error){
           ran++;
           resArr.push(response.data);
@@ -121,30 +137,6 @@ router.post('/call', (req, res, next) => {
         }
       });
     });
-
-    // routes.forEach((route, index, array) => {
-    //
-    //   for (var i=0; i < 2; i++) {
-    //     factual.get('/t/places-us', {"include_count":"true",
-    //       filters:{"$and":[{"country":{"$eq":"US"}},
-    //     {"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}}]},
-    //     geo:{"$within":{"$rect":[[route.lat, route.lat],[route.width2, route.height2]]}}, offset: 50*i, limit:limit},
-    //     (error, response) => {
-    //       if (!error){
-    //         ran++;
-    //         resArr.push(response.data);
-    //         console.log(response);
-    //         if (ran === array.length) {
-    //           var flatRes = flattenArray(resArr);
-    //           writeToFile('results', flatRes);
-    //           res.json(flatRes);
-    //         }
-    //       } else {
-    //         console.log(error);
-    //       }
-    //     });
-    //   }
-    // });
 
     function flattenArray(arr) {
       return arr.reduce((a, b) => {
