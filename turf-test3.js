@@ -13,7 +13,7 @@ routes.forEach((route, index, array) => {
     {"category_ids":{"$includes_any":[24]}}]},
     geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":25000}}, limit:50},
     (error, response) => {
-      console.log(response);
+      // console.log(response);
       makeDots(response.total_row_count);
     });
 

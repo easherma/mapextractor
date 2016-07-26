@@ -116,6 +116,7 @@ router.post('/call', (req, res, next) => {
       var buffered = turf.buffer(pt, 25000, 'meters');
       var bbox = turf.bbox(buffered);
 
+
       console.log(userParams.main+" "+userParams.sub);
 
       factual.get('/t/places-us', {"include_count":"true",

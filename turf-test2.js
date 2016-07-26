@@ -22,6 +22,8 @@ routes.forEach((route, index, array) => {
   var bboxPoly = turf.bboxPolygon(bbox);
   features.push(bboxPoly);
 
+  console.log(bboxPoly);
+
   factual.get('/t/places-us', {"include_count":"true",
     filters:{"$and":[{"country":{"$eq":"US"}},
   {"category_ids":{"$includes_any":[24,26,22.23,21]}}]},
