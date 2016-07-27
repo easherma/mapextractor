@@ -1,6 +1,7 @@
 const turf = require('turf');
 const Factual = require('factual-api');
 const factual = new Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow');
+const fs = require('file-system');
 
 var routes = [ { lat: 41.81173, lng: -87.666227},
   { lat: 42.03725, lng: -88.28119 } ];
@@ -18,6 +19,7 @@ routes.forEach((route, index, array) => {
 
   var buffered = turf.buffer(pt, 10000, 'meters');
   var tempBox = turf.bbox(buffered);
+  var tempbboxPoly = turf.bboxPolygon(tempBox);
 
   factual.get('/t/places-us', {"include_count":"true",
       filters:{"$and":[{"country":{"$eq":"US"}},
@@ -25,7 +27,7 @@ routes.forEach((route, index, array) => {
     geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":10000}}, limit:50},
     (error, response) => {
       console.log("COUNT "+response.total_row_count);
-      // recParseCount(response.total_row_count);
+      recParseCount(response.total_row_count);
     });
 
   factual.get('/t/places-us', {"include_count":"true",
@@ -69,8 +71,10 @@ routes.forEach((route, index, array) => {
   }
 
   function parseGrid(squareGrid) {
+    writeToFile(squareGrid);
     for (i in squareGrid.features) {
       var newBox = turf.bbox(squareGrid.features[i].geometry);
+      console.log(squareGrid.features[i].geometry.coordinates);
       bboxCall(newBox);
     }
   }
@@ -84,6 +88,13 @@ routes.forEach((route, index, array) => {
       if (!error && response.total_row_count > 0){
         console.log(response.total_row_count);
       }
+    });
+  }
+
+  function writeToFile(res) {
+    fs.writeFile("features.csv", JSON.stringify(res, null, ""), (err) => {
+      if (err) { throw err;}
+      console.log("File written!");
     });
   }
 
