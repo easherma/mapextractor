@@ -101,7 +101,6 @@ router.post('/call', (req, res, next) => {
 
     var ran = 0,
         resArr = [];
-    console.log();
 
     points.forEach((point, index, array) => {
       var pt = {
