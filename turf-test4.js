@@ -36,8 +36,6 @@ routes.forEach((route, index, array) => {
     console.log("COUNT "+count);
     if (count > 50) {
       splitCount();
-      //pass in new count
-      // recParseCount(newCount);
     } else {
       //use response data
 

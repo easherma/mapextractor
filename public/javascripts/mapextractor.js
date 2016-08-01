@@ -75,7 +75,21 @@ $(function() {
 
   //methods
 
-  function drawResults() {
+  function drawQuads (bbox) {
+    var quads = [];
+    for (var i = 0; i < bbox.length; i++) {
+      var test = quads.push(turf.bboxPolygon([bbox[i]['xmin'],bbox[i]['ymin'], bbox[i]['xmax'],bbox[i]['ymax']] ));
+      console.log(quads);
+    }
+    var fc = turf.featureCollection(quads);
+    L.geoJson(fc).addTo(map);
+    console.log(fc);
+    return quads;
+  }
+
+  function drawResults(bbox) {
+      drawQuads(bbox);
+
       var markers = results;
       for (var i = 0; i < markers.length; i++) {
           var lon = markers[i]['latitude'];
@@ -162,7 +176,8 @@ $(function() {
             routepoints.length = 0; //I don't think this works
             console.log("clear routepoints");
             console.log(routepoints);
-            drawResults();
+            console.log(data);
+            drawResults(data.responseJSON);
 
         },
         contentType: 'application/json',
