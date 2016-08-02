@@ -77,13 +77,18 @@ $(function() {
 
   function drawQuads (bbox) {
     var quads = [];
-    for (var i = 0; i < bbox.length; i++) {
-      var test = quads.push(turf.bboxPolygon([bbox[i]['xmin'],bbox[i]['ymin'], bbox[i]['xmax'],bbox[i]['ymax']] ));
-      console.log(quads);
-    }
+    console.log("bbox");
+    bbox.forEach((box, index, array) => {
+      for (var i = 0; i < box.length; i++) {
+        var test = quads.push(turf.bboxPolygon([box[i]['xmin'],box[i]['ymin'], box[i]['xmax'],box[i]['ymax']] ));
+        console.log(quads);
+      }
+    });
+    
     var fc = turf.featureCollection(quads);
     L.geoJson(fc).addTo(map);
     console.log(fc);
+
     return quads;
   }
 

@@ -31,8 +31,10 @@ router.post('/call', (req, res, next) => {
   // var routes = req.body.routepoints;
   var userParams = req.body.userParams;
 
-  var routes = [
+  var routes = [{ lat: 41.81173, lng: -87.666227},
     { lat: 42.03725, lng: -88.28119 } ];
+
+  var routeArr = [];
 
   routes.forEach((route, index, array) => {
     var ran = 0;
@@ -84,8 +86,11 @@ router.post('/call', (req, res, next) => {
     }
 
     function parseGrid(boxes) {
-      console.log(boxes);
-      res.json(boxes);
+      routeArr.push(boxes);
+      if (index == 0) {
+        console.log(routeArr);
+        res.json(routeArr);
+      }
     }
   });
 
