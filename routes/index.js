@@ -31,13 +31,13 @@ router.post('/call', (req, res, next) => {
   // var routes = req.body.routepoints;
   var userParams = req.body.userParams;
 
-  var routes = [{ lat: 41.81173, lng: -87.666227},
+  var routes = [//{ lat: 41.81173, lng: -87.666227},
     { lat: 42.03725, lng: -88.28119 } ];
 
   var routeArr = [];
 
+  var ran = 0;
   routes.forEach((route, index, array) => {
-    var ran = 0;
     var pt = {
       "type": "Feature",
       "properties": {},
@@ -47,27 +47,49 @@ router.post('/call', (req, res, next) => {
       }
     };
 
+    var bbox = turf.bbox(turf.buffer(pt, 10000, 'meters'));
+
     factual.get('/t/places-us', {"include_count":"true",
       filters:{"$and":[{"country":{"$eq":"US"}},
-    {"category_ids":{"$includes_any":[23]}}]},
-    geo:{"$circle":{"$center":[route.lat,route.lng],"$meters":25000}}, limit:50},
+    {"category_ids":{"$includes_any":[2]}}]},
+    geo:{"$within":{"$rect":[[bbox[3] , bbox[0]],[bbox[1], bbox[2]]]}}, limit:50},
     (error, response) => {
-      recParseCount(response.total_row_count, bbox);
+      if (!error && response.total_row_count > 0){
+        console.log("ORIGINAL "+response.total_row_count);
+        recParseCount(response.total_row_count, bbox);
+      }
     });
 
-    var bbox = turf.bbox(turf.buffer(pt, 25000, 'meters'));
-
-    function recParseCount(count, bbox) {
-      console.log(bbox);
-      console.log("COUNT "+count);
+    var runs = 0;
+    function recParseCount(count, bbox, completed) {
       if (count > 50) {
-        parseGrid(splitBbox(bbox));
-      } else {
+        var newBox = splitBbox(bbox);
 
-        var bbox = turf.bbox(buffered);
-        bboxCall(bbox, 0);
+        newBox.forEach((box, index, array) => {
+          factual.get('/t/places-us', {"include_count":"true",
+            filters:{"$and":[{"country":{"$eq":"US"}},
+          {"category_ids":{"$includes_any":[2]}}]},
+          geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:1},
+          (error, response) => {
+            if (!error && response.total_row_count > 0){
+              console.log("SPLITTING "+response.total_row_count);
+              runs++;
+              console.log(array.length+" "+runs);
+              if (array.length === runs) {
+                recParseCount(response.total_row_count, newBox, true);
+              } else {
+                recParseCount(response.total_row_count, newBox, false);
+              }
+            }
+          });
+        });
+      } else {
+        if (completed) {ran++};
+        parseGrid(bbox);
       }
     }
+
+    // function getNewCount()
 
     function splitBbox(bbox) {
       var xmin = bbox[0],
@@ -87,8 +109,8 @@ router.post('/call', (req, res, next) => {
 
     function parseGrid(boxes) {
       routeArr.push(boxes);
-      if (index == 0) {
-        console.log(routeArr);
+      if (ran === array.length) {
+        console.log("Complete");
         res.json(routeArr);
       }
     }

@@ -64,6 +64,7 @@ routes.forEach((route, index, array) => {
   }
 
   function bboxCall(bbox, length) {
+    console.log(bbox);
     factual.get('/t/places-us', {"include_count":"true",
       filters:{"$and":[{"country":{"$eq":"US"}},
     {"category_ids":{"$includes_any":[26]}}]},
@@ -74,7 +75,7 @@ routes.forEach((route, index, array) => {
         console.log(response.total_row_count);
         resArr.push(response.data);
         if (ran === length) {
-          console.log(resArr.length);
+          console.log("HERE");
         }
       }
     });
