@@ -4,7 +4,6 @@ const factual = new Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzV
 
 var routes = [ //{ lat: 41.81173, lng: -87.666227},
   { lat: 42.03725, lng: -88.28119 } ];
-var routeArr = [];
 
 routes.forEach((route, index, array) => {
   var pt = {
@@ -17,8 +16,16 @@ routes.forEach((route, index, array) => {
   };
 
   var bbox = turf.bbox(turf.buffer(pt, 10000, 'meters'));
-
   getCount(bbox);
+  //Promise all
+    //get original count
+    //process count
+      //if > 50
+        //split box
+        //recount
+        //process count
+      //else
+        //add to array
 
 });
 
@@ -35,12 +42,9 @@ function getCount(bbox) {
   });
 }
 
-let passed = [],
-    failed = [];
-let ran = 0;
-let getNewCount = (boxes) => {
+function getNewCount(newBoxes) {
   return new Promise((resolve, reject) => {
-    let newCount = boxes.map((box) => {
+    newBoxes.forEach((newBox, index, array) => {
       factual.get('/t/places-us', {"include_count":"true",
         filters:{"$and":[{"country":{"$eq":"US"}},
       {"category_ids":{"$includes_any":[2]}}]},
@@ -58,18 +62,15 @@ let getNewCount = (boxes) => {
       });
     });
   }).then((data) => {
-    console.log("Hey Dude");
-    console.log(data);
+
   });
 }
 
 let parseCount = (count, bbox) => {
-  if(count > 50) {
+  if (count > 50) {
     getNewCount(splitBbox(bbox));
   } else {
-    //add to array
-    console.log("Adding "+ count +" to Array");
-    routeArr.push(bbox);
+
   }
 }
 
@@ -88,8 +89,3 @@ function splitBbox(bbox) {
       {xmin: xmin + halfWidth, ymin: ymin + halfHeight, xmax: xmax, ymax: ymax}
   ];
 }
-
-// let getCount = (bboxes) => {
-//
-//
-// }
