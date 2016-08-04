@@ -35,10 +35,9 @@ function getCount(bbox) {
   });
 }
 
-let passed = [],
-    failed = [];
-let ran = 0;
 let getNewCount = (boxes) => {
+  let newArr = [];
+  let ran = 0;
   return new Promise((resolve, reject) => {
     let newCount = boxes.map((box) => {
       factual.get('/t/places-us', {"include_count":"true",
@@ -47,10 +46,10 @@ let getNewCount = (boxes) => {
       geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:1},
       (error, response) => {
         if (!error && response.total_row_count > 0) {
-          passed.push(response.total_row_count);
+          newArr.push(response.total_row_count);
           ran++;
           if (ran === boxes.length) {
-            resolve(passed);
+            resolve(newArr);
           }
         } else {
           reject(error);
