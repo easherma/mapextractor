@@ -76,6 +76,7 @@ $(function() {
   //methods
 
   function drawQuads (bbox) {
+    console.log(bbox);
     var quads = [];
     console.log("bbox");
     bbox.forEach((box, index, array) => {
@@ -84,7 +85,7 @@ $(function() {
         console.log(quads);
       }
     });
-    
+
     var fc = turf.featureCollection(quads);
     L.geoJson(fc).addTo(map);
     console.log(fc);

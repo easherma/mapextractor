@@ -2,10 +2,11 @@ const turf = require('turf');
 const Factual = require('factual-api');
 const factual = new Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow');
 
-var routes = [ { lat: 41.81173, lng: -87.666227},
+var routes = [ //{ lat: 41.81173, lng: -87.666227},
   { lat: 42.03725, lng: -88.28119 } ];
 
 var master = [];
+var routeCount = 0;
 
 routes.forEach((route, index, array) => {
   var pt = {
@@ -34,6 +35,10 @@ function getCount(bbox) {
         getNewCount(splitBbox(bbox));
       } else {
         master.push(bbox);
+        routeCount++;
+        if (routeCount === routes.length) {
+          pushToFront(master);
+        }
       }
     }
   });
@@ -55,10 +60,10 @@ function getNewCount(newBoxes) {
       (error, response) => {
         if (!error && response.total_row_count > 0) {
           if (isExceeds(response.total_row_count)) {
-            console.log("over");
+            // console.log("over");
             over.push(box);
           } else {
-            console.log("within");
+            // console.log("within");
             within.push(box);
           }
 
@@ -75,9 +80,16 @@ function getNewCount(newBoxes) {
       });
     });
   }).then((data) => {
-
-    if (data.within.length > 0) {master.push(data.within); console.log(master);} //if there are results that within, add to master list
-    if (data.over) {
+    if (data.within.length > 0) {//if there are results that within, add to master list
+      master.push(data.within);
+      routeCount++;
+      if (routeCount === routes.length && data.over.length === 0) {
+        console.log("All Passed");
+        pushToFront(master);
+      }
+    }
+    if (data.over.length > 0) {
+      routeCount--;
       data.over.map((box) => {
         getNewCount(splitBbox(box));
       });
@@ -107,4 +119,9 @@ function splitBbox(bbox) {
       {xmin: xmin, ymin: ymin + halfHeight, xmax: xmin + halfWidth, ymax: ymax},
       {xmin: xmin + halfWidth, ymin: ymin + halfHeight, xmax: xmax, ymax: ymax}
   ];
+}
+
+function pushToFront(bboxes) {
+  console.log(bboxes);
+  console.log("returning to front");
 }

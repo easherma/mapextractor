@@ -28,16 +28,15 @@ router.get('/', (req, res, next) => {
 
 //bbox alt
 router.post('/call', (req, res, next) => {
-  // var routes = req.body.routepoints;
   var userParams = req.body.userParams;
 
-  var routes = [//{ lat: 41.81173, lng: -87.666227},
+  var routes = [ { lat: 41.81173, lng: -87.666227},
     { lat: 42.03725, lng: -88.28119 } ];
 
-  var routeArr = [];
+  var master = [];
+  var routeCount = 0;
 
-  var ran = 0;
-  routes.forEach((route, index, array) => {
+  routes.forEach((route, index, rArray) => {
     var pt = {
       "type": "Feature",
       "properties": {},
@@ -48,7 +47,10 @@ router.post('/call', (req, res, next) => {
     };
 
     var bbox = turf.bbox(turf.buffer(pt, 10000, 'meters'));
+    getCount(bbox);
+  });
 
+  function getCount(bbox) {
     factual.get('/t/places-us', {"include_count":"true",
       filters:{"$and":[{"country":{"$eq":"US"}},
     {"category_ids":{"$includes_any":[2]}}]},
@@ -56,65 +58,101 @@ router.post('/call', (req, res, next) => {
     (error, response) => {
       if (!error && response.total_row_count > 0){
         console.log("ORIGINAL "+response.total_row_count);
-        recParseCount(response.total_row_count, bbox);
+
+        if (isExceeds(response.total_row_count)) {
+          getNewCount(splitBbox(bbox));
+        } else {
+          master.push(bbox);
+          routeCount++;
+          if (routeCount === routes.length) {
+            pushToFront(master);
+          }
+        }
       }
     });
+  }
 
-    var runs = 0;
-    function recParseCount(count, bbox, completed) {
-      if (count > 50) {
-        var newBox = splitBbox(bbox);
+  function getNewCount(newBoxes) {
+    let ran = 0,
+        results = [];
 
-        newBox.forEach((box, index, array) => {
-          factual.get('/t/places-us', {"include_count":"true",
-            filters:{"$and":[{"country":{"$eq":"US"}},
-          {"category_ids":{"$includes_any":[2]}}]},
-          geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:1},
-          (error, response) => {
-            if (!error && response.total_row_count > 0){
-              console.log("SPLITTING "+response.total_row_count);
-              runs++;
-              console.log(array.length+" "+runs);
-              if (array.length === runs) {
-                recParseCount(response.total_row_count, newBox, true);
-              } else {
-                recParseCount(response.total_row_count, newBox, false);
-              }
+    let over = [],
+        within = [];
+
+    return new Promise((resolve, reject) => {
+      newBoxes.forEach((box, index, array) => {
+        factual.get('/t/places-us', {"include_count":"true",
+          filters:{"$and":[{"country":{"$eq":"US"}},
+        {"category_ids":{"$includes_any":[2]}}]},
+        geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:1},
+        (error, response) => {
+          if (!error && response.total_row_count > 0) {
+            if (isExceeds(response.total_row_count)) {
+              over.push(box);
+            } else {
+              within.push(box);
             }
-          });
+
+            ran++;
+            if (ran === newBoxes.length) {
+              results['within'] = within;
+              results['over'] = over;
+              resolve(results);
+            }
+
+          } else {
+            reject(error);
+          }
         });
-      } else {
-        if (completed) {ran++};
-        parseGrid(bbox);
+      });
+    }).then((data) => {
+      if (data.within.length > 0) {//if there are results that within, add to master list
+        master.push(data.within);
+        routeCount++;
+        if (routeCount === routes.length && data.over.length === 0) {
+          console.log("All Passed");
+          pushToFront(master);
+        }
       }
-    }
 
-    // function getNewCount()
-
-    function splitBbox(bbox) {
-      var xmin = bbox[0],
-          ymin = bbox[1],
-          xmax = bbox[2],
-          ymax = bbox[3];
-
-      var halfWidth = (xmax - xmin) / 2.0,
-          halfHeight = (ymax - ymin) / 2.0;
-      return [
-          {xmin: xmin, ymin: ymin, xmax: xmin + halfWidth, ymax: ymin + halfHeight},
-          {xmin: xmin + halfWidth, ymin: ymin, xmax: xmax, ymax: ymin + halfHeight},
-          {xmin: xmin, ymin: ymin + halfHeight, xmax: xmin + halfWidth, ymax: ymax},
-          {xmin: xmin + halfWidth, ymin: ymin + halfHeight, xmax: xmax, ymax: ymax}
-      ];
-    }
-
-    function parseGrid(boxes) {
-      routeArr.push(boxes);
-      if (ran === array.length) {
-        console.log("Complete");
-        res.json(routeArr);
+      if (data.over.length > 0) {
+        routeCount--;
+        data.over.map((box) => {
+          console.log("doing it again");
+          getNewCount(splitBbox(box));
+        });
       }
+    });
+  }
+
+  let isExceeds = (count) => {
+    if (count > 50) {
+      return true;
+    } else {
+      return false;
     }
-  });
+  }
+
+  function splitBbox(bbox) {
+    var xmin = (bbox[0] || bbox.xmin),
+        ymin = (bbox[1] || bbox.ymin),
+        xmax = (bbox[2] || bbox.xmax),
+        ymax = (bbox[3] || bbox.ymax);
+
+    var halfWidth = (xmax - xmin) / 2.0,
+        halfHeight = (ymax - ymin) / 2.0;
+    return [
+        {xmin: xmin, ymin: ymin, xmax: xmin + halfWidth, ymax: ymin + halfHeight},
+        {xmin: xmin + halfWidth, ymin: ymin, xmax: xmax, ymax: ymin + halfHeight},
+        {xmin: xmin, ymin: ymin + halfHeight, xmax: xmin + halfWidth, ymax: ymax},
+        {xmin: xmin + halfWidth, ymin: ymin + halfHeight, xmax: xmax, ymax: ymax}
+    ];
+  }
+
+  function pushToFront(bboxes) {
+    console.log("returning to front");
+    res.json(bboxes);
+  }
 
 });
 
