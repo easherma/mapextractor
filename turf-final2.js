@@ -2,8 +2,10 @@ const turf = require('turf');
 const Factual = require('factual-api');
 const factual = new Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow');
 
-var routes = [ //{ lat: 41.81173, lng: -87.666227},
+var routes = [ { lat: 41.81173, lng: -87.666227},
   { lat: 42.03725, lng: -88.28119 } ];
+
+var master = [];
 
 routes.forEach((route, index, array) => {
   var pt = {
@@ -17,16 +19,6 @@ routes.forEach((route, index, array) => {
 
   var bbox = turf.bbox(turf.buffer(pt, 10000, 'meters'));
   getCount(bbox);
-  //Promise all
-    //get original count
-    //process count
-      //if > 50
-        //split box
-        //recount
-        //process count
-      //else
-        //add to array
-
 });
 
 function getCount(bbox) {
@@ -37,25 +29,46 @@ function getCount(bbox) {
   (error, response) => {
     if (!error && response.total_row_count > 0){
       console.log("ORIGINAL "+response.total_row_count);
-      parseCount(response.total_row_count, bbox);
+
+      if (isExceeds(response.total_row_count)) {
+        getNewCount(splitBbox(bbox));
+      } else {
+        master.push(bbox);
+      }
     }
   });
 }
 
 function getNewCount(newBoxes) {
+  let ran = 0,
+      results = [];
+
+  let over = [],
+      within = [];
+
   return new Promise((resolve, reject) => {
-    newBoxes.forEach((newBox, index, array) => {
+    newBoxes.forEach((box, index, array) => {
       factual.get('/t/places-us', {"include_count":"true",
         filters:{"$and":[{"country":{"$eq":"US"}},
       {"category_ids":{"$includes_any":[2]}}]},
       geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:1},
       (error, response) => {
         if (!error && response.total_row_count > 0) {
-          passed.push(response.total_row_count);
-          ran++;
-          if (ran === boxes.length) {
-            resolve(passed);
+          if (isExceeds(response.total_row_count)) {
+            console.log("over");
+            over.push(box);
+          } else {
+            console.log("within");
+            within.push(box);
           }
+
+          ran++;
+          if (ran === newBoxes.length) {
+            results['within'] = within;
+            results['over'] = over;
+            resolve(results);
+          }
+
         } else {
           reject(error);
         }
@@ -63,22 +76,28 @@ function getNewCount(newBoxes) {
     });
   }).then((data) => {
 
+    if (data.within.length > 0) {master.push(data.within); console.log(master);} //if there are results that within, add to master list
+    if (data.over) {
+      data.over.map((box) => {
+        getNewCount(splitBbox(box));
+      });
+    }
   });
 }
 
-let parseCount = (count, bbox) => {
+let isExceeds = (count) => {
   if (count > 50) {
-    getNewCount(splitBbox(bbox));
+    return true;
   } else {
-
+    return false;
   }
 }
 
 function splitBbox(bbox) {
-  var xmin = bbox[0],
-      ymin = bbox[1],
-      xmax = bbox[2],
-      ymax = bbox[3];
+  var xmin = (bbox[0] || bbox.xmin),
+      ymin = (bbox[1] || bbox.ymin),
+      xmax = (bbox[2] || bbox.xmax),
+      ymax = (bbox[3] || bbox.ymax);
 
   var halfWidth = (xmax - xmin) / 2.0,
       halfHeight = (ymax - ymin) / 2.0;
