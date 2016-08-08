@@ -102,7 +102,8 @@ router.post('/call', (req, res, next) => {
           if (isExceeds(response.total_row_count)) {
             over.push(box);
           } else if (response.total_row_count > 0) {
-            within.push(response.data);
+            //within.push(response.data);
+            within.push(box);
           }
 
           ran++;
