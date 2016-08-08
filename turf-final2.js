@@ -2,13 +2,15 @@ const turf = require('turf');
 const Factual = require('factual-api');
 const factual = new Factual('SEQDH9X3sOycBDUzKubGqgzFVOybhdHPgAJrYggu', 'mwjLAzVZsaPOwavzkXBeu44B1VEYNAfRGczh3wow');
 
+const splitBbox = require('./splitBbox.js');
+
 var routes = [ //{ lat: 41.81173, lng: -87.666227},
   { lat: 42.03725, lng: -88.28119 } ];
 
 var master = [];
 var routeCount = 0;
 
-routes.forEach((route, index, array) => {
+routes.map((route) => {
   var pt = {
     "type": "Feature",
     "properties": {},
@@ -51,19 +53,18 @@ function getNewCount(newBoxes) {
   let over = [],
       within = [];
 
-  return new Promise((resolve, reject) => {
-    newBoxes.forEach((box, index, array) => {
+  new Promise((resolve, reject) => {
+    newBoxes.map((box) => {
       factual.get('/t/places-us', {"include_count":"true",
-        filters:{"$and":[{"country":{"$eq":"US"}},
-      {"category_ids":{"$includes_any":[2]}}]},
+        filters:{"category_ids":{"$includes_any":[2]}},
       geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:1},
       (error, response) => {
         if (!error && response.total_row_count > 0) {
           if (isExceeds(response.total_row_count)) {
-            // console.log("over");
+            console.log("over");
             over.push(box);
           } else {
-            // console.log("within");
+            console.log("within");
             within.push(box);
           }
 
@@ -71,6 +72,7 @@ function getNewCount(newBoxes) {
           if (ran === newBoxes.length) {
             results['within'] = within;
             results['over'] = over;
+            console.log(results);
             resolve(results);
           }
 
@@ -84,6 +86,7 @@ function getNewCount(newBoxes) {
       master.push(data.within);
       routeCount++;
       if (routeCount === routes.length && data.over.length === 0) {
+        console.log(data.within.length);
         console.log("All Passed");
         pushToFront(master);
       }
@@ -105,23 +108,23 @@ let isExceeds = (count) => {
   }
 }
 
-function splitBbox(bbox) {
-  var xmin = (bbox[0] || bbox.xmin),
-      ymin = (bbox[1] || bbox.ymin),
-      xmax = (bbox[2] || bbox.xmax),
-      ymax = (bbox[3] || bbox.ymax);
-
-  var halfWidth = (xmax - xmin) / 2.0,
-      halfHeight = (ymax - ymin) / 2.0;
-  return [
-      {xmin: xmin, ymin: ymin, xmax: xmin + halfWidth, ymax: ymin + halfHeight},
-      {xmin: xmin + halfWidth, ymin: ymin, xmax: xmax, ymax: ymin + halfHeight},
-      {xmin: xmin, ymin: ymin + halfHeight, xmax: xmin + halfWidth, ymax: ymax},
-      {xmin: xmin + halfWidth, ymin: ymin + halfHeight, xmax: xmax, ymax: ymax}
-  ];
-}
+// function splitBbox(bbox) {
+//   var xmin = (bbox[0] || bbox.xmin),
+//       ymin = (bbox[1] || bbox.ymin),
+//       xmax = (bbox[2] || bbox.xmax),
+//       ymax = (bbox[3] || bbox.ymax);
+//
+//   var halfWidth = (xmax - xmin) / 2.0,
+//       halfHeight = (ymax - ymin) / 2.0;
+//   return [
+//       {xmin: xmin, ymin: ymin, xmax: xmin + halfWidth, ymax: ymin + halfHeight},
+//       {xmin: xmin + halfWidth, ymin: ymin, xmax: xmax, ymax: ymin + halfHeight},
+//       {xmin: xmin, ymin: ymin + halfHeight, xmax: xmin + halfWidth, ymax: ymax},
+//       {xmin: xmin + halfWidth, ymin: ymin + halfHeight, xmax: xmax, ymax: ymax}
+//   ];
+// }
 
 function pushToFront(bboxes) {
-  console.log(bboxes);
+  // console.log(bboxes);
   console.log("returning to front");
 }
