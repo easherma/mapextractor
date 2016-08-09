@@ -85,32 +85,9 @@ router.post('/call', (req, res, next) => {
               getSplitCount(splitBbox(bbox));
           } else if (response.total_row_count > 0) {
             routeCount++;
-            master.push(response.data);
-            features = [];
-
-            for (var i = 0; i < response.data.length; i++) {
-              var resp = {
-                "type": "Feature",
-                "properties": {"response": JSON.stringify(response.data[i])},
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": [response.data[i].longitude, response.data[i].latitude]
-                }
-              };
-              //console.log(JSON.stringify(resp));
-              features.push(resp)
-              var fc = turf.featureCollection(features);
-
-              //resp.properties.push(response.data[i].name);
-
-              //converter.json2csv(response.data[i], json2csvCallback);
-            }
-            console.log(JSON.stringify(fc));
-            //converter.json2csv(response.data, json2csvCallback);
-            //console.log(JSON.stringify(response.data));
+            master.push(createFeature(response.data));
             if (routeCount === routes.length) {
-              pushToFront(master);
-
+              pushToFront(turf.featureCollection(master));
             }
           }
         });
@@ -133,8 +110,8 @@ router.post('/call', (req, res, next) => {
           if (isExceeds(response.total_row_count)) {
             over.push(box);
           } else if (response.total_row_count > 0) {
-            //within.push(response.data);
-            within.push(box);
+            within.push(response.data);
+            // within.push(box);
           }
 
           ran++;
@@ -147,11 +124,11 @@ router.post('/call', (req, res, next) => {
       });
     }).then((data) => {
       if (data.within.length > 0) {//if there are results that within, add to master list
-          master.push(data.within);
+          master.push(createFeature(data.within));
           routeCount++;
           if (routeCount === routes.length && data.over.length === 0) {
             console.log("All Passed");
-            pushToFront(master);
+            pushToFront(turf.featureCollection(master));
           }
       }
 
@@ -162,6 +139,22 @@ router.post('/call', (req, res, next) => {
           });
       }
     });
+  }
+
+  let createFeature = (rData) => {
+    let features = [];
+    rData.map((data) => {
+      var resp = {
+        "type": "Feature",
+        "properties": {"response": JSON.stringify(data)},
+        "geometry": {
+          "type": "Point",
+          "coordinates": [data.longitude, data.latitude]
+        }
+      };
+      features.push(resp);
+    });
+    return features;
   }
 });
 

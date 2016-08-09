@@ -10,7 +10,7 @@ const writeToFile = (fileName, arr) => {
         console.log("File written!");
       });
     } else {
-      writeToFile((fileName+'_'+incr++), arr);
+      writeToFile(('results_'+incr++), arr);
     }
   });
 }
