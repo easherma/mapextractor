@@ -18,6 +18,7 @@
     "got": "*",
     "async": "*",
     "file-system": "*",
-    "turf": "*"
+    "turf": "*",
+    "json-2-csv": "*"
   }
 }

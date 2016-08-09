@@ -10,6 +10,14 @@ const writeToFile = require('../writeToFile.js');
 const splitBbox = require('../splitBbox.js');
 
 const turf = require('turf');
+var converter = require('json-2-csv');
+
+var json2csvCallback = function (err, csv) {
+    if (err) throw err;
+    console.log(csv);
+};
+
+
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
@@ -78,6 +86,12 @@ router.post('/call', (req, res, next) => {
           } else if (response.total_row_count > 0) {
             routeCount++;
             master.push(response.data);
+            for (var i = 0; i < response.data.length; i++) {
+
+              converter.json2csv(response.data[i], json2csvCallback);
+            }
+            //converter.json2csv(response.data, json2csvCallback);
+            //console.log(JSON.stringify(response.data));
             if (routeCount === routes.length) {
               pushToFront(master);
             }
