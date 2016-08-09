@@ -86,14 +86,31 @@ router.post('/call', (req, res, next) => {
           } else if (response.total_row_count > 0) {
             routeCount++;
             master.push(response.data);
-            for (var i = 0; i < response.data.length; i++) {
+            features = [];
 
-              converter.json2csv(response.data[i], json2csvCallback);
+            for (var i = 0; i < response.data.length; i++) {
+              var resp = {
+                "type": "Feature",
+                "properties": {"response": JSON.stringify(response.data[i])},
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [response.data[i].longitude, response.data[i].latitude]
+                }
+              };
+              //console.log(JSON.stringify(resp));
+              features.push(resp)
+              var fc = turf.featureCollection(features);
+
+              //resp.properties.push(response.data[i].name);
+
+              //converter.json2csv(response.data[i], json2csvCallback);
             }
+            console.log(JSON.stringify(fc));
             //converter.json2csv(response.data, json2csvCallback);
             //console.log(JSON.stringify(response.data));
             if (routeCount === routes.length) {
               pushToFront(master);
+
             }
           }
         });
