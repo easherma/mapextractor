@@ -8,6 +8,7 @@ const Factual = require('factual-api'),
 
 const writeToFile = require('../writeToFile.js');
 const splitBbox = require('../splitBbox.js');
+fs = require('fs');
 
 const turf = require('turf');
 var converter = require('json-2-csv');
@@ -100,6 +101,10 @@ router.post('/call', (req, res, next) => {
               //console.log(JSON.stringify(resp));
               features.push(resp)
               var fc = turf.featureCollection(features);
+              fs.writeFile('features.geojson', JSON.stringify(fc), function (err) {
+              if (err) return console.log(err);
+              console.log('wrote to features.geojson');
+            });
 
               //resp.properties.push(response.data[i].name);
 
