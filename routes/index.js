@@ -8,6 +8,7 @@ const Factual = require('factual-api'),
 
 const writeToFile = require('../writeToFile.js');
 const splitBbox = require('../splitBbox.js');
+fs = require('fs');
 
 const turf = require('turf');
 var converter = require('json-2-csv');
@@ -87,7 +88,7 @@ router.post('/call', (req, res, next) => {
             routeCount++;
             master.push(createFeature(response.data));
             if (routeCount === routes.length) {
-              pushToFront(turf.featureCollection(master));
+              pushToFront(turf.featureCollection(flattenArray(master)));
             }
           }
         });
@@ -128,7 +129,7 @@ router.post('/call', (req, res, next) => {
           routeCount++;
           if (routeCount === routes.length && data.over.length === 0) {
             console.log("All Passed");
-            pushToFront(turf.featureCollection(master));
+            pushToFront(turf.featureCollection(flattenArray(master)));
           }
       }
 
