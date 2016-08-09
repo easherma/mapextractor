@@ -1,4 +1,4 @@
-$(function() {
+//$(function() {
 
 // $(document).ready(function(){
 
@@ -76,13 +76,13 @@ $(function() {
   //methods
 
   function drawQuads (bbox) {
-    console.log(bbox);
+    //console.log(bbox);
     var quads = [];
-    console.log("bbox");
+    //console.log("bbox");
     bbox.forEach((box, index, array) => {
       for (var i = 0; i < box.length; i++) {
         var test = quads.push(turf.bboxPolygon([box[i]['xmin'],box[i]['ymin'], box[i]['xmax'],box[i]['ymax']] ));
-        console.log(quads);
+        //console.log(quads);
       }
     });
 
@@ -94,15 +94,19 @@ $(function() {
   }
 
   function drawResults(bbox) {
-      drawQuads(bbox);
+      //drawQuads(bbox);
 
       var markers = results;
       for (var i = 0; i < markers.length; i++) {
-          var lon = markers[i]['latitude'];
-          var lat = markers[i]['longitude'];
-          var popupText = markers[i]['name'];
+        if (markers[0][i]['latitude'] != null) {
+          var lon = markers[0][i]['latitude'];
+          var lat = markers[0][i]['longitude'];
+          var popupText = markers[0][i]['name'];
           var markerLocation = new L.LatLng(lon, lat);
           var marker = new L.Marker(markerLocation).bindPopup(popupText).addTo(feature_group);
+
+        }
+
 
       }
   }
@@ -181,9 +185,12 @@ $(function() {
             loadTable();
             routepoints.length = 0; //I don't think this works
             console.log("clear routepoints");
-            console.log(routepoints);
-            console.log(data);
-            drawResults(data.responseJSON);
+            //console.log(routepoints);
+            //console.log(data);
+            results.push(data.responseJSON);
+            console.log(data.responseJSON[0]);
+            //drawResults(data.responseJSON[0]);
+            console.log(data.responseJSON[1]);
 
         },
         contentType: 'application/json',
@@ -234,4 +241,5 @@ $(function() {
   });
 
   var selecttwo = $(sel2).select2({allowClear: true, placeholder: "Optional Sub-Categories"});
-});
+//});
+//});
