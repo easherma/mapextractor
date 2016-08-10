@@ -69,9 +69,33 @@ router.post('/call', (req, res, next) => {
     });
   };
 
+  JSON.flatten = function(data) {
+      var result = {};
+      function recurse (cur, prop) {
+          if (Object(cur) !== cur) {
+              result[prop] = cur;
+          } else if (Array.isArray(cur)) {
+               for(var i=0, l=cur.length; i<l; i++)
+                   recurse(cur[i], prop + "[" + i + "]");
+              if (l == 0)
+                  result[prop] = [];
+          } else {
+              var isEmpty = true;
+              for (var p in cur) {
+                  isEmpty = false;
+                  recurse(cur[p], prop ? prop+"{"+p : p);
+              }
+              if (isEmpty && prop)
+                  result[prop] = {};
+          }
+      }
+      recurse(data, "");
+      return result;
+  }
+
   function pushToFront(data) {
     console.log("returning to front");
-  //  writeToFile("results",data);
+    writeToFile("results",JSON.flatten(data));
     res.json(data);
   }
 
@@ -88,7 +112,7 @@ router.post('/call', (req, res, next) => {
             routeCount++;
             master.push(createFeature(flattenArray(response.data)));
             if (routeCount === routes.length) {
-              pushToFront(turf.featureCollection(master));
+              pushToFront(master);
             }
           }
         });
@@ -129,7 +153,7 @@ router.post('/call', (req, res, next) => {
           routeCount++;
           if (routeCount === routes.length && data.over.length === 0) {
             console.log("All Passed");
-            pushToFront(turf.featureCollection(master));
+            pushToFront(master);
           }
       }
 
@@ -153,7 +177,7 @@ router.post('/call', (req, res, next) => {
           "coordinates": [data.longitude, data.latitude]
         }
       };
-      console.log(resp);
+      //console.log(resp);
       features.push(resp);
     });
     return features;

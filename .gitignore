@@ -8,3 +8,4 @@ master_de_duped_data.csv
 *.csv
 results.csv
 *.geojson
+npm-debug.log
