@@ -66,7 +66,7 @@ router.post('/call', (req, res, next) => {
 
   function pushToFront(data) {
     console.log("returning to front");
-    writeToFile("results",data);
+    writeToFile("results",_.flatten(data));
     res.json(data);
   }
 
@@ -81,7 +81,7 @@ router.post('/call', (req, res, next) => {
               getSplitCount(splitBbox(bbox));
           } else if (response.total_row_count > 0) {
             routeCount++;
-            master.push(createFeature(response.data));
+            master.push(response.data);
             if (routeCount === routes.length) {
               pushToFront(master);
             }
@@ -94,6 +94,11 @@ router.post('/call', (req, res, next) => {
         results = [],
         over = [],
         within = [];
+function flattenArray(arr) {
+  return arr.reduce((a, b) => {
+    return a.concat(b);
+  });
+};
 
     new Promise((resolve, reject) => {
       bbox.map((box) => {
@@ -106,7 +111,7 @@ router.post('/call', (req, res, next) => {
           if (isExceeds(response.total_row_count)) {
             over.push(box);
           } else if (response.total_row_count > 0) {
-            within.push(response.data);
+            within.push(_.flatten(response.data));
             // within.push(box);
           }
 
@@ -120,7 +125,7 @@ router.post('/call', (req, res, next) => {
       });
     }).then((data) => {
       if (data.within.length > 0) {//if there are results that within, add to master list
-          master.push(createFeature(_.union(data.within)));
+          master.push(_.union(data.within));
           routeCount++;
           if (routeCount === routes.length && data.over.length === 0) {
             console.log("All Passed");
