@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+var _ = require('underscore');
 
 const got = require('got');
 const Factual = require('factual-api'),
@@ -62,10 +63,10 @@ router.post('/call', (req, res, next) => {
       return false;
     }
   }
-  
+
   function pushToFront(data) {
     console.log("returning to front");
-    writeToFile("results",JSON.flatten(data));
+    writeToFile("results",data);
     res.json(data);
   }
 
@@ -147,7 +148,7 @@ router.post('/call', (req, res, next) => {
           "coordinates": [data.longitude, data.latitude]
         }
       };
-      console.log(resp);
+      //console.log(resp);
       features.push(resp);
     });
     return features;
