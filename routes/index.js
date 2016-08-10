@@ -62,37 +62,7 @@ router.post('/call', (req, res, next) => {
       return false;
     }
   }
-
-  function flattenArray(arr) {
-    return arr.reduce((a, b) => {
-      return a.concat(b);
-    });
-  };
-
-  JSON.flatten = function(data) {
-      var result = {};
-      function recurse (cur, prop) {
-          if (Object(cur) !== cur) {
-              result[prop] = cur;
-          } else if (Array.isArray(cur)) {
-               for(var i=0, l=cur.length; i<l; i++)
-                   recurse(cur[i], prop + "[" + i + "]");
-              if (l == 0)
-                  result[prop] = [];
-          } else {
-              var isEmpty = true;
-              for (var p in cur) {
-                  isEmpty = false;
-                  recurse(cur[p], prop ? prop+"{"+p : p);
-              }
-              if (isEmpty && prop)
-                  result[prop] = {};
-          }
-      }
-      recurse(data, "");
-      return result;
-  }
-
+  
   function pushToFront(data) {
     console.log("returning to front");
     writeToFile("results",JSON.flatten(data));
@@ -110,7 +80,7 @@ router.post('/call', (req, res, next) => {
               getSplitCount(splitBbox(bbox));
           } else if (response.total_row_count > 0) {
             routeCount++;
-            master.push(createFeature(flattenArray(response.data)));
+            master.push(createFeature(response.data));
             if (routeCount === routes.length) {
               pushToFront(master);
             }
@@ -149,7 +119,7 @@ router.post('/call', (req, res, next) => {
       });
     }).then((data) => {
       if (data.within.length > 0) {//if there are results that within, add to master list
-          master.push(createFeature(flattenArray(data.within)));
+          master.push(createFeature(_.union(data.within)));
           routeCount++;
           if (routeCount === routes.length && data.over.length === 0) {
             console.log("All Passed");
@@ -177,7 +147,7 @@ router.post('/call', (req, res, next) => {
           "coordinates": [data.longitude, data.latitude]
         }
       };
-      //console.log(resp);
+      console.log(resp);
       features.push(resp);
     });
     return features;
