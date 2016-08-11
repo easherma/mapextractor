@@ -68,14 +68,8 @@ router.post('/call', (req, res, next) => {
 
   function pushToFront(data) {
     console.log("returning to front");
-<<<<<<< HEAD
-    console.log(data.length);
-    // writeToFile("results",featureCollection);
-    // res.json(featureCollection);
-=======
     writeToFile("results",_.flatten(data));
     res.json(data);
->>>>>>> cb33dfa24d7258a7528ee22d7ffadb7c8d9dabfa
   }
 
   function getCount(bbox) {
@@ -114,7 +108,6 @@ function flattenArray(arr) {
           filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
           geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:50},
         (error, response) => {
-<<<<<<< HEAD
           if (error || response === null) {
             console.log(error);
           } else {
@@ -125,15 +118,6 @@ function flattenArray(arr) {
               // within.push(box);
               master.push(response.data);
             }
-=======
-          if (error || response === null) {console.log(error);};
-
-          if (isExceeds(response.total_row_count)) {
-            over.push(box);
-          } else if (response.total_row_count > 0) {
-            within.push(_.flatten(response.data));
-            // within.push(box);
->>>>>>> cb33dfa24d7258a7528ee22d7ffadb7c8d9dabfa
           }
 
           ran++;
@@ -147,11 +131,7 @@ function flattenArray(arr) {
       });
     }).then((data) => {
       if (data.within.length > 0) {//if there are results that within, add to master list
-<<<<<<< HEAD
           // master.push(_under.union(data.within));
-=======
-          master.push(_.union(data.within));
->>>>>>> cb33dfa24d7258a7528ee22d7ffadb7c8d9dabfa
           routeCount++;
           if (routeCount === routes.length && data.over.length === 0) {
             console.log("All Passed");
@@ -180,10 +160,6 @@ function flattenArray(arr) {
           "coordinates": [data.longitude, data.latitude]
         }
       };
-<<<<<<< HEAD
-=======
-      //console.log(resp);
->>>>>>> cb33dfa24d7258a7528ee22d7ffadb7c8d9dabfa
       features.push(resp);
     });
     return features;
