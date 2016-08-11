@@ -19,6 +19,7 @@
     "async": "*",
     "file-system": "*",
     "turf": "*",
-    "json-2-csv": "*"
+    "json-2-csv": "*",
+    "underscore": "*"
   }
 }
