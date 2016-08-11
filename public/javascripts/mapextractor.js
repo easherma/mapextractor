@@ -25,11 +25,11 @@
   var feature_group = new L.featureGroup([]);
   feature_group.addTo(map);
 
-
+//circles if we're using.displaying radius searches
   var circles = new L.LayerGroup();
   circles.addTo(map);
 
-  //init leaflet routing machine with custom marker behavior
+  //init leaflet routing machine with custom marker behavior~ currently disabled
   routeControl = L.Routing.control({
         waypoints: [
           L.latLng(),
@@ -55,7 +55,7 @@
   var temp = [];
 
   var circleSet = [];
-
+//event listeners for drawing/creating circles
   routeControl.on('waypointschanged', function(wp) {
     markers = routeControl.getWaypoints();
     circles.clearLayers();
@@ -73,7 +73,7 @@
     });
   });
 
-  //methods
+  //fucntions to draw bboxes and quads
 
   function drawQuads (bbox) {
     //console.log(bbox);
