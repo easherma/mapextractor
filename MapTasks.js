@@ -58,6 +58,7 @@ const mapTasks = {
   setCount: function(count) {
     this.count = count;
   }
+  //@TODO add createFeature
 }
 
 module.exports = mapTasks;
