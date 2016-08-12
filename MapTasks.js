@@ -7,14 +7,10 @@ const Factual = require('factual-api'),
 
 const mapTasks = {
   makeBox: function(route) { //makes bbox
-    let pt = { //make a point
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [route.lng, route.lat]
-      }
-    }
+    let pt = {"type": "Feature", "properties": {},
+              "geometry": {
+                "type": "Point","coordinates": [route.lng, route.lat]}
+              }
     return turf.bbox(turf.buffer(pt, 10000, 'meters'));
   },
   runInitial: function(route, userParams) {//make buffer, bbox, getcount

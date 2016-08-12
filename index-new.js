@@ -8,7 +8,12 @@ const write = require('./writeToFile.js');
 const mapTasks = require('./MapTasks.js');
 
 routes.map((route) => {
-  mapTasks.runInitial(route, userParams).then((data) => { //returns promise
-    console.log(data); //WOO! RETURNS data
+  // mapTasks.runInitial(route, userParams).then((data) => { //returns promise
+  //   console.log(data.total_row_count); //WOO! RETURNS data
+  //   console.log("Is it in range? "+mapTasks.isWithin(data.total_row_count));
+  // });
+  let bbox = mapTasks.makeBox(route);
+  mapTasks.getCount(bbox).then((data) => {
+    console.log(data.total_row_count);
   });
 });
