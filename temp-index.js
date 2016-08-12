@@ -64,11 +64,11 @@ let findSmallest = (splitBoxes) => {
     });
   });
 
-  let callback = (response) {
+  let callback = (response) => {
     if (withinRange(response.total_row_count)) {
       master.push(response.data);
     } else {
-      
+
     }
   }
 }
