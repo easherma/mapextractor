@@ -6,29 +6,28 @@ const write = require('./writeToFile.js');
 const mT = require('./MapTasks.js');
 const under = require('underscore');
 
-let run = (route) => {
-  let bbox = mT.makeBox(route);
-  return mT.getCount(bbox);
-}
+let masterList = [];
+let masterCount = 0;
 
-let runAgain = (bbox) => {
-  let splits = mT.splitBox(bbox);
-  return splits.map((box) => {
+let run = (bbox) => {
+  let split = mT.splitBox(bbox);
+  Promise.all(split.map((box) => {
     return mT.getCount(box);
-  });
-}
-
-//returns promises
-let dataProm = routes.map((route) => {
-  let bbox = mT.makeBox(route);
-  return runAgain(bbox);
-});
-
-//runs promises in order
-Promise.all(dataProm).then((data) => {
-  data[0].map((data) => {
-    data.then((data) => {
-      console.log(data.response.total_row_count);
+  })).then((rData) => {
+    rData.map((data) => {
+      if (mT.isWithin(data.response.total_row_count)) {
+        console.log("WITHIN");
+        masterCount+=data.response.total_row_count;
+        console.log("Expect this amount: "+masterCount);
+        masterList.push(data.response.data);
+      } else {
+        console.log("OUTSIDE");
+        run(data.bbox);
+      }
     });
   });
+}
+
+routes.map((route) => {
+  run(mT.makeBox(route));
 });

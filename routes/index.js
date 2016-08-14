@@ -96,10 +96,6 @@ router.post('/call', (req, res, next) => {
         results = [],
         over = [],
         within = [];
-function flattenArray(arr) {
-  return arr.reduce((a, b) => {
-    return a.concat(b);
-  });
 };
 
     new Promise((resolve, reject) => {
