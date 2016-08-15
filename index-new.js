@@ -19,7 +19,12 @@ let run = (bbox) => {
         console.log("WITHIN");
         masterCount+=data.response.total_row_count;
         console.log("Expect this amount: "+masterCount);
+        //must push the array within the data object
         masterList.push(data.response.data);
+        console.log("Array amount "+masterList.length);
+        if (masterList.length === masterCount) {
+          console.log("HEY COMPLETE");
+        }
       } else {
         console.log("OUTSIDE");
         run(data.bbox);
