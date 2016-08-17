@@ -5,9 +5,11 @@ var userParams = {main: 23};
 const write = require('./writeToFile.js');
 const mT = require('./MapTasks.js');
 const _ = require('underscore');
+const now = require('performance-now');
 
 let masterList = [];
 let masterCount = 0;
+let start = now();
 
 /*ALMOST*/
 
@@ -25,8 +27,11 @@ let getCount = (box) => {
 let decide = (data) => {
   if (mT.isWithin(data.response.total_row_count)) {
     masterList.push.apply(masterList, createFeatures(data.response.data));
-    if (masterList.length === 875) { //temporary end
+    masterCount += data.response.total_row_count;
+    console.log("EXPECT "+masterCount);
+    if (masterList.length === 2623) { //temporary end
       write("results", mT.featureCollection(masterList));
+      console.log("it took "+((now() - start)/1000)+" to run.");
     }
   } else {
     run(data.bbox);
@@ -38,7 +43,7 @@ let parseSplit = (split) => {
   split.map((box) => {
     getCount(box).then((data) => {
       decide(data);
-    })
+    });
   });
 }
 

@@ -9,6 +9,7 @@ const Factual = require('factual-api'),
 
 const writeToFile = require('../writeToFile.js');
 const splitBbox = require('../splitBbox.js');
+
 fs = require('fs');
 
 const turf = require('turf');
@@ -89,14 +90,6 @@ router.post('/call', (req, res, next) => {
             }
           }
         });
-    }
-
-  function getSplitCount(bbox) {
-    let ran = 0,
-        results = [],
-        over = [],
-        within = [];
-};
 
     new Promise((resolve, reject) => {
       bbox.map((box) => {
