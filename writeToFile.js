@@ -5,7 +5,7 @@ let incr = 0;
 const writeToFile = (fileName, arr) => {
   fs.stat((fileName+".csv"), (err, stat) => {
     if (err) {
-      fs.writeFile((fileName+".csv"), JSON.stringify(arr, null, ""), (err) => {
+      fs.writeFile((fileName+".csv"), JSON.stringify(arr, null, 2), (err) => {
         if (err) { throw err;}
         console.log("File written!");
       });

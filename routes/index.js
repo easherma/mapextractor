@@ -14,6 +14,8 @@ fs = require('fs');
 const turf = require('turf');
 var converter = require('json-2-csv');
 
+const _under = require('underscore');
+
 var json2csvCallback = function (err, csv) {
     if (err) throw err;
     console.log(csv);
@@ -94,10 +96,6 @@ router.post('/call', (req, res, next) => {
         results = [],
         over = [],
         within = [];
-function flattenArray(arr) {
-  return arr.reduce((a, b) => {
-    return a.concat(b);
-  });
 };
 
     new Promise((resolve, reject) => {
@@ -106,26 +104,30 @@ function flattenArray(arr) {
           filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
           geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:50},
         (error, response) => {
-          if (error || response === null) {console.log(error);};
-
-          if (isExceeds(response.total_row_count)) {
-            over.push(box);
-          } else if (response.total_row_count > 0) {
-            within.push(_.flatten(response.data));
-            // within.push(box);
+          if (error || response === null) {
+            console.log(error);
+          } else {
+            if (isExceeds(response.total_row_count)) {
+              over.push(box);
+            } else if (response.total_row_count > 0) {
+              // within.push(_under.flatten(response.data));
+              // within.push(box);
+              master.push(response.data);
+            }
           }
 
           ran++;
           if (ran === bbox.length) {
             results['within'] = within;
             results['over'] = over;
+            within = [];
             resolve(results);
           }
         });
       });
     }).then((data) => {
       if (data.within.length > 0) {//if there are results that within, add to master list
-          master.push(_.union(data.within));
+          // master.push(_under.union(data.within));
           routeCount++;
           if (routeCount === routes.length && data.over.length === 0) {
             console.log("All Passed");
@@ -144,6 +146,7 @@ function flattenArray(arr) {
 
   let createFeature = (rData) => {
     let features = [];
+    //console.log(rData);
     rData.map((data) => {
       var resp = {
         "type": "Feature",
@@ -153,7 +156,6 @@ function flattenArray(arr) {
           "coordinates": [data.longitude, data.latitude]
         }
       };
-      //console.log(resp);
       features.push(resp);
     });
     return features;
