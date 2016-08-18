@@ -1,28 +1,15 @@
 const express = require('express');
 const router = express.Router();
-var _ = require('underscore');
 
 const got = require('got');
 const Factual = require('factual-api'),
       auth = require('../auth.js')
       factual = new Factual(auth.key, auth.secret);
 
-const writeToFile = require('../writeToFile.js');
-const splitBbox = require('../splitBbox.js');
-
-fs = require('fs');
-
-const turf = require('turf');
-var converter = require('json-2-csv');
-
-const _under = require('underscore');
-
-var json2csvCallback = function (err, csv) {
-    if (err) throw err;
-    console.log(csv);
-};
-
-
+const write = require('../writeToFile.js');
+const mT = require('../MapTasks.js');
+const now = require('performance-now');
+var _ = require('underscore');
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
@@ -36,123 +23,68 @@ router.get('/', (req, res, next) => {
     });
 });
 
+let masterList = [];
+let masterCount = 0;
+let start = now();
 //probably should be GET
 router.post('/call', (req, res, next) => {
   var userParams = req.body.userParams;
   var routes = req.body.routepoints;
 
-  var master = [];
-  var routeCount = 0;
+  let pushToFront = (completeList) => {
+    console.log("returning to front");
+    res.json(completeList);
+  }
 
-  //cycle through routes
-  routes.map((route) => {
-    var pt = {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [route.lng, route.lat]
+  let splitBox = (bbox) => {
+    return mT.splitBox(bbox);
+  }
+
+  //returns promise
+  let getCount = (box) => {
+    return mT.getCount(box, userParams);
+  }
+
+  //decides if it should add to the masterList or call run() again.
+  let decide = (data) => {
+    if (mT.isWithin(data.response.total_row_count)) {
+      masterList.push.apply(masterList, createFeatures(data.response.data));
+      masterCount += data.response.total_row_count;
+      console.log("EXPECT "+masterCount);
+      if (masterList.length === 2623) { //temporary end
+        let featureCollection = mT.featureCollection(masterList);
+        write("results", featureCollection);
+        console.log("it took "+((now() - start)/1000)+" to run.");
+        pushToFront(featureCollection);
       }
-    };
-
-    var bbox = turf.bbox(turf.buffer(pt, 10000, 'meters'));
-    getCount(bbox);
-  });
-
-  let isExceeds = (count) => {
-    if (count > 50) {
-      return true;
     } else {
-      return false;
+      run(data.bbox);
     }
   }
 
-  function pushToFront(data) {
-    console.log("returning to front");
-    writeToFile("results",_.flatten(data));
-    res.json(data);
-  }
-
-  function getCount(bbox) {
-    factual.get('/t/places-us', {"include_count":"true",
-      filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
-      geo:{"$within":{"$rect":[[bbox[3] , bbox[0]],[bbox[1], bbox[2]]]}}, limit:50},
-        (error, response) => {
-          if (error || response === null) {console.log(error);};
-
-          if (isExceeds(response.total_row_count)) {
-              getSplitCount(splitBbox(bbox));
-          } else if (response.total_row_count > 0) {
-            routeCount++;
-            master.push(response.data);
-            if (routeCount === routes.length) {
-              pushToFront(master);
-            }
-          }
-        });
-
-    new Promise((resolve, reject) => {
-      bbox.map((box) => {
-        factual.get('/t/places-us', {"include_count":"true",
-          filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
-          geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:50},
-        (error, response) => {
-          if (error || response === null) {
-            console.log(error);
-          } else {
-            if (isExceeds(response.total_row_count)) {
-              over.push(box);
-            } else if (response.total_row_count > 0) {
-              // within.push(_under.flatten(response.data));
-              // within.push(box);
-              master.push(response.data);
-            }
-          }
-
-          ran++;
-          if (ran === bbox.length) {
-            results['within'] = within;
-            results['over'] = over;
-            within = [];
-            resolve(results);
-          }
-        });
+  //splits the box and checks the count
+  let parseSplit = (split) => {
+    split.map((box) => {
+      getCount(box).then((data) => {
+        decide(data);
       });
-    }).then((data) => {
-      if (data.within.length > 0) {//if there are results that within, add to master list
-          // master.push(_under.union(data.within));
-          routeCount++;
-          if (routeCount === routes.length && data.over.length === 0) {
-            console.log("All Passed");
-            pushToFront(master);
-          }
-      }
-
-      if (data.over.length > 0) {
-          routeCount--;
-          data.over.map((box) => {
-            getSplitCount(splitBbox(box));
-          });
-      }
     });
   }
 
-  let createFeature = (rData) => {
-    let features = [];
-    //console.log(rData);
-    rData.map((data) => {
-      var resp = {
-        "type": "Feature",
-        "properties": {"response": JSON.stringify(data)},
-        "geometry": {
-          "type": "Point",
-          "coordinates": [data.longitude, data.latitude]
-        }
-      };
-      features.push(resp);
-    });
-    return features;
+  //returns array of features
+  let createFeatures = (masterList) => {
+    return mT.features(masterList);
   }
+
+  //controls the recursion
+  let run = (bbox) => {
+    parseSplit(splitBox(bbox));
+  }
+
+  //runs through each route point
+  routes.map((route) => {
+    run(mT.makeBox(route));
+  });
 });
 
 module.exports = router;

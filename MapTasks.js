@@ -46,7 +46,7 @@ const mapTasks = {
 
     return new Promise((resolve, reject) => {
       factual.get('/t/places-us', {"include_count":"true",
-        filters:{"category_ids":{"$includes_any":[2]}},
+        filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
         geo:{"$within":{"$rect":[[ymax , xmin],[ymin, xmax]]}}, limit:50},
           (error, response) => {
             if (error || response === null) {
