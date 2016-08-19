@@ -29,7 +29,8 @@ let decide = (data) => {
     masterList.push.apply(masterList, createFeatures(data.response.data));
     masterCount += data.response.total_row_count;
     console.log("EXPECT "+masterCount);
-    if (masterList.length === 2623) { //temporary end
+    console.log(totalCount);
+    if (masterList.length === totalCount) { //temporary end
       write("results", mT.featureCollection(masterList));
       console.log("it took "+((now() - start)/1000)+" to run.");
     }
@@ -54,10 +55,16 @@ let createFeatures = (masterList) => {
 
 //controls the recursion
 let run = (bbox) => {
+  // console.log(totalCount);
   parseSplit(splitBox(bbox));
 }
 
 //runs through each route point
+let totalCount = 1;
 routes.map((route) => {
+  let box = mT.makeBox(route);
+  getCount(box).then((data) => {
+    totalCount += data.response.total_row_count;
+  });
   run(mT.makeBox(route));
 });

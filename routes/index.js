@@ -23,8 +23,10 @@ router.get('/', (req, res, next) => {
     });
 });
 
-let masterList = [];
-let masterCount = 0;
+let masterList = [],
+    masterCount = 0
+    initialCount = 1;
+
 let start = now();
 //probably should be GET
 router.post('/call', (req, res, next) => {
@@ -32,6 +34,8 @@ router.post('/call', (req, res, next) => {
   var routes = req.body.routepoints;
 
   let pushToFront = (completeList) => {
+    console.log("wrote to file");
+    write("results", completeList);
     console.log("returning to front");
     res.json(completeList);
   }
@@ -50,10 +54,10 @@ router.post('/call', (req, res, next) => {
     if (mT.isWithin(data.response.total_row_count)) {
       masterList.push.apply(masterList, createFeatures(data.response.data));
       masterCount += data.response.total_row_count;
+      console.log(initialCount);
       console.log("EXPECT "+masterCount);
-      if (masterList.length === 2623) { //temporary end
+      if (masterList.length === initialCount) { //temporary end
         let featureCollection = mT.featureCollection(masterList);
-        write("results", featureCollection);
         console.log("it took "+((now() - start)/1000)+" to run.");
         pushToFront(featureCollection);
       }
@@ -83,8 +87,13 @@ router.post('/call', (req, res, next) => {
 
   //runs through each route point
   routes.map((route) => {
+    getCount(mT.makeBox(route)).then((data) => {
+      initialCount += data.response.total_row_count;
+    });
     run(mT.makeBox(route));
   });
 });
+
+
 
 module.exports = router;
