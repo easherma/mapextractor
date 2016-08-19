@@ -24,8 +24,9 @@ router.get('/', (req, res, next) => {
 });
 
 let masterList = [],
-    masterCount = 0
-    initialCount = 1;
+    masterCount = 0,
+    initialCount = 0;
+    countDev = []; //count deviations
 
 let start = now();
 //probably should be GET
@@ -37,6 +38,7 @@ router.post('/call', (req, res, next) => {
     console.log("wrote to file");
     write("results", completeList);
     console.log("returning to front");
+    console.log("it took "+((now() - start)/1000)+" to run.");
     res.json(completeList);
   }
 
@@ -54,12 +56,9 @@ router.post('/call', (req, res, next) => {
     if (mT.isWithin(data.response.total_row_count)) {
       masterList.push.apply(masterList, createFeatures(data.response.data));
       masterCount += data.response.total_row_count;
-      console.log(initialCount);
       console.log("EXPECT "+masterCount);
-      if (masterList.length === initialCount) { //temporary end
-        let featureCollection = mT.featureCollection(masterList);
-        console.log("it took "+((now() - start)/1000)+" to run.");
-        pushToFront(featureCollection);
+      if (countDev.includes(masterList.length)) { //temporary end
+        pushToFront(mT.featureCollection(masterList));
       }
     } else {
       run(data.bbox);
@@ -89,8 +88,11 @@ router.post('/call', (req, res, next) => {
   routes.map((route) => {
     getCount(mT.makeBox(route)).then((data) => {
       initialCount += data.response.total_row_count;
+
+      countDev = [initialCount, initialCount+1, initialCount+2,
+                  initialCount-1, initialCount-2];
     });
-    run(mT.makeBox(route));
+      run(mT.makeBox(route));
   });
 });
 

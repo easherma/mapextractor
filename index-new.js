@@ -9,6 +9,7 @@ const now = require('performance-now');
 
 let masterList = [];
 let masterCount = 0;
+let countDev = [];
 let start = now();
 
 /*ALMOST*/
@@ -30,7 +31,8 @@ let decide = (data) => {
     masterCount += data.response.total_row_count;
     console.log("EXPECT "+masterCount);
     console.log(totalCount);
-    if (masterList.length === totalCount) { //temporary end
+    console.log(countDev);
+    if (countDev.includes(masterList.length)) { //temporary end
       write("results", mT.featureCollection(masterList));
       console.log("it took "+((now() - start)/1000)+" to run.");
     }
@@ -60,11 +62,14 @@ let run = (bbox) => {
 }
 
 //runs through each route point
-let totalCount = 1;
+let totalCount = 0;
 routes.map((route) => {
   let box = mT.makeBox(route);
   getCount(box).then((data) => {
     totalCount += data.response.total_row_count;
+
+    countDev = [totalCount, totalCount+1, totalCount+2,
+                totalCount-1, totalCount-2];
   });
   run(mT.makeBox(route));
 });
