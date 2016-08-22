@@ -93,6 +93,11 @@
     return quads;
   }
 
+  function drawFeatureCollection(data) {
+    var markers = L.markerClusterGroup();
+    markers.addLayer(L.geoJson(data)).addTo(map);
+  }
+
   function drawResults(bbox) {
       //drawQuads(bbox);
 
