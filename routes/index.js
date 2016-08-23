@@ -35,7 +35,6 @@ router.post('/call', (req, res, next) => {
   var routes = req.body.routepoints;
 
   let pushToFront = (completeList) => {
-    console.log("wrote to file");
     write("results", completeList);
     console.log("returning to front");
     console.log("it took "+((now() - start)/1000)+" to run.");
@@ -54,10 +53,11 @@ router.post('/call', (req, res, next) => {
   //decides if it should add to the masterList or call run() again.
   let decide = (data) => {
     if (mT.isWithin(data.response.total_row_count)) {
-      masterList.push.apply(masterList, createFeatures(data.response.data));
+      masterList.push.apply(masterList, createFeatures(data.response.data, data.bbox));
       masterCount += data.response.total_row_count;
       console.log("EXPECT "+masterCount);
-      if (countDev.includes(masterList.length)) { //temporary end
+      if (countDev.includes(masterCount)) { //temporary end
+        console.log("Met total of "+initialCount);
         pushToFront(mT.featureCollection(masterList));
       }
     } else {
@@ -75,8 +75,8 @@ router.post('/call', (req, res, next) => {
   }
 
   //returns array of features
-  let createFeatures = (masterList) => {
-    return mT.features(masterList);
+  let createFeatures = (masterList, bbox) => {
+    return mT.features(masterList, bbox);
   }
 
   //controls the recursion
@@ -90,10 +90,12 @@ router.post('/call', (req, res, next) => {
       initialCount += data.response.total_row_count;
 
       countDev = [initialCount, initialCount+1, initialCount+2,
-                  initialCount-1, initialCount-2];
+                  initialCount-1];
+      if (typeof data !== 'undefined' && data.response.total_row_count > 0) {
+          decide(data);
+      }
     });
-      run(mT.makeBox(route));
-  });
+  })
 });
 
 
