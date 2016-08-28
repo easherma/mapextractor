@@ -6,10 +6,13 @@ const Factual = require('factual-api'),
       auth = require('../auth.js')
       factual = new Factual(auth.key, auth.secret);
 
-const write = require('../writeToFile.js');
-const mT = require('../MapTasks.js');
+const write = require('../libs/writeToFile.js');
+const mT = require('../libs/MapTasks.js');
 const now = require('performance-now');
-var _ = require('underscore');
+const _ = require('underscore');
+const RateLimiter = require('limiter').RateLimiter;
+let limiter = new RateLimiter(500, 'minute');
+
 
 /* GET home page. */
 router.get('/', (req, res, next) => {

@@ -2,8 +2,8 @@ var routes = [ { lat: 41.81173, lng: -87.666227},
   { lat: 42.03725, lng: -88.28119 } ];
 
 var userParams = {main: [2]};
-const write = require('./writeToFile.js');
-const mT = require('./MapTasks.js');
+const write = require('../libs/writeToFile.js');
+const mT = require('../libs/MapTasks.js');
 const _ = require('underscore');
 const now = require('performance-now');
 

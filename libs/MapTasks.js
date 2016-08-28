@@ -2,7 +2,7 @@
 const turf = require('turf');
 
 const Factual = require('factual-api'),
-      auth = require('./auth.js')
+      auth = require('../auth.js')
       factual = new Factual(auth.key, auth.secret);
 
 const _ = require('underscore');
@@ -48,7 +48,7 @@ const mapTasks = {
 
     return new Promise((resolve, reject) => {
       factual.get('/t/places-us', {"include_count":"true",
-        filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
+        filters:{"category_ids":{"$includes_any":[2]}},
         geo:{"$within":{"$rect":[[ymax , xmin],[ymin, xmax]]}}, limit:50},
           (error, response) => {
             if (error || response === null) {

@@ -21,6 +21,7 @@
     "turf": "*",
     "json-2-csv": "*",
     "underscore": "*",
-    "performance-now": "*"
+    "performance-now": "*",
+    "limiter": "*"
   }
 }
