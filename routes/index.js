@@ -1,26 +1,17 @@
 const express = require('express');
 const router = express.Router();
-var _ = require('underscore');
 
 const got = require('got');
 const Factual = require('factual-api'),
       auth = require('../auth.js')
       factual = new Factual(auth.key, auth.secret);
 
-const writeToFile = require('../writeToFile.js');
-const splitBbox = require('../splitBbox.js');
-fs = require('fs');
-
-const turf = require('turf');
-var converter = require('json-2-csv');
-
-const _under = require('underscore');
-
-var json2csvCallback = function (err, csv) {
-    if (err) throw err;
-    console.log(csv);
-};
-
+const write = require('../libs/writeToFile.js');
+const mT = require('../libs/MapTasks.js');
+const now = require('performance-now');
+const _ = require('underscore');
+const RateLimiter = require('limiter').RateLimiter;
+let limiter = new RateLimiter(500, 'minute');
 
 
 /* GET home page. */
@@ -35,131 +26,81 @@ router.get('/', (req, res, next) => {
     });
 });
 
+let masterList = [],
+    masterCount = 0,
+    initialCount = 0;
+    countDev = []; //count deviations
+
+let start = now();
 //probably should be GET
 router.post('/call', (req, res, next) => {
   var userParams = req.body.userParams;
   var routes = req.body.routepoints;
 
-  var master = [];
-  var routeCount = 0;
-
-  //cycle through routes
-  routes.map((route) => {
-    var pt = {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [route.lng, route.lat]
-      }
-    };
-
-    var bbox = turf.bbox(turf.buffer(pt, 10000, 'meters'));
-    getCount(bbox);
-  });
-
-  let isExceeds = (count) => {
-    if (count > 50) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  function pushToFront(data) {
+  let pushToFront = (completeList) => {
+    write("results", completeList);
     console.log("returning to front");
-    writeToFile("results",_.flatten(data));
-    res.json(data);
+    console.log("it took "+((now() - start)/1000)+" to run.");
+    res.json(completeList);
   }
 
-  function getCount(bbox) {
-    factual.get('/t/places-us', {"include_count":"true",
-      filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
-      geo:{"$within":{"$rect":[[bbox[3] , bbox[0]],[bbox[1], bbox[2]]]}}, limit:50},
-        (error, response) => {
-          if (error || response === null) {console.log(error);};
+  let splitBox = (bbox) => {
+    return mT.splitBox(bbox);
+  }
 
-          if (isExceeds(response.total_row_count)) {
-              getSplitCount(splitBbox(bbox));
-          } else if (response.total_row_count > 0) {
-            routeCount++;
-            master.push(response.data);
-            if (routeCount === routes.length) {
-              pushToFront(master);
-            }
-          }
-        });
+  //returns promise
+  let getCount = (box) => {
+    return mT.getCount(box, userParams);
+  }
+
+  //decides if it should add to the masterList or call run() again.
+  let decide = (data) => {
+    if (mT.isWithin(data.response.total_row_count)) {
+      masterList.push.apply(masterList, createFeatures(data.response.data, data.bbox));
+      masterCount += data.response.total_row_count;
+      console.log("EXPECT "+masterCount);
+      if (countDev.includes(masterCount)) { //temporary end
+        console.log("Met total of "+initialCount);
+        pushToFront(mT.featureCollection(masterList));
+      }
+    } else {
+      run(data.bbox);
     }
+  }
 
-  function getSplitCount(bbox) {
-    let ran = 0,
-        results = [],
-        over = [],
-        within = [];
-};
-
-    new Promise((resolve, reject) => {
-      bbox.map((box) => {
-        factual.get('/t/places-us', {"include_count":"true",
-          filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
-          geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:50},
-        (error, response) => {
-          if (error || response === null) {
-            console.log(error);
-          } else {
-            if (isExceeds(response.total_row_count)) {
-              over.push(box);
-            } else if (response.total_row_count > 0) {
-              // within.push(_under.flatten(response.data));
-              // within.push(box);
-              master.push(response.data);
-            }
-          }
-
-          ran++;
-          if (ran === bbox.length) {
-            results['within'] = within;
-            results['over'] = over;
-            within = [];
-            resolve(results);
-          }
-        });
+  //splits the box and checks the count
+  let parseSplit = (split) => {
+    split.map((box) => {
+      getCount(box).then((data) => {
+        decide(data);
       });
-    }).then((data) => {
-      if (data.within.length > 0) {//if there are results that within, add to master list
-          // master.push(_under.union(data.within));
-          routeCount++;
-          if (routeCount === routes.length && data.over.length === 0) {
-            console.log("All Passed");
-            pushToFront(master);
-          }
-      }
-
-      if (data.over.length > 0) {
-          routeCount--;
-          data.over.map((box) => {
-            getSplitCount(splitBbox(box));
-          });
-      }
     });
   }
 
-  let createFeature = (rData) => {
-    let features = [];
-    //console.log(rData);
-    rData.map((data) => {
-      var resp = {
-        "type": "Feature",
-        "properties": {"response": JSON.stringify(data)},
-        "geometry": {
-          "type": "Point",
-          "coordinates": [data.longitude, data.latitude]
-        }
-      };
-      features.push(resp);
-    });
-    return features;
+  //returns array of features
+  let createFeatures = (masterList, bbox) => {
+    return mT.features(masterList, bbox);
   }
+
+  //controls the recursion
+  let run = (bbox) => {
+    parseSplit(splitBox(bbox));
+  }
+
+  //runs through each route point
+  routes.map((route) => {
+    getCount(mT.makeBox(route)).then((data) => {
+      initialCount += data.response.total_row_count;
+
+      countDev = [initialCount, initialCount+1, initialCount+2,
+                  initialCount-1];
+      if (typeof data !== 'undefined' && data.response.total_row_count > 0) {
+          decide(data);
+      }
+    });
+  })
 });
+
+
 
 module.exports = router;

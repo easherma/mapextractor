@@ -85,7 +85,7 @@ router.post('/call', (req, res, next) => {
       newBoxes.forEach((box, index, array) => {
         factual.get('/t/places-us', {"include_count":"true",
           filters:{"$and":[{"country":{"$eq":"US"}},
-        {"category_ids":{"$includes_any":[2]}}]},
+        {"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}}]},
         geo:{"$within":{"$rect":[[box.ymax , box.xmin],[box.ymin, box.xmax]]}}, limit:50},
         (error, response) => {
           if (!error && response.total_row_count > 0) {

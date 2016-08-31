@@ -2,8 +2,10 @@
 const turf = require('turf');
 
 const Factual = require('factual-api'),
-      auth = require('./auth.js')
+      auth = require('../auth.js')
       factual = new Factual(auth.key, auth.secret);
+
+const _ = require('underscore');
 
 /* functions */
 const mapTasks = {
@@ -46,7 +48,7 @@ const mapTasks = {
 
     return new Promise((resolve, reject) => {
       factual.get('/t/places-us', {"include_count":"true",
-        filters:{"category_ids":{"$includes_any":[23]}},
+        filters:{"category_ids":{"$includes_any":[2]}},
         geo:{"$within":{"$rect":[[ymax , xmin],[ymin, xmax]]}}, limit:50},
           (error, response) => {
             if (error || response === null) {
@@ -64,7 +66,7 @@ const mapTasks = {
   setCount: function(count) {
     this.count = count;
   },
-  features: function(rData) {
+  features: function(rData, bbox) { //@TODO pass in bbox
     let features = [];
     rData.map((data) => {
       var resp = {
@@ -77,7 +79,45 @@ const mapTasks = {
       };
       features.push(resp);
     });
-    return features;
+
+    let polyFeature = this.featurePolygon(rData, bbox);
+
+    return _.union(features, polyFeature);
+  },
+  featurePolygon: function(data, bbox) {
+    let xmin = (bbox[0] || bbox.xmin), //e
+        ymin = (bbox[1] || bbox.ymin), //s
+        xmax = (bbox[2] || bbox.xmax), //w
+        ymax = (bbox[3] || bbox.ymax); //n
+
+        console.log(bbox);
+    var resp = {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            xmin,
+            ymax
+          ],
+          [
+            xmax,
+            ymax
+          ],
+          [
+            xmin,
+            ymin
+          ],
+          [
+            xmax,
+            ymin
+          ]
+        ]
+      }
+    };
+
+    return resp;
   },
   featureCollection: function(features) {
     return turf.featureCollection(features);

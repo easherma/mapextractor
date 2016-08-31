@@ -20,6 +20,8 @@
     "file-system": "*",
     "turf": "*",
     "json-2-csv": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "performance-now": "*",
+    "limiter": "*"
   }
 }
