@@ -99,7 +99,11 @@ const mapTasks = {
         "coordinates": [
           [
             xmin,
-            ymax
+            ymin
+          ],
+          [
+            xmax,
+            ymin
           ],
           [
             xmax,
@@ -107,10 +111,10 @@ const mapTasks = {
           ],
           [
             xmin,
-            ymin
+            ymax
           ],
           [
-            xmax,
+            xmin,
             ymin
           ]
         ]
