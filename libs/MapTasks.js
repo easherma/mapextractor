@@ -97,6 +97,7 @@ const mapTasks = {
       "geometry": {
         "type": "Polygon",
         "coordinates": [
+        [
           [
             xmin,
             ymin
@@ -118,6 +119,7 @@ const mapTasks = {
             ymin
           ]
         ]
+      ]
       }
     };
 
