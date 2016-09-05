@@ -15,13 +15,21 @@ var RouteParser = function(point, param) {
 
 RouteParser.prototype = {
   //returns number
-  getFirstCount: function(callback) {
-    this.getCount(this.bbox).then((data) => {
-      return data.response.total_row_count;
-    });
+  getFirstCount: function() {
+    return this.getCount(this.bbox, this.param);
   },
-  getCount: function(bbox) {
-    return mT.getCount(bbox);
+  getCount: function(bbox, param) {
+    return mT.getCount(bbox, param);
+  },
+  decide: function(count) {
+    if (mT.isWithin(count)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  split: function(bbox) {
+    return mT.splitBox(bbox);
   }
 }
 
