@@ -2,12 +2,22 @@
 const turf = require('turf');
 
 const Factual = require('factual-api'),
-      auth = require('../auth.js')
+      auth = require('../auth.js'),
       factual = new Factual(auth.key, auth.secret);
       factual.startDebug();
-      //factual.setRequestTimeout(1000);
+      factual.setRequestTimeout(1000);
 
 const _ = require('underscore');
+
+var myLogs = [];
+(function () {
+  var log = console.warn;
+  console.log = function () {
+    var args = Array.prototype.slice.call(arguments)
+    log.apply(this, args );
+    myLogs.push(args);
+  };
+}());
 
 /* functions */
 const mapTasks = {
@@ -52,18 +62,31 @@ const mapTasks = {
       factual.get('/t/places-us', {"include_count":"true",
         filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
         geo:{"$within":{"$rect":[[ymax , xmin],[ymin, xmax]]}}, limit:50},
-          (error, response) => {
+          (error, response, raw) => {
             if (error || response === null) {
               console.log(error);
+              //console.log(data);
             } else {
-//              console.log(response.headers);
+              // console.log("Response Headers:" ,Object.keys(raw));
+              var burst = JSON.parse(raw.headers["x-factual-throttle-allocation"])["burst"];
+              var daily = parseFloat(JSON.parse(raw.headers["x-factual-throttle-allocation"])["daily"])/100.0;
+
+               console.log("BURST:", parseFloat(burst)/100.0);
+              // console.log("DAILY LIMIT:", daily);
+              // if (daily > 0.50) {
+              //   console.log("Half remaining");
+              //
+              // }
               let resp = {
                   bbox: bbox,
                   response: response,
+
                 }
-              resolve(resp);
+
+          resolve(resp);
             }
           });
+
     });
   },
   setCount: function(count) {
