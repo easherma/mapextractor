@@ -10,14 +10,14 @@ const _ = require('underscore');
 /* functions */
 const mapTasks = {
   makeBox: function(route) { //makes bbox
-    let pt = {"type": "Feature", "properties": {},
+    var pt = {"type": "Feature", "properties": {},
               "geometry": {
                 "type": "Point","coordinates": [route.lng, route.lat]}
               }
     return turf.bbox(turf.buffer(pt, 10000, 'meters'));
   },
   runInitial: function(route, userParams) {//make buffer, bbox, getcount
-    let bbox = this.makeBox(route);
+    var bbox = this.makeBox(route);
     return this.getCount(bbox, userParams);
   },
   isWithin: function(count) { //checks if within range
@@ -54,7 +54,7 @@ const mapTasks = {
             if (error || response === null) {
               console.log(error);
             } else {
-              let resp = {
+              var resp = {
                   bbox: bbox,
                   response: response,
                 }
@@ -67,7 +67,7 @@ const mapTasks = {
     this.count = count;
   },
   features: function(rData, bbox) { //@TODO pass in bbox
-    let features = [];
+    var features = [];
     rData.map((data) => {
       var resp = {
         "type": "Feature",
@@ -80,12 +80,12 @@ const mapTasks = {
       features.push(resp);
     });
 
-    let polyFeature = this.featurePolygon(rData, bbox);
+    var polyFeature = this.featurePolygon(rData, bbox);
 
     return _.union(features, polyFeature);
   },
   featurePolygon: function(data, bbox) {
-    let xmin = (bbox[0] || bbox.xmin), //e
+    var xmin = (bbox[0] || bbox.xmin), //e
         ymin = (bbox[1] || bbox.ymin), //s
         xmax = (bbox[2] || bbox.xmax), //w
         ymax = (bbox[3] || bbox.ymax); //n
