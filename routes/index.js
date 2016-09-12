@@ -10,8 +10,9 @@ const write = require('../libs/writeToFile.js');
 const mT = require('../libs/MapTasks.js');
 const now = require('performance-now');
 const _ = require('underscore');
+
 const RateLimiter = require('limiter').RateLimiter;
-let limiter = new RateLimiter(10, 'minute');
+let limiter = new RateLimiter(300, 'minute');
 
 
 /* GET home page. */
@@ -29,7 +30,8 @@ router.get('/', (req, res, next) => {
 let masterList = [],
     masterCount = 0,
     initialCount = 0;
-    countDev = []; //count deviations
+    countDev = [], //count deviations
+    ran = 0;
 
 let start = now();
 //probably should be GET
@@ -47,70 +49,70 @@ router.post('/call', (req, res, next) => {
     res.json(completeList);
   }
 
-  let splitBox = (bbox) => {
-    return mT.splitBox(bbox);
-  }
-
-  //returns promise
-  let getCount = (box) => {
-    return mT.getCount(box, userParams);
-  }
-
-  //decides if it should add to the masterList or call run() again.
-  let decide = (data) => {
-    if (mT.isWithin(data.response.total_row_count)) {
-      masterList.push.apply(masterList, createFeatures(data.response.data, data.bbox));
-      masterCount += data.response.total_row_count;
-      console.log("EXPECT "+masterCount);
-      if (countDev.includes(masterCount)) { //temporary end
-        console.log("Met total of "+initialCount);
-        pushToFront(mT.featureCollection(masterList));
-      }
-    } else {
-      // limiter.removeTokens(1, function(err, remainingRequests) {
-        // if (remainingRequests <= 0) {
-        //   response.writeHead(429, {'Content-Type': 'text/plain;charset=UTF-8'});
-        //   response.end('429 Too Many Requests - your IP is being rate limited');
-        // } else {
-        run(data.bbox)
-        
-        // }
-      // });
-
-    }
-  }
-
-  //splits the box and checks the count
-  let parseSplit = (split) => {
-    split.map((box) => {
-      getCount(box).then((data) => {
-        decide(data);
-      });
-    });
-  }
-
   //returns array of features
   let createFeatures = (masterList, bbox) => {
     return mT.features(masterList, bbox);
   }
 
-  //controls the recursion
-  let run = (bbox) => {
-    _.debounce(parseSplit(splitBox(bbox), 60000, false));
+  //add to master list
+  let addToMaster = (data) => {
+    masterList.push.apply(masterList, createFeatures(data.response.data, data.bbox));
   }
 
-  //runs through each route point
+  //figure out what to do with data
+  let decide = (data) => {
+    console.log("Deciding")
+    if (mT.isWithin(data.response.total_row_count)) {
+
+      addToMaster(data);
+
+      masterCount += data.response.total_row_count;
+
+      if (countDev.includes(masterCount)) { //temporary end
+        console.log("Met total of "+initialCount);
+        pushToFront(mT.featureCollection(masterList));
+      }
+
+    } else { 
+        
+      mT.splitBox(data.bbox).map((box) => {
+
+        limiter.removeTokens(1, function(err, remainingRequests) {
+
+          if (remainingRequests <= 0) {
+            response.writeHead(429, {'Content-Type': 'text/plain;charset=UTF-8'});
+            response.end('429 Too Many Requests - your IP is being rate limited');
+          } else {
+            mT.getCount(box, userParams).then((data) => {
+              console.log("RAN "+(ran++));
+              decide(data);
+            });
+          }
+        });
+      });
+    }
+  }
+
+  //parse through the routes
   routes.map((route) => {
-    getCount(mT.makeBox(route)).then((data) => {
+    //get first count
+    mT.getCount(mT.makeBox(route), userParams).then((data) => {
+
+      //increment count to set limit
       initialCount += data.response.total_row_count;
 
       countDev = [initialCount, initialCount+1, initialCount+2,
-                  initialCount-1];
+                  initialCount-1]; 
+
+      console.log("TOTAL: "+countDev);
+
       if (typeof data !== 'undefined' && data.response.total_row_count > 0) {
+
           decide(data);
       }
+
     });
-  })
+  });
 });
 
 
