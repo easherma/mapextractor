@@ -116,7 +116,7 @@ const mapTasks = {
         xmax = (bbox[2] || bbox.xmax), //w
         ymax = (bbox[3] || bbox.ymax); //n
 
-        console.log(bbox);
+        //console.log(bbox);
     var resp = {
       "type": "Feature",
       "properties": {},

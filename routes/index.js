@@ -67,14 +67,15 @@ router.post('/call', (req, res, next) => {
         pushToFront(mT.featureCollection(masterList));
       }
     } else {
-      limiter.removeTokens(1, function(err, remainingRequests) {
-        if (remainingRequests < 0) {
-          response.writeHead(429, {'Content-Type': 'text/plain;charset=UTF-8'});
-          response.end('429 Too Many Requests - your IP is being rate limited');
-        } else {
-      run(data.bbox);
-        }
-      });
+      // limiter.removeTokens(1, function(err, remainingRequests) {
+        // if (remainingRequests <= 0) {
+        //   response.writeHead(429, {'Content-Type': 'text/plain;charset=UTF-8'});
+        //   response.end('429 Too Many Requests - your IP is being rate limited');
+        // } else {
+        run(data.bbox)
+        
+        // }
+      // });
 
     }
   }
@@ -95,7 +96,7 @@ router.post('/call', (req, res, next) => {
 
   //controls the recursion
   let run = (bbox) => {
-    parseSplit(splitBox(bbox));
+    _.debounce(parseSplit(splitBox(bbox), 60000, false));
   }
 
   //runs through each route point
