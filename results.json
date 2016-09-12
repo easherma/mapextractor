@@ -1,0 +1,296 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"225 Milan Ave\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"chain_id\":\"16cb7840-992b-0132-fd75-7a163eb2a6fc\",\"chain_name\":\"Advance Auto Parts\",\"country\":\"us\",\"email\":\"charitable@advance-auto.com\",\"factual_id\":\"04daa571-fcbc-45bb-bd53-e0b8b07a0795\",\"fax\":\"(419) 663-4728\",\"hours\":{\"sunday\":[[\"9:00\",\"20:00\"]],\"saturday\":[[\"7:30\",\"21:00\"]],\"tuesday\":[[\"7:30\",\"21:00\"]],\"friday\":[[\"7:30\",\"21:00\"]],\"thursday\":[[\"7:30\",\"21:00\"]],\"wednesday\":[[\"7:30\",\"21:00\"]],\"monday\":[[\"7:30\",\"21:00\"]]},\"hours_display\":\"Mon-Sat 7:30 AM-9:00 PM; Sun 9:00 AM-8:00 PM\",\"latitude\":41.262046,\"locality\":\"Norwalk\",\"longitude\":-82.611775,\"name\":\"Advance Auto Parts\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 663-0908\",\"website\":\"http://shop.advanceautoparts.com/home/\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.611775,
+          41.262046
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"349 Cleveland Rd\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"email\":\"sales@crt-performance.com\",\"factual_id\":\"0d7c19ad-a82e-486d-9b3d-7ce1b2059d5e\",\"hours\":{\"saturday\":[[\"8:00\",\"14:00\"]],\"tuesday\":[[\"12:00\",\"19:00\"]],\"friday\":[[\"12:00\",\"19:00\"]],\"thursday\":[[\"12:00\",\"19:00\"]],\"wednesday\":[[\"12:00\",\"19:00\"]],\"monday\":[[\"12:00\",\"19:00\"]]},\"hours_display\":\"Mon-Fri 12:00 PM-7:00 PM; Sat 8:00 AM-2:00 PM\",\"latitude\":41.247075,\"locality\":\"Norwalk\",\"longitude\":-82.590709,\"name\":\"CRT Performance\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-4151\",\"website\":\"http://www.crt-performance.com\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.590709,
+          41.247075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"66 Cleveland Rd\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"email\":\"actionautosupply@frontier.com\",\"factual_id\":\"39c64db5-b66b-4ca1-a929-d757fda6c8e5\",\"hours\":{\"sunday\":[[\"8:00\",\"18:00\"]],\"saturday\":[[\"8:00\",\"16:30\"]],\"tuesday\":[[\"8:00\",\"20:00\"]],\"friday\":[[\"8:00\",\"20:00\"]],\"thursday\":[[\"8:00\",\"20:00\"]],\"wednesday\":[[\"8:00\",\"20:00\"]],\"monday\":[[\"8:00\",\"20:00\"]]},\"hours_display\":\"Mon-Fri 8:00 AM-8:00 PM; Sat 8:00 AM-4:30 PM; Sun 8:00 AM-6:00 PM\",\"latitude\":41.247761,\"locality\":\"Norwalk\",\"longitude\":-82.603088,\"name\":\"Action Auto Supply-Norwalk\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-8264\",\"website\":\"http://actionautosupplynorwalk.com/\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.603088,
+          41.247761
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"230 Republic St\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"chain_id\":\"ab4c25b0-d68a-012e-5619-003048cad9da\",\"chain_name\":\"NAPA Auto Parts\",\"country\":\"us\",\"email\":\"customersupport@napaonline.com\",\"factual_id\":\"0463fabd-39ca-404e-92fa-ab837ee2bc14\",\"fax\":\"(419) 668-2071\",\"hours\":{\"saturday\":[[\"7:30\",\"17:00\"]],\"tuesday\":[[\"7:30\",\"18:00\"]],\"friday\":[[\"7:30\",\"18:00\"]],\"thursday\":[[\"7:30\",\"18:00\"]],\"wednesday\":[[\"7:30\",\"18:00\"]],\"monday\":[[\"7:30\",\"18:00\"]]},\"hours_display\":\"Mon-Fri 7:30 AM-6:00 PM; Sat 7:30 AM-5:00 PM\",\"latitude\":41.266991,\"locality\":\"Norwalk\",\"longitude\":-82.609122,\"name\":\"NAPA Auto Parts\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-3370\",\"website\":\"http://www.napaonline.com/\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.609122,
+          41.266991
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"75 Cline St\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"factual_id\":\"6fca9e3f-febf-4fb1-a0ff-1e7f3a58299f\",\"hours\":{\"saturday\":[[\"9:00\",\"13:00\"]],\"tuesday\":[[\"8:00\",\"17:00\"]],\"friday\":[[\"8:00\",\"17:00\"]],\"thursday\":[[\"8:00\",\"17:00\"]],\"wednesday\":[[\"8:00\",\"17:00\"]],\"monday\":[[\"8:00\",\"17:00\"]]},\"hours_display\":\"Mon-Fri 8:00 AM-5:00 PM; Sat 9:00 AM-1:00 PM\",\"latitude\":41.255932,\"locality\":\"Norwalk\",\"longitude\":-82.613066,\"name\":\"Federated Auto Parts\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-8800\",\"website\":\"http://federatedautoparts.com/\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.613066,
+          41.255932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"6 Simpson Ave\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"email\":\"jakesradiator@neo.rr.com\",\"factual_id\":\"3aa0649b-d45e-407b-94bd-7a8dbf066270\",\"fax\":\"(419) 668-4606\",\"hours\":{\"tuesday\":[[\"7:30\",\"17:30\"]],\"friday\":[[\"00:00\",\"17:30\"]],\"thursday\":[[\"00:00\",\"17:30\"],[\"19:30\",\"23:59\"]],\"wednesday\":[[\"19:30\",\"23:59\"]],\"monday\":[[\"7:30\",\"17:30\"]]},\"hours_display\":\"Mon-Tue 7:30 AM-5:30 PM; Wed 7:30 PM-11:59 PM; Thu 12:00 AM-5:30 PM, 7:30 PM-11:59 PM; Fri 12:00 AM-5:30 PM\",\"latitude\":41.258802,\"locality\":\"Norwalk\",\"longitude\":-82.611328,\"name\":\"Jake's Radiator /NAPA\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 663-2831\",\"website\":\"http://www.jakesradiator.mechanicnet.com\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.611328,
+          41.258802
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"10 Williams Ave\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"email\":\"sales@pdiparts.com\",\"factual_id\":\"aea36e6b-cd98-4b4a-aa04-5a193fee497a\",\"latitude\":41.256031,\"locality\":\"Norwalk\",\"longitude\":-82.611013,\"name\":\"Car Parts Warehouse\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-8195\",\"website\":\"http://www.pdiparts.com/\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.611013,
+          41.256031
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"12602 State Route 13\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"email\":\"info@bobsautowrecking.com\",\"factual_id\":\"9c7964ac-eebd-411e-86fd-3fb651b96d04\",\"fax\":\"(419) 499-4012\",\"hours\":{\"tuesday\":[[\"8:00\",\"17:00\"]],\"friday\":[[\"8:00\",\"17:00\"]],\"thursday\":[[\"8:00\",\"17:00\"]],\"wednesday\":[[\"8:00\",\"17:00\"]],\"monday\":[[\"8:00\",\"17:00\"]]},\"hours_display\":\"Mon-Fri 8:00 AM-5:00 PM\",\"latitude\":41.314454,\"locality\":\"Milan\",\"longitude\":-82.602422,\"name\":\"Bob's Auto Wrecking & Recovery\",\"postcode\":\"44846\",\"region\":\"OH\",\"tel\":\"(419) 499-2005\",\"website\":\"http://www.bobsautowrecking.com\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.602422,
+          41.314454
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"10 Williams Ave\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"email\":\"sales@pdiparts.com\",\"factual_id\":\"7f1461ca-0398-44e5-976b-144c5aae3010\",\"fax\":\"(517) 336-8501\",\"latitude\":41.255872,\"locality\":\"Norwalk\",\"longitude\":-82.610266,\"name\":\"Parts Distributors\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-8195\",\"website\":\"http://pdiparts.com\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.610266,
+          41.255872
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"20 Fort Monroe Pkwy\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"factual_id\":\"572305e3-e082-4557-adf1-b877ca32215d\",\"fax\":\"(813) 930-2335\",\"latitude\":41.247395,\"locality\":\"Monroeville\",\"longitude\":-82.71236,\"name\":\"Jones Manufacturing Co.\",\"postcode\":\"44847\",\"region\":\"OH\",\"tel\":\"(419) 465-2009\",\"website\":\"http://www.jones-mfg.com\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.71236,
+          41.247395
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"196 Milan Ave\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"chain_id\":\"ab4bb960-d68a-012e-5619-003048cad9da\",\"chain_name\":\"Autozone\",\"country\":\"us\",\"email\":\"customer.service@autozone.com\",\"factual_id\":\"89f7550f-afc9-44f0-ab26-903225b82314\",\"hours\":{\"sunday\":[[\"9:00\",\"20:00\"]],\"saturday\":[[\"7:30\",\"21:00\"]],\"tuesday\":[[\"7:30\",\"21:00\"]],\"friday\":[[\"7:30\",\"21:00\"]],\"thursday\":[[\"7:30\",\"21:00\"]],\"wednesday\":[[\"7:30\",\"21:00\"]],\"monday\":[[\"7:30\",\"21:00\"]]},\"hours_display\":\"Mon-Sat 7:30 AM-9:00 PM; Sun 9:00 AM-8:00 PM\",\"latitude\":41.258624,\"locality\":\"Norwalk\",\"longitude\":-82.611694,\"name\":\"Autozone\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-0346\",\"website\":\"http://www.autozone.com/\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.611694,
+          41.258624
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"300 Sandusky St\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"email\":\"boresmfg@accnorwalk.com\",\"factual_id\":\"15404b43-0486-4793-bd16-b833195bcc1f\",\"fax\":\"(419) 465-2470\",\"latitude\":41.249408,\"locality\":\"Monroeville\",\"longitude\":-82.703691,\"name\":\"Bores J F Manufacturer Co.\",\"po_box\":\"P.O. Box 216\",\"postcode\":\"44847\",\"region\":\"OH\",\"tel\":\"(419) 465-2606\",\"website\":\"http://boresmfg.com/\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.703691,
+          41.249408
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"4193 Laylin Rd\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"factual_id\":\"0d4bcb9a-1ce6-49c9-b0e9-4ee55f110b8c\",\"hours\":{\"saturday\":[[\"9:00\",\"14:00\"]],\"tuesday\":[[\"9:00\",\"17:00\"]],\"friday\":[[\"9:00\",\"17:00\"]],\"thursday\":[[\"9:00\",\"17:00\"]],\"wednesday\":[[\"9:00\",\"17:00\"]],\"monday\":[[\"9:00\",\"17:00\"]]},\"hours_display\":\"Mon-Fri 9:00 AM-5:00 PM; Sat 9:00 AM-2:00 PM\",\"latitude\":41.254131,\"locality\":\"Norwalk\",\"longitude\":-82.567246,\"name\":\"Rt 2 Auto Service & Salvage\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-4514\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.567246,
+          41.254131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"55 N Garfield St\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"factual_id\":\"581d332d-5864-4fda-b2c2-5154d8e03f18\",\"fax\":\"(618) 888-8000\",\"latitude\":41.238419,\"locality\":\"Norwalk\",\"longitude\":-82.627467,\"name\":\"Mayflower Vehicle Systems\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-8132\",\"website\":\"http://mayflowercorporation.com/\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.627467,
+          41.238419
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"1413 State Route 113 E\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"email\":\"baymfg@accnorwalk.com\",\"factual_id\":\"4a131700-ef0d-4300-b7c4-81b9bbb3af69\",\"latitude\":41.299612,\"locality\":\"Milan\",\"longitude\":-82.596798,\"name\":\"Hemco\",\"postcode\":\"44846\",\"region\":\"OH\",\"tel\":\"(419) 499-4602\",\"website\":\"http://baymfg.com\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.596798,
+          41.299612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"20 State St\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"factual_id\":\"60eaa46e-0656-41fd-92f5-86e3a70b9e44\",\"fax\":\"(252) 927-3775\",\"latitude\":41.252105,\"locality\":\"Norwalk\",\"longitude\":-82.591192,\"name\":\"Action Auto Supply Of Norwalk Inc.\",\"po_box\":\"P.O. Box 327\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-8264\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.591192,
+          41.252105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"51 N Hester St\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"factual_id\":\"4f2d14c1-f11d-44c9-869b-8c7d23d5fcb1\",\"fax\":\"(419) 663-0281\",\"latitude\":41.243521,\"locality\":\"Norwalk\",\"longitude\":-82.618196,\"name\":\"Midway Parts Co.\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-3346\",\"website\":\"http://midwayinc.com\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.618196,
+          41.243521
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"110 Liberty St\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"factual_id\":\"26809688-f699-4be6-bbe1-780545800154\",\"hours\":{\"sunday\":[[\"11:00\",\"14:00\"]],\"saturday\":[[\"8:00\",\"15:00\"]],\"tuesday\":[[\"8:00\",\"17:30\"]],\"friday\":[[\"8:00\",\"17:30\"]],\"thursday\":[[\"8:00\",\"17:30\"]],\"wednesday\":[[\"8:00\",\"17:30\"]],\"monday\":[[\"8:00\",\"17:30\"]]},\"hours_display\":\"Mon-Fri 8:00 AM-5:30 PM; Sat 8:00 AM-3:00 PM; Sun 11:00 AM-2:00 PM\",\"latitude\":41.293858,\"locality\":\"Milan\",\"longitude\":-82.605901,\"name\":\"Huron Auto-Marine-Truck\",\"postcode\":\"44846\",\"region\":\"OH\",\"tel\":\"(419) 433-6350\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.605901,
+          41.293858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"75 Cline St\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"factual_id\":\"bd9cd7a8-d258-429e-a7a9-f3aca8dd6ebe\",\"hours\":{\"saturday\":[[\"9:00\",\"13:00\"]],\"tuesday\":[[\"8:00\",\"17:00\"]],\"friday\":[[\"8:00\",\"17:00\"]],\"thursday\":[[\"8:00\",\"17:00\"]],\"wednesday\":[[\"8:00\",\"17:00\"]],\"monday\":[[\"8:00\",\"17:00\"]]},\"hours_display\":\"Mon-Fri 8:00 AM-5:00 PM; Sat 9:00 AM-1:00 PM\",\"latitude\":41.255964,\"locality\":\"Norwalk\",\"longitude\":-82.613149,\"name\":\"Fisher Auto Parts\",\"postcode\":\"44857\",\"region\":\"OH\",\"tel\":\"(419) 668-8800\",\"website\":\"http://www.fisherautoparts.com/Contact.aspx\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.613149,
+          41.255964
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "response": "{\"address\":\"20 Prentiss St\",\"category_ids\":[6],\"category_labels\":[[\"Automotive\",\"Car Parts and Accessories\"]],\"country\":\"us\",\"factual_id\":\"19548ddf-f061-44f6-a143-55e9a5de6c75\",\"latitude\":41.242932,\"locality\":\"Monroeville\",\"longitude\":-82.696223,\"name\":\"Jones Manufacturing Co.\",\"po_box\":\"P.O. Box 143\",\"postcode\":\"44847\",\"region\":\"OH\",\"tel\":\"(419) 465-2009\"}"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.696223,
+          41.242932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -82.71777265481295,
+              41.14498645096357
+            ],
+            [
+              -82.53796471506713,
+              41.14498645096357
+            ],
+            [
+              -82.53796471506713,
+              41.32479439070937
+            ],
+            [
+              -82.71777265481295,
+              41.32479439070937
+            ],
+            [
+              -82.71777265481295,
+              41.14498645096357
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

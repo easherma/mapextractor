@@ -36,6 +36,10 @@ const mapTasks = {
     //@TODO add null handling
     return (count <= 50 && count > 0 ? true : false);
   },
+  isNotNull: function(count) { //checks if within range
+    //@TODO add null handling
+    return (count <= 50 && count > 0 ? true : false);
+  },
   splitBox: function(bbox) { //splits bbox to 4
     var xmin = (bbox[0] || bbox.xmin),
         ymin = (bbox[1] || bbox.ymin),
@@ -91,6 +95,7 @@ const mapTasks = {
 
     });
   },
+  //I don't think setCount is being used anymore...
   setCount: function(count) {
     this.count = count;
   },
