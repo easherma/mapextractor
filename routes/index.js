@@ -81,9 +81,10 @@ router.post('/call', (req, res, next) => {
         console.log("ROUTE LENGTH: "+routesLength);
 
       }
-      if (indexCount == routesLength){
+      if ((indexCount + 1) == routesLength && masterList.length != 0){
         console.log("DONE! ", routesLength);
-        res.end();
+        masterList.length = 0;
+        //res.end();
       }
 
     } else if (data.response.total_row_count != 0) {
