@@ -91,24 +91,45 @@ router.post('/call', (req, res, next) => {
 
       console.log("IS TOTAL ROW NOT 0: ", data.response.total_row_count != 0);
 
+      // mT.splitBox(data.bbox).map((box) => {
+
+      //   limiter.removeTokens(1, function(err, remainingRequests) {
+
+      //     if (remainingRequests <= 0) {
+            // response.writeHead(429, {'Content-Type': 'text/plain;charset=UTF-8'});
+            // response.end('429 Too Many Requests - your IP is being rate limited');
+      //     } else {
+      //       mT.getCount(box, userParams).then((data) => {
+      //         console.log("RAN "+(ran++));
+      //         console.log(data.bbox);
+      //         console.log("Remaining Requests: ", remainingRequests);
+      //         decide(data);
+      //         //console.log(data);
+      //       });
+      //     }
+      //   });
+      // });
+
+      let promises = [];
+
       mT.splitBox(data.bbox).map((box) => {
 
-        limiter.removeTokens(1, function(err, remainingRequests) {
-
+        //get the counts
+        limiter.removeTokens(1, (err, remainingRequests) => {
           if (remainingRequests <= 0) {
             response.writeHead(429, {'Content-Type': 'text/plain;charset=UTF-8'});
-            response.end('429 Too Many Requests - your IP is being rate limited');
+                  response.end('429 Too Many Requests - your IP is being rate limited');
           } else {
-            mT.getCount(box, userParams).then((data) => {
-              console.log("RAN "+(ran++));
-              console.log(data.bbox);
-              console.log("Remaining Requests: ", remainingRequests);
-              decide(data);
-              //console.log(data);
-            });
+            console.log("RAN "+(ran++));
+            promises.push(mT.getCount(box, userParams));
           }
         });
       });
+
+      Promise.all(promises).then((data) => {
+        decide(data);
+      });
+
     } else if (data.response.total_row_count == 0) {
       console.log("IS TOTAL ROW NOT 0?: ", data.response.total_row_count != 0);
     }
