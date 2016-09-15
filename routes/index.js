@@ -72,7 +72,7 @@ router.post('/call', (req, res, next) => {
 
       masterCount += data.response.total_row_count;
 
-      if (countDev.includes(masterCount) && masterCount == initialCount) { //temporary end
+      if ( masterCount == initialCount) { //temporary end
         console.log("Met total of "+initialCount);
         pushToFront(mT.featureCollection(masterList));
         indexCount++;
@@ -83,7 +83,7 @@ router.post('/call', (req, res, next) => {
       }
       if ((indexCount + 1) == routesLength && masterList.length != 0){
         console.log("DONE! ", routesLength);
-        masterList.length = 0;
+        //masterList.length = 0;
         //res.end();
       }
 

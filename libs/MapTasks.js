@@ -4,8 +4,8 @@ const turf = require('turf');
 const Factual = require('factual-api'),
       auth = require('../auth.js'),
       factual = new Factual(auth.key, auth.secret);
-      //factual.startDebug();
-      //factual.setRequestTimeout(1000);
+      factual.startDebug();
+      //factual.setRequestTimeout(100);
 
 const _ = require('underscore');
 
