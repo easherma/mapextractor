@@ -117,7 +117,7 @@ router.post('/call', (req, res, next) => {
 
 
         //get the counts
-        limiter.removeTokens(1, (err, remainingRequests) => {
+        limiter.removeTokens(4, (err, remainingRequests) => {
           if (remainingRequests <= 0) {
             response.writeHead(429, {'Content-Type': 'text/plain;charset=UTF-8'});
                   response.end('429 Too Many Requests - your IP is being rate limited');
@@ -126,10 +126,15 @@ router.post('/call', (req, res, next) => {
             prevPromise = prevPromise.then(function() {
               return mT.getCount(box, userParams);
             }
-          ).then((data) => {
+          ).catch((error, data) => {
+            console.log(error);
+            console.log(data);
+          }).then((data) => {
             decide(data);
-          });
-
+          }
+        ).catch((error) => {
+              console.log(error);
+            });
           }
         });
       });
@@ -164,6 +169,8 @@ router.post('/call', (req, res, next) => {
 
       }
 
+    }).catch((error) => {
+      console.log(error);
     });
   });
 
