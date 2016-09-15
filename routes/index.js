@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-
+const json2csv = require('json2csv');
 const got = require('got');
 const Factual = require('factual-api'),
       auth = require('../auth.js')
       factual = new Factual(auth.key, auth.secret);
 
 const write = require('../libs/writeToFile.js');
+const writeJSONtoCSV = require('../libs/writeJSONToCSV.js');
 const mT = require('../libs/MapTasks.js');
 const now = require('performance-now');
 const _ = require('underscore');
@@ -46,6 +47,20 @@ router.post('/call', (req, res, next) => {
   var routesLength = req.body.routepoints.length;
 
   let pushToFront = (completeList) => {
+    properties = [];
+    for (var i = 0; i < completeList.features.length; i++) {
+      properties.push(completeList.features[i].properties);
+      //console.log(json2csv({data : completeList.features[i].properties.response}));
+
+      //writeJSONtoCSV("properties", completeList.features[i].properties.response);
+
+    }
+    writeJSONtoCSV("properties", properties);
+    /*for (var i = 0; i < completeList.length; i++) {
+      console.log(completeList);
+    }*/
+
+    console.log(typeof(completeList));
     write("results", completeList);
     console.log("returning to front");
     console.log("it took "+((now() - start)/1000)+" to run.");

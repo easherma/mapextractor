@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node-debug  --web-host localhost ./bin/www"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
@@ -19,7 +19,7 @@
     "async": "*",
     "file-system": "*",
     "turf": "*",
-    "json-2-csv": "*",
+    "json2csv": "*",
     "underscore": "*",
     "performance-now": "*",
     "limiter": "*",

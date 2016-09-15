@@ -10,4 +10,4 @@ results.csv
 results*.json
 *.geojson
 npm-debug.log
-node-modules/
+node_modules/
