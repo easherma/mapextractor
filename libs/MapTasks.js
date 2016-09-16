@@ -71,6 +71,7 @@ const mapTasks = {
           (error, response, raw) => {
             if (error || response === null) {
               console.log(error);
+              // reject("THIS FAILED");
               //console.log(data);
             } else {
               // console.log("Response Headers:" ,Object.keys(raw));
