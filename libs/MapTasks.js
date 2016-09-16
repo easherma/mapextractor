@@ -4,7 +4,7 @@ const turf = require('turf');
 const Factual = require('factual-api'),
       auth = require('../auth.js'),
       factual = new Factual(auth.key, auth.secret);
-      //factual.startDebug();
+      // factual.startDebug();
       //factual.setRequestTimeout(100);
 
 const _ = require('underscore');
@@ -41,6 +41,10 @@ const mapTasks = {
     return (count <= 50 && count > 0 ? true : false);
   },
   splitBox: function(bbox) { //splits bbox to 4
+
+    console.log("INPUT BBOX");
+    console.log(bbox);
+
     var xmin = (bbox[0] || bbox.xmin),
         ymin = (bbox[1] || bbox.ymin),
         xmax = (bbox[2] || bbox.xmax),
@@ -70,8 +74,8 @@ const mapTasks = {
         geo:{"$within":{"$rect":[[ymax , xmin],[ymin, xmax]]}}, limit:50},
           (error, response, raw) => {
             if (error || response === null) {
-              console.log(error);
-              //console.log(data);
+              console.log("I Broke");
+              console.log(response);
             } else {
               // console.log("Response Headers:" ,Object.keys(raw));
               var burst = JSON.parse(raw.headers["x-factual-throttle-allocation"])["burst"];
@@ -83,6 +87,7 @@ const mapTasks = {
               //   console.log("Half remaining");
               //
               // }
+              console.log(response.total_row_count);
               let resp = {
                   bbox: bbox,
                   response: response,

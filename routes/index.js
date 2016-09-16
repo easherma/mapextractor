@@ -12,6 +12,8 @@ const mT = require('../libs/MapTasks.js');
 const now = require('performance-now');
 const _ = require('underscore');
 
+const fs = require('file-system');
+
 const RateLimiter = require('limiter').RateLimiter;
 let limiter = new RateLimiter(400, 'minute');
 
@@ -55,7 +57,7 @@ router.post('/call', (req, res, next) => {
       //writeJSONtoCSV("properties", completeList.features[i].properties.response);
 
     }
-    writeJSONtoCSV("properties", properties);
+    // writeJSONtoCSV("properties", properties);
     /*for (var i = 0; i < completeList.length; i++) {
       console.log(completeList);
     }*/
@@ -69,12 +71,20 @@ router.post('/call', (req, res, next) => {
 
   //returns array of features
   let createFeatures = (masterList, bbox) => {
+    console.log("MASTER LIST LENGTH"+masterList.length);
     return mT.features(masterList, bbox);
   }
 
   //add to master list
   let addToMaster = (data) => {
-    masterList.push.apply(masterList, createFeatures(data.response.data, data.bbox));
+    try {
+      console.log("Trying...");
+      masterList.push.apply(masterList, createFeatures(data.response.data, data.bbox));
+      console.log("SUCCESS!");
+    } catch(e){
+      console.log("SOMETHING HAPPENED");
+      console.log(e);
+    }
   }
 
   //figure out what to do with data
@@ -83,11 +93,14 @@ router.post('/call', (req, res, next) => {
     //console.log("data.response " , data.response);
     if (mT.isWithin(data.response.total_row_count)) {
 
+
       addToMaster(data);
 
       masterCount += data.response.total_row_count;
 
-      if ( masterCount == initialCount) { //temporary end
+      console.log("MASTER COUNT"+ masterCount + " INITIAL "+initialCount);
+
+      if (countDev.includes(masterCount)) { //temporary end
         console.log("Met total of "+initialCount);
         pushToFront(mT.featureCollection(masterList));
         indexCount++;
@@ -95,67 +108,60 @@ router.post('/call', (req, res, next) => {
 
         console.log("ROUTE LENGTH: "+routesLength);
 
-      }
-      if ((indexCount + 1) == routesLength && masterList.length != 0){
-        console.log("DONE! ", routesLength);
-        //masterList.length = 0;
-        //res.end();
+      } else {
+        console.log("STILL DOESN'T MATCH");
       }
 
-    } else if (data.response.total_row_count != 0) {
+    } else if (data.response.total_row_count !== 0) {
 
       console.log("IS TOTAL ROW NOT 0: ", data.response.total_row_count != 0);
 
-      // mT.splitBox(data.bbox).map((box) => {
-
-      //   limiter.removeTokens(1, function(err, remainingRequests) {
-
-      //     if (remainingRequests <= 0) {
-            // response.writeHead(429, {'Content-Type': 'text/plain;charset=UTF-8'});
-            // response.end('429 Too Many Requests - your IP is being rate limited');
-      //     } else {
-      //       mT.getCount(box, userParams).then((data) => {
-      //         console.log("RAN "+(ran++));
-      //         console.log(data.bbox);
-      //         console.log("Remaining Requests: ", remainingRequests);
-      //         decide(data);
-      //         //console.log(data);
-      //       });
-      //     }
-      //   });
-      // });
-
-      let promises = [];
       let prevPromise = Promise.resolve();
+
+      console.log("BEFORE WE SPLIT THE BOX");
+      console.log(data.bbox);
 
       mT.splitBox(data.bbox).map((box) => {
 
+        console.log("EACH BOX");
+        console.log(box);
+
+        console.log(JSON.stringify(mT.featurePolygon(null, box)));
 
         //get the counts
-        limiter.removeTokens(4, (err, remainingRequests) => {
+        limiter.removeTokens(1, (err, remainingRequests) => {
+          console.log("LIMITERRRR");
+
+          console.log("TOKENS REMAINING"+remainingRequests);
+
           if (remainingRequests <= 0) {
+            console.log("RAN OUT");
             response.writeHead(429, {'Content-Type': 'text/plain;charset=UTF-8'});
                   response.end('429 Too Many Requests - your IP is being rate limited');
           } else {
-            console.log("RAN "+(ran++));
             prevPromise = prevPromise.then(function() {
               return mT.getCount(box, userParams);
-            }
-          ).catch((error, data) => {
-            console.log(error);
-            console.log(data);
-          }).then((data) => {
-            decide(data);
-          }
-        ).catch((error) => {
+            }).catch((error, data) => {
+              console.log(error);
+              console.log(data);
+            }).then((data) => {
+              console.log("RAN "+(ran++));
+              decide(data);
+              console.log("AFTER DECIDE");
+            }).catch((error) => {
               console.log(error);
             });
           }
+
+          if (err) {console.log("SOME SHIT")}
         });
       });
 
-    } else if (data.response.total_row_count == 0) {
+    } else if (data.response.total_row_count === 0) {
       console.log("IS TOTAL ROW NOT 0?: ", data.response.total_row_count != 0);
+    } else {
+      console.log("Don't KNOW!");
+      console.log(data);
     }
   }
 
