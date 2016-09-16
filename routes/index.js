@@ -57,7 +57,7 @@ router.post('/call', (req, res, next) => {
       //writeJSONtoCSV("properties", completeList.features[i].properties.response);
 
     }
-    // writeJSONtoCSV("properties", properties);
+     writeJSONtoCSV("properties", properties);
     /*for (var i = 0; i < completeList.length; i++) {
       console.log(completeList);
     }*/
