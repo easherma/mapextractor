@@ -67,10 +67,12 @@ const mapTasks = {
         ymax = (bbox[3] || bbox.ymax);
 
     if (!userParams) {return console.log("NO PARAMS")}
+    console.log("USER PARAMS"+JSON.stringify(userParams));
+    var param = (userParams.sub ? userParams.sub : [userParams.main]);
 
     return new Promise((resolve, reject) => {
       factual.get('/t/places-us', {"include_count":"true",
-        filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
+        filters:{"category_ids":{"$includes_any":paramsudo }},
         geo:{"$within":{"$rect":[[ymax , xmin],[ymin, xmax]]}}, limit:50},
           (error, response, raw) => {
             if (error || response === null) {
