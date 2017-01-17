@@ -11,3 +11,5 @@ results*.json
 *.geojson
 npm-debug.log
 node_modules/
+.ipynb_checkpoints/Untitled-checkpoint.ipynb
+*.ipynb

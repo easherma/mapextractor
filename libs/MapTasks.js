@@ -69,7 +69,7 @@ const mapTasks = {
     if (!userParams) {return console.log("NO PARAMS")}
 
     return new Promise((resolve, reject) => {
-      factual.get('/t/places-us', {"include_count":"true",
+      factual.get('/t/places', {"include_count":"true",
         filters:{"category_ids":{"$includes_any":(userParams.sub ? userParams.sub : [userParams.main])}},
         geo:{"$within":{"$rect":[[ymax , xmin],[ymin, xmax]]}}, limit:50},
           (error, response, raw) => {
